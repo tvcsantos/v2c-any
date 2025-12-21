@@ -83,17 +83,17 @@ properties:
   meters:
     grid:
       mode: pull
-      interval: 5000
       feed:
         type: adapter
         properties:
+          interval: 5000
           ip: 192.168.1.100
     solar:
       mode: pull
-      interval: 5000
       feed:
         type: mock
         properties:
+          interval: 5000
           value:
             power: 2500
 ```
@@ -178,10 +178,10 @@ properties:
   meters:
     grid:
       mode: pull       # v2ca polls your device
-      interval: 2000   # Every 2 seconds
       feed:
         type: adapter
         properties:
+          interval: 2000   # Every 2 seconds
           ip: 192.168.1.100
     solar:
       mode: push       # v2ca subscribes to MQTT topic
