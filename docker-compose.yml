@@ -1,0 +1,39 @@
+services:
+  broker:
+    image: eclipse-mosquitto:2.0
+    container_name: mqtt-broker
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    networks:
+      - v2c-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: v2c-any
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - LOG_LEVEL=${LOG_LEVEL:-info}
+    volumes:
+      # Mount configuration file if using external config
+      - ./.v2carc.yaml:/app/.v2carc.yaml:ro
+    depends_on:
+      - broker
+    networks:
+      - v2c-network
+    restart: unless-stopped
+
+networks:
+  v2c-network:
+    driver: bridge
+
+volumes:
+  mosquitto_data:
+  mosquitto_log:

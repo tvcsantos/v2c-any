@@ -1,0 +1,79 @@
+import { logger } from '../utils/logger.js';
+import { createMqttClient } from '../utils/mqtt.js';
+/**
+ * MQTT topic for publishing solar power readings.
+ */
+const SUN_POWER_TOPIC = 'trydan_v2c_sun_power';
+/**
+ * MQTT topic for publishing grid power readings.
+ */
+const GRID_POWER_TOPIC = 'trydan_v2c_grid_power';
+/**
+ * Service that publishes energy readings to an MQTT broker.
+ * Manages MQTT client lifecycle and exposes methods to push grid and solar power values.
+ */
+export class MqttService {
+    /**
+     * Creates a new MQTT service.
+     * @param properties - MQTT connection properties including broker URL
+     */
+    constructor(properties) {
+        this.properties = properties;
+        this.client = null;
+    }
+    /**
+     * Publishes a grid power reading to the MQTT broker.
+     * @param power - Power value in Watts
+     */
+    async pushGridPower(power) {
+        await this.pushReading(power, GRID_POWER_TOPIC);
+    }
+    /**
+     * Publishes a solar power reading to the MQTT broker.
+     * @param power - Power value in Watts
+     */
+    async pushSunPower(power) {
+        await this.pushReading(power, SUN_POWER_TOPIC);
+    }
+    /**
+     * Publishes a numeric reading to a specific MQTT topic.
+     * @param value - Numeric value to publish
+     * @param topic - MQTT topic to publish to
+     */
+    async pushReading(value, topic) {
+        if (!this.client) {
+            logger.error('MQTT client not initialized');
+            return;
+        }
+        logger.debug(`Publishing ${value} to topic ${topic}`);
+        await this.client.publishAsync(topic, String(value));
+    }
+    /**
+     * Starts the MQTT client connection.
+     * @returns A promise that resolves when the client is connected
+     * @throws {Error} If the client is already started
+     */
+    async start() {
+        logger.info('Starting MQTT mode');
+        if (this.client) {
+            logger.warn('MQTT client already started');
+            throw new Error('MQTT client already started');
+        }
+        this.client = await createMqttClient(this.properties.url);
+    }
+    /**
+     * Stops the MQTT client connection.
+     * @returns A promise that resolves when the client is disconnected
+     * @throws {Error} If the client is not started
+     */
+    async stop() {
+        const client = this.client;
+        this.client = null;
+        if (!client) {
+            logger.warn('MQTT client not started');
+            throw new Error('MQTT client not started');
+        }
+        await client.endAsync();
+        logger.info('MQTT client disconnected');
+    }
+}
