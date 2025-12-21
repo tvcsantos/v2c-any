@@ -11,7 +11,7 @@ import type { CallbackProperties } from '../utils/callback-properties.js';
  * @template Payload - The type of data provided and pushed
  */
 export class PullPushService<Payload> implements ExecutableService {
-  private timer: NodeJS.Timeout | null = null;
+  private abortController: AbortController | null = null;
 
   /**
    * Creates a new pull/push service.
@@ -30,19 +30,14 @@ export class PullPushService<Payload> implements ExecutableService {
    * @returns A promise that resolves once the service starts
    * @throws {Error} If the service is already started
    */
-  start() {
-    if (this.timer) {
+  async start() {
+    if (this.abortController) {
       throw new Error('Adapter already started');
     }
-    this.timer = setInterval(() => {
-      this.cycle().catch((err) => {
-        logger.error(err, 'Error during pull-push cycle');
-      });
-    }, this.intervalMs);
-    // Run immediately
-    this.cycle().catch((err) => {
-      logger.error(err, 'Error during initial pull-push cycle');
-    });
+    this.abortController = new AbortController();
+    
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
+    this.run(this.abortController.signal);
 
     return Promise.resolve();
   }
@@ -52,12 +47,36 @@ export class PullPushService<Payload> implements ExecutableService {
    * @returns A promise that resolves once the service stops
    */
   stop() {
-    if (this.timer) {
-      clearInterval(this.timer);
-      this.timer = null;
-    }
-
+    this.abortController?.abort();
+    this.abortController = null;
     return Promise.resolve();
+  }
+
+  /**
+   * Main async loop that runs cycles until aborted.
+   * @param signal - AbortSignal to control loop cancellation
+   */
+  private async run(signal: AbortSignal) {
+    // Create a single abort promise that resolves when signal is aborted
+    const abortPromise = new Promise<void>((resolve) => {
+      signal.addEventListener('abort', () => resolve(), { once: true });
+    });
+
+    while (!signal.aborted) {
+      try {
+        await this.cycle();
+      } catch (err) {
+        logger.error(err, 'Error during pull-push cycle');
+      }
+      
+      // Wait for either the interval or abort signal
+      if (!signal.aborted) {
+        const timeoutPromise = new Promise<void>((resolve) => {
+          setTimeout(resolve, this.intervalMs);
+        });
+        await Promise.race([timeoutPromise, abortPromise]);
+      }
+    }
   }
 
   /**
