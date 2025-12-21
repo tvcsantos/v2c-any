@@ -74,7 +74,7 @@ export class EM1StatusProviderFactory implements Factory<
   ): Provider<EM1Status | undefined> {
     return this.createProviderFactory(options).create({
       energyType: options.energyType,
-      ...options.configuration,
+      ...options.configuration.feed,
     });
   }
 }

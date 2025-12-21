@@ -28,7 +28,8 @@ export class EM1StatusProvider implements Provider<EM1Status> {
    */
   async get(): Promise<EM1Status> {
     logger.debug(
-      `Fetching EM1Status from ${this.host} for energy type: ${this.energyType}`
+      { host: this.host, energyType: this.energyType },
+      'Fetching EM1Status'
     );
     const id = energyTypeToId(this.energyType);
     const res = await request(
@@ -45,7 +46,7 @@ export class EM1StatusProvider implements Provider<EM1Status> {
 export type EM1StatusProviderOptions = {
   energyType: EnergyType;
   properties: {
-    targetIp: string;
+    ip: string;
   };
 };
 
@@ -64,12 +65,10 @@ class EM1StatusProviderFactory implements ProviderFactory<
    */
   create(options: EM1StatusProviderOptions): Provider<EM1Status> {
     logger.debug(
-      `Creating EM1StatusProvider for IP: ${options.properties.targetIp}, EnergyType: ${options.energyType}`
+      { ip: options.properties.ip, energyType: options.energyType },
+      'Creating EM1StatusProvider'
     );
-    return new EM1StatusProvider(
-      options.properties.targetIp,
-      options.energyType
-    );
+    return new EM1StatusProvider(options.properties.ip, options.energyType);
   }
 }
 

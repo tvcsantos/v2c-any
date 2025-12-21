@@ -11,4 +11,4 @@ const DEVICE_NAME = 'shelly-pro-em';
 devicesProviderRegistry.register(DEVICE_NAME, em1StatusProviderFactory);
 devicesAdapterRegistry.register(DEVICE_NAME, energyInformationEM1StatusAdapter);
 
-logger.info('Shelly Pro EM proxy components registered');
+logger.info('Shelly Pro EM registered');

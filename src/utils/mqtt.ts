@@ -12,10 +12,10 @@ import { logger } from './logger.js';
 export async function createMqttClient(url: string): Promise<MqttClient> {
   const client = await mqtt.connectAsync(url);
   client.on('connect', () => {
-    logger.info(`Connected to ${url}`);
+    logger.info({ url }, 'Connected to MQTT broker');
   });
   client.on('error', (err) => {
-    logger.error(`Error: ${(err as Error).message}`);
+    logger.error(err, 'MQTT client error');
   });
   client.on('reconnect', () => logger.info('Reconnecting...'));
   return client;

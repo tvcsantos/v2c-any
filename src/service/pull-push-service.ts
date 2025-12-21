@@ -36,12 +36,12 @@ export class PullPushService<Payload> implements ExecutableService {
     }
     this.timer = setInterval(() => {
       this.cycle().catch((err) => {
-        logger.error('Error during pull-push cycle ' + err);
+        logger.error(err, 'Error during pull-push cycle');
       });
     }, this.intervalMs);
     // Run immediately
     this.cycle().catch((err) => {
-      logger.error('Error during initial pull-push cycle ' + err);
+      logger.error(err, 'Error during initial pull-push cycle');
     });
 
     return Promise.resolve();
@@ -67,7 +67,7 @@ export class PullPushService<Payload> implements ExecutableService {
   private async cycle() {
     const data = await this.provider.get();
     if (data) {
-      logger.info(`Pushing data: ${JSON.stringify(data)}`);
+      logger.info({ data }, 'Pushing data');
       await this.callbackProperties.callback(data);
     }
   }

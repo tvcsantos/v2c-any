@@ -38,8 +38,8 @@ class EM1StatusProviderFactory {
      * @returns A configured EM1StatusProvider instance
      */
     create(options) {
-        logger.debug(`Creating EM1StatusProvider for IP: ${options.properties.targetIp}, EnergyType: ${options.energyType}`);
-        return new EM1StatusProvider(options.properties.targetIp, options.energyType);
+        logger.debug(`Creating EM1StatusProvider for IP: ${options.properties.ip}, EnergyType: ${options.energyType}`);
+        return new EM1StatusProvider(options.properties.ip, options.energyType);
     }
 }
 /**

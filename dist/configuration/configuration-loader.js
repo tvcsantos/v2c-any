@@ -21,7 +21,7 @@ export class ConfigurationLoader {
      */
     async load() {
         try {
-            logger.info(`🔍 Searching for v2ca configuration...`);
+            logger.info('Searching for v2ca configuration...');
             // Search for config in standard locations
             const result = await this.explorer.search();
             let config;
@@ -30,7 +30,7 @@ export class ConfigurationLoader {
                 const configSource = result.filepath
                     ? `from ${result.filepath}`
                     : 'from package.json';
-                logger.info(`📋 Configuration loaded ${configSource}`);
+                logger.info(`Configuration loaded ${configSource}`);
                 config = this.configurationValidator.validate(result.config);
             }
             else {
@@ -38,7 +38,7 @@ export class ConfigurationLoader {
                 logger.info('No configuration found');
                 throw new Error('No configuration found for v2ca.');
             }
-            logger.info(`✅ Configuration loaded successfully`);
+            logger.info('Configuration loaded successfully');
             return config;
         }
         catch (error) {

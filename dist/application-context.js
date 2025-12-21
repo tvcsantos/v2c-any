@@ -23,7 +23,8 @@ export async function loadDeviceModules() {
     logger.info('Loading device modules...');
     const __dirname = dirname(fileURLToPath(import.meta.url));
     logger.info(`Current directory: ${__dirname}`);
-    const devicePaths = globSync('device/**/index.js', { cwd: __dirname });
+    // Support both .ts (dev/tsx) and .js (built) files
+    const devicePaths = globSync('device/**/index.{ts,js}', { cwd: __dirname });
     logger.info(`Found ${devicePaths.length} device modules.`);
     for (const path of devicePaths) {
         logger.info(`Importing module: ${path}`);

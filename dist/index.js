@@ -47,6 +47,6 @@ async function main() {
     });
 }
 main().catch((err) => {
-    logger.error('Fatal error occurred: %s', err);
+    logger.error(err, 'Fatal error occurred');
     process.exit(1);
 });

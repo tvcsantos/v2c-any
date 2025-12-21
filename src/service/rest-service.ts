@@ -73,7 +73,10 @@ export class RestService implements ExecutableService {
    * @returns A promise that resolves when the server is listening
    */
   async start(): Promise<void> {
-    const app = Fastify({ loggerInstance: logger });
+    const app = Fastify({
+      loggerInstance: logger,
+      disableRequestLogging: true,
+    });
 
     this.app = app;
 
@@ -108,7 +111,7 @@ export class RestService implements ExecutableService {
       '/rpc/EM1.GetStatus',
       { schema: { querystring: statusQuerySchema } },
       async (request, reply) => {
-        app.log.info(`Received request: ${JSON.stringify(request.query)}`);
+        app.log.debug({ query: request.query }, 'Received request');
         const { id } = request.query;
         const energyProvider = this.getEnergyProviderById(id);
         if (!energyProvider) {
@@ -134,7 +137,7 @@ export class RestService implements ExecutableService {
     //app.post('/rpc/EM1.GetStatus', async () => app.inject({ method: 'GET', url: '/rpc/EM1.GetStatus' }).then(r => r.json()));
 
     await app.listen({ port: this.properties.port, host: '0.0.0.0' });
-    logger.info(`Listening on :${this.properties.port}`);
+    logger.info({ port: this.properties.port }, 'Listening');
   }
 
   /**

@@ -42,7 +42,7 @@ export const em1StatusSchema = z.object({
      */
     flags: z.array(z.string()).optional(),
 });
-export const restAdapterFeedSchema = z.object({ targetIp: z.string() }).loose();
+export const restAdapterFeedSchema = z.object({ ip: z.string() }).loose();
 export const restMockFeedSchema = z
     .object({ value: em1StatusSchema.optional() })
     .loose();

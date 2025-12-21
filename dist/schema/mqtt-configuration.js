@@ -19,7 +19,7 @@ export const mqttPullMockFeedSchema = z
     .object({ value: energyInformationSchema.optional() })
     .loose();
 export const mqttPullAdapterFeedSchema = z
-    .object({ targetIp: z.string() })
+    .object({ ip: z.string() })
     .loose();
 export const mqttPullFeedSchema = z.discriminatedUnion('type', [
     z.object({

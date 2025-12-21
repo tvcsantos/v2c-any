@@ -61,15 +61,17 @@ async function main() {
     }
   };
 
+  logger.info('Application started successfully');
+
   process.on('SIGINT', () => {
-    shutdown().catch(() => {});
+    shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
   });
   process.on('SIGTERM', () => {
-    shutdown().catch(() => {});
+    shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
   });
 }
 
 main().catch((err) => {
-  logger.error('Fatal error occurred: %s', err);
+  logger.error(err, 'Fatal error occurred');
   process.exit(1);
 });

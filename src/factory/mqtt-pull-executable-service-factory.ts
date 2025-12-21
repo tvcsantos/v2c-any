@@ -11,6 +11,7 @@ import type { Factory } from '../provider/factory.js';
 import { PullPushService } from '../service/pull-push-service.js';
 import type { ExecutableService } from '../service/executable-service.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
+import { noOpExecutableService } from '../service/no-op-executable-service.js';
 
 /**
  * Configuration properties for creating an MQTT pull-mode executable service.
@@ -20,12 +21,15 @@ export type MqttPullExecutableServiceFactoryProperties = {
   energyType: string;
   /** The device identifier */
   device: string;
-  /** Polling interval in milliseconds */
-  interval: number;
   /** MQTT pull feed configuration specifying the data source */
   configuration: MqttPullFeed;
   /** Callback to invoke with fetched energy information */
   callbackProperties: CallbackProperties<EnergyInformation | undefined>;
+};
+
+type MqttPullProviderFactory = {
+  providerFactory: ProviderFactory<unknown, EnergyInformation | undefined>;
+  interval: number;
 };
 
 /**
@@ -61,7 +65,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
    */
   private createProviderFactory(
     options: MqttPullExecutableServiceFactoryProperties
-  ): ProviderFactory<unknown, EnergyInformation | undefined> {
+  ): MqttPullProviderFactory | null {
     switch (options.configuration.type) {
       case 'adapter': {
         const provider = this.devicesProviderRegistry.get(options.device);
@@ -76,14 +80,20 @@ export class MqttPullExecutableServiceFactory implements Factory<
             `No adapter registered for device: ${options.device}`
           );
         }
-        return new AdapterProviderFactory(provider, adapter);
+        return {
+          providerFactory: new AdapterProviderFactory(provider, adapter),
+          interval: options.configuration.properties.interval,
+        };
       }
       case 'mock':
-        return new FixedValueProviderFactory({
-          value: options.configuration.properties?.value,
-        });
+        return {
+          providerFactory: new FixedValueProviderFactory({
+            value: options.configuration.properties.value,
+          }),
+          interval: options.configuration.properties.interval,
+        };
       case 'off':
-        return new FixedValueProviderFactory({ value: undefined });
+        return null;
     }
   }
 
@@ -96,14 +106,20 @@ export class MqttPullExecutableServiceFactory implements Factory<
     options: MqttPullExecutableServiceFactoryProperties
   ): ExecutableService {
     const energyProviderFactory = this.createProviderFactory(options);
-    const energyProvider = energyProviderFactory.create({
+
+    if (!energyProviderFactory) {
+      return noOpExecutableService;
+    }
+
+    const { providerFactory, interval } = energyProviderFactory;
+    const energyProvider = providerFactory.create({
       energyType: options.energyType,
       ...options.configuration,
     });
 
     const service = new PullPushService(
       energyProvider,
-      options.interval,
+      interval,
       options.callbackProperties
     );
     return service;
