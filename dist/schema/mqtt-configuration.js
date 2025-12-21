@@ -16,10 +16,16 @@ export const mqttPushFeedSchema = z.discriminatedUnion('type', [
     z.object({ type: z.literal('off') }),
 ]);
 export const mqttPullMockFeedSchema = z
-    .object({ value: energyInformationSchema.optional() })
+    .object({
+    interval: z.number().int().nonnegative(),
+    value: energyInformationSchema.optional(),
+})
     .loose();
 export const mqttPullAdapterFeedSchema = z
-    .object({ ip: z.string() })
+    .object({
+    interval: z.number().int().nonnegative(),
+    ip: z.string(),
+})
     .loose();
 export const mqttPullFeedSchema = z.discriminatedUnion('type', [
     z.object({
@@ -28,14 +34,13 @@ export const mqttPullFeedSchema = z.discriminatedUnion('type', [
     }),
     z.object({
         type: z.literal('mock'),
-        properties: mqttPullMockFeedSchema.optional(),
+        properties: mqttPullMockFeedSchema,
     }),
     z.object({ type: z.literal('off') }),
 ]);
 export const mqttFeedModeSchema = z.discriminatedUnion('mode', [
     z.object({
         mode: z.literal('pull'),
-        interval: z.number().int().nonnegative(),
         feed: mqttPullFeedSchema,
     }),
     z.object({

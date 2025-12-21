@@ -21,7 +21,7 @@ export class EM1StatusProvider {
      * @throws {Error} If the HTTP request fails or returns invalid data
      */
     async get() {
-        logger.debug(`Fetching EM1Status from ${this.host} for energy type: ${this.energyType}`);
+        logger.debug({ host: this.host, energyType: this.energyType }, 'Fetching EM1Status');
         const id = energyTypeToId(this.energyType);
         const res = await request(`http://${this.host}/rpc/EM1.GetStatus?id=${id}`, { method: 'GET' });
         return (await res.body.json());
@@ -38,7 +38,7 @@ class EM1StatusProviderFactory {
      * @returns A configured EM1StatusProvider instance
      */
     create(options) {
-        logger.debug(`Creating EM1StatusProvider for IP: ${options.properties.ip}, EnergyType: ${options.energyType}`);
+        logger.debug({ ip: options.properties.ip, energyType: options.energyType }, 'Creating EM1StatusProvider');
         return new EM1StatusProvider(options.properties.ip, options.energyType);
     }
 }

@@ -12,5 +12,5 @@ export const logger = pino({
       hideObject: false,
     },
   },
-  level: process.env.LOG_LEVEL || 'info',
+  level: process.env.V2CA_LOG_LEVEL || 'info',
 });

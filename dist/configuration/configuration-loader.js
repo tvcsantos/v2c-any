@@ -21,22 +21,20 @@ export class ConfigurationLoader {
      */
     async load() {
         try {
-            logger.info('Searching for v2ca configuration...');
+            logger.info('Searching for configuration...');
             // Search for config in standard locations
             const result = await this.explorer.search();
             let config;
             if (result?.config) {
                 // Configuration found - merge, validate, and use it
-                const configSource = result.filepath
-                    ? `from ${result.filepath}`
-                    : 'from package.json';
-                logger.info(`Configuration loaded ${configSource}`);
+                const configSource = result.filepath ? result.filepath : 'package.json';
+                logger.info({ source: configSource }, 'Configuration loaded');
                 config = this.configurationValidator.validate(result.config);
             }
             else {
                 // No configuration found - use defaults
                 logger.info('No configuration found');
-                throw new Error('No configuration found for v2ca.');
+                throw new Error('No configuration found');
             }
             logger.info('Configuration loaded successfully');
             return config;

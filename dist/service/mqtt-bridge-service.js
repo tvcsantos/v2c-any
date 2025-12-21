@@ -36,7 +36,7 @@ export class MqttBridgeService {
                     await this.callbackProperties.callback(adaptedData);
                 })
                     .catch((error) => {
-                    logger.error(`Adapter error: ${error.message}`);
+                    logger.error(error, `Error occurred while processing message`);
                 });
             }
         });

@@ -1,6 +1,7 @@
 import { AdapterProviderFactory } from '../provider/adapter-provider.js';
 import { FixedValueProviderFactory } from '../provider/fixed-value-provider.js';
 import { PullPushService } from '../service/pull-push-service.js';
+import { noOpExecutableService } from '../service/no-op-executable-service.js';
 /**
  * Factory for creating MQTT pull-mode (polling) executable services.
  * Supports multiple data source strategies: device adapters, mock values, or disabled sources.
@@ -35,14 +36,20 @@ export class MqttPullExecutableServiceFactory {
                 if (!adapter) {
                     throw new Error(`No adapter registered for device: ${options.device}`);
                 }
-                return new AdapterProviderFactory(provider, adapter);
+                return {
+                    providerFactory: new AdapterProviderFactory(provider, adapter),
+                    interval: options.configuration.properties.interval,
+                };
             }
             case 'mock':
-                return new FixedValueProviderFactory({
-                    value: options.configuration.properties?.value,
-                });
+                return {
+                    providerFactory: new FixedValueProviderFactory({
+                        value: options.configuration.properties.value,
+                    }),
+                    interval: options.configuration.properties.interval,
+                };
             case 'off':
-                return new FixedValueProviderFactory({ value: undefined });
+                return null;
         }
     }
     /**
@@ -52,11 +59,15 @@ export class MqttPullExecutableServiceFactory {
      */
     create(options) {
         const energyProviderFactory = this.createProviderFactory(options);
-        const energyProvider = energyProviderFactory.create({
+        if (!energyProviderFactory) {
+            return noOpExecutableService;
+        }
+        const { providerFactory, interval } = energyProviderFactory;
+        const energyProvider = providerFactory.create({
             energyType: options.energyType,
             ...options.configuration,
         });
-        const service = new PullPushService(energyProvider, options.interval, options.callbackProperties);
+        const service = new PullPushService(energyProvider, interval, options.callbackProperties);
         return service;
     }
 }

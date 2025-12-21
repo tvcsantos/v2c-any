@@ -53,7 +53,6 @@ export class MqttFeedExecutableServiceFactory {
                 return this.pullExecutableServiceFactory.create({
                     energyType: options.energyType,
                     device: options.device,
-                    interval: options.configuration.interval,
                     configuration: options.configuration.feed,
                     callbackProperties,
                 });

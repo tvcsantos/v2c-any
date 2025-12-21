@@ -39,11 +39,12 @@ async function main() {
             process.exit(0);
         }
     };
+    logger.info('Application started successfully');
     process.on('SIGINT', () => {
-        shutdown().catch(() => { });
+        shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
     });
     process.on('SIGTERM', () => {
-        shutdown().catch(() => { });
+        shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
     });
 }
 main().catch((err) => {

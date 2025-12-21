@@ -42,7 +42,10 @@ export class RestService {
      * @returns A promise that resolves when the server is listening
      */
     async start() {
-        const app = Fastify({ loggerInstance: logger });
+        const app = Fastify({
+            loggerInstance: logger,
+            disableRequestLogging: true,
+        });
         this.app = app;
         // Simple health
         app.get('/health', () => ({ ok: true }));
@@ -64,7 +67,7 @@ export class RestService {
         });
         // Shelly EM1-like endpoint
         app.get('/rpc/EM1.GetStatus', { schema: { querystring: statusQuerySchema } }, async (request, reply) => {
-            app.log.info(`Received request: ${JSON.stringify(request.query)}`);
+            app.log.debug({ query: request.query }, 'Received request');
             const { id } = request.query;
             const energyProvider = this.getEnergyProviderById(id);
             if (!energyProvider) {
@@ -88,7 +91,7 @@ export class RestService {
         // Alias for JSON-RPC style (POST)
         //app.post('/rpc/EM1.GetStatus', async () => app.inject({ method: 'GET', url: '/rpc/EM1.GetStatus' }).then(r => r.json()));
         await app.listen({ port: this.properties.port, host: '0.0.0.0' });
-        logger.info(`Listening on :${this.properties.port}`);
+        logger.info({ port: this.properties.port }, 'Listening');
     }
     /**
      * Stops the REST server if running.

@@ -42,7 +42,7 @@ export class EM1StatusProviderFactory {
     create(options) {
         return this.createProviderFactory(options).create({
             energyType: options.energyType,
-            ...options.configuration,
+            ...options.configuration.feed,
         });
     }
 }

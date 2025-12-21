@@ -20,7 +20,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - LOG_LEVEL=${LOG_LEVEL:-info}
+      - V2CA_LOG_LEVEL=${V2CA_LOG_LEVEL:-info}
     volumes:
       # Mount configuration file if using external config
       - ./.v2carc.yaml:/app/.v2carc.yaml:ro

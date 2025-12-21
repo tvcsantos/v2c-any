@@ -43,9 +43,9 @@ export class MqttService {
     async pushReading(value, topic) {
         if (!this.client) {
             logger.error('MQTT client not initialized');
-            return;
+            throw new Error('MQTT client not initialized');
         }
-        logger.debug(`Publishing ${value} to topic ${topic}`);
+        logger.debug({ value, topic }, 'Publishing MQTT message');
         await this.client.publishAsync(topic, String(value));
     }
     /**
@@ -56,7 +56,7 @@ export class MqttService {
     async start() {
         logger.info('Starting MQTT mode');
         if (this.client) {
-            logger.warn('MQTT client already started');
+            logger.error('MQTT client already started');
             throw new Error('MQTT client already started');
         }
         this.client = await createMqttClient(this.properties.url);
@@ -70,7 +70,7 @@ export class MqttService {
         const client = this.client;
         this.client = null;
         if (!client) {
-            logger.warn('MQTT client not started');
+            logger.error('MQTT client not started');
             throw new Error('MQTT client not started');
         }
         await client.endAsync();
