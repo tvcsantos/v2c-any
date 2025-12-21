@@ -8,8 +8,6 @@
 
 If it can expose power data, **v2c-any** can make it speak *V2C*.
 
----
-
 ## Why v2c-any?
 
 V2C wallboxes support Dynamic Power Control via specific meters or MQTT inputs.  
@@ -24,8 +22,6 @@ In real installations, however, power data often comes from **heterogeneous sour
 **v2c-any** bridges that gap.
 
 It adapts **any input** into the protocol and format expected by a V2C wallbox — without changing your existing setup.
-
----
 
 ## The idea
 
@@ -45,8 +41,6 @@ Or in practical terms:
        V2C Wallbox
 ```
 
----
-
 ## Key features
 
 - 🔌 **Universal adapter** – works with *any* power data source  
@@ -57,8 +51,6 @@ Or in practical terms:
 - 🧩 **Extensible architecture** – add new adapters easily  
 - 🟦 **TypeScript-first** – predictable, typed, maintainable  
 
----
-
 ## What v2c-any is *not*
 
 - ❌ Not a replacement for your existing meters  
@@ -67,8 +59,6 @@ Or in practical terms:
 
 It’s an **adapter**, not a lock-in.
 
----
-
 ## Name origin
 
 `v2c-any` comes from the TypeScript `any` type:
@@ -76,8 +66,6 @@ It’s an **adapter**, not a lock-in.
 > “I don’t care what you are — I can work with you.”
 
 Exactly the philosophy behind this project.
-
----
 
 ## License
 
