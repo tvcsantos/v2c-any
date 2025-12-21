@@ -35,7 +35,7 @@ export class PullPushService<Payload> implements ExecutableService {
       throw new Error('Adapter already started');
     }
     this.abortController = new AbortController();
-    
+
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.run(this.abortController.signal);
 
@@ -68,7 +68,7 @@ export class PullPushService<Payload> implements ExecutableService {
       } catch (err) {
         logger.error(err, 'Error during pull-push cycle');
       }
-      
+
       // Wait for either the interval or abort signal
       if (!signal.aborted) {
         const timeoutPromise = new Promise<void>((resolve) => {
