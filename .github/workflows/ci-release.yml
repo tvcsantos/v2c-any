@@ -1,4 +1,4 @@
-name: Release
+name: Release (CI)
 
 on:
   push:
@@ -34,7 +34,6 @@ jobs:
         run: npm run build
 
       - name: Publish to npm
-        if: false
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -101,7 +100,6 @@ jobs:
             type=sha
 
       - name: Build and push Docker image
-        if: false
         uses: docker/build-push-action@v5
         with:
           context: .
