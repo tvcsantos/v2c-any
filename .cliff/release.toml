@@ -27,15 +27,15 @@ body = """
 {% if version %}\
   {% if previous %}\
     {% if previous.version %}\
-      **Full Changelog:** [`{{ previous.version | trim_start_matches(pat="v") }}...{{ version | trim_start_matches(pat="v") }}`](<REPO>/compare/{{ previous.version }}...{{ version }})
+      **Full Changelog:** [`{{ previous.version }}...{{ version }}`](<REPO>/compare/{{ previous.version }}...{{ version }})
     {% else %}\
-      **Full Changelog:** [`{{ version | trim_start_matches(pat="v") }}`](<REPO>/releases/tag/{{ version }})
+      **Full Changelog:** [`{{ version }}`](<REPO>/releases/tag/{{ version }})
     {% endif %}\
   {% endif %}\
 {% else %}\
   {% if previous %}\
     {% if previous.version %}\
-      **Full Changelog:** [`{{ previous.version | trim_start_matches(pat="v") }}...HEAD`](<REPO>/compare/{{ previous.version }}...HEAD)
+      **Full Changelog:** [`{{ previous.version }}...HEAD`](<REPO>/compare/{{ previous.version }}...HEAD)
     {% else %}\
       **Full Changelog:** [HEAD]
     {% endif %}\
