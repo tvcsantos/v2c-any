@@ -28,7 +28,6 @@ async function main() {
             break;
         }
     }
-    await service.start();
     const shutdown = async () => {
         try {
             logger.info('Shutting down...');
@@ -43,13 +42,14 @@ async function main() {
             process.exit(0);
         }
     };
-    logger.info('Application started successfully');
     process.once('SIGINT', () => {
         shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
     });
     process.once('SIGTERM', () => {
         shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
     });
+    await service.start();
+    logger.info('Application started successfully');
 }
 main().catch((err) => {
     logger.error(err, 'Fatal error occurred');
