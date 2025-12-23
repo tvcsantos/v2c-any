@@ -45,6 +45,7 @@ export class MqttBridgeService<
    * @returns A promise that resolves when the subscription is active
    */
   async start() {
+    logger.info('Starting MQTT bridge service');
     this.client = await createMqttClient(this.properties.url);
     this.client.on('message', (topic: string, message: Buffer) => {
       if (topic === this.properties.topic) {
@@ -61,7 +62,9 @@ export class MqttBridgeService<
           });
       }
     });
+    logger.info({ topic: this.properties.topic }, 'Subscribing to MQTT topic');
     await this.client.subscribeAsync(this.properties.topic);
+    logger.info('MQTT bridge service started');
   }
 
   /**
@@ -69,9 +72,11 @@ export class MqttBridgeService<
    * @returns A promise that resolves when the client has disconnected
    */
   async stop() {
+    logger.info('Stopping MQTT bridge service');
     if (this.client) {
       await this.client.endAsync();
       this.client = null;
     }
+    logger.info('MQTT bridge service stopped');
   }
 }

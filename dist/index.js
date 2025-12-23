@@ -34,16 +34,20 @@ async function main() {
             logger.info('Shutting down...');
             if (service)
                 await service.stop();
+            logger.info('Shutdown complete');
+        }
+        catch (err) {
+            logger.error(err, 'Error during shutdown');
         }
         finally {
             process.exit(0);
         }
     };
     logger.info('Application started successfully');
-    process.on('SIGINT', () => {
+    process.once('SIGINT', () => {
         shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
     });
-    process.on('SIGTERM', () => {
+    process.once('SIGTERM', () => {
         shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
     });
 }

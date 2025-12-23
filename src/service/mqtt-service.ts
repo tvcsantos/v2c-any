@@ -73,6 +73,7 @@ export class MqttService implements ExecutableService {
       throw new Error('MQTT client already started');
     }
     this.client = await createMqttClient(this.properties.url);
+    logger.info('MQTT client started');
   }
 
   /**
@@ -81,6 +82,7 @@ export class MqttService implements ExecutableService {
    * @throws {Error} If the client is not started
    */
   async stop() {
+    logger.info('Stopping MQTT mode');
     const client = this.client;
     this.client = null;
     if (!client) {

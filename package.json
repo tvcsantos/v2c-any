@@ -1,6 +1,6 @@
 {
   "name": "v2c-any",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "type": "module",
   "description": "V2C device adapter and MQTT publisher (Shelly EM1 compatible)",
   "main": "dist/index.js",
