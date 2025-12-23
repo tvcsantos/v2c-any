@@ -1,8 +1,8 @@
 {
   "name": "v2c-any",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
-  "description": "V2C device adapter and MQTT publisher (Shelly EM1 compatible)",
+  "description": "Turn any device into V2C Dynamic Power Control",
   "main": "dist/index.js",
   "bin": {
     "v2ca": "dist/index.js"
