@@ -1,5 +1,6 @@
 import { logger } from '../utils/logger.js';
 import { createMqttClient } from '../utils/mqtt.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 /**
  * MQTT topic for publishing solar power readings.
  */
@@ -12,12 +13,13 @@ const GRID_POWER_TOPIC = 'trydan_v2c_grid_power';
  * Service that publishes energy readings to an MQTT broker.
  * Manages MQTT client lifecycle and exposes methods to push grid and solar power values.
  */
-export class MqttService {
+export class MqttService extends AbstractExecutableService {
     /**
      * Creates a new MQTT service.
      * @param properties - MQTT connection properties including broker URL
      */
     constructor(properties) {
+        super();
         this.properties = properties;
         this.client = null;
     }
@@ -53,12 +55,8 @@ export class MqttService {
      * @returns A promise that resolves when the client is connected
      * @throws {Error} If the client is already started
      */
-    async start() {
+    async doStart() {
         logger.info('Starting MQTT mode');
-        if (this.client) {
-            logger.error('MQTT client already started');
-            throw new Error('MQTT client already started');
-        }
         this.client = await createMqttClient(this.properties.url);
         logger.info('MQTT client started');
     }
@@ -67,15 +65,10 @@ export class MqttService {
      * @returns A promise that resolves when the client is disconnected
      * @throws {Error} If the client is not started
      */
-    async stop() {
+    async doStop() {
         logger.info('Stopping MQTT mode');
-        const client = this.client;
+        await this.client?.endAsync();
         this.client = null;
-        if (!client) {
-            logger.error('MQTT client not started');
-            throw new Error('MQTT client not started');
-        }
-        await client.endAsync();
         logger.info('MQTT client disconnected');
     }
 }

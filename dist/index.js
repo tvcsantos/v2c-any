@@ -10,29 +10,27 @@ import { MqttPushExecutableServiceFactory } from './factory/mqtt-push-executable
 import { RestServiceFactory } from './factory/rest-service-factory.js';
 import { MqttServiceFactory } from './factory/mqtt-service-factory.js';
 async function main() {
-    let service = null;
     await loadDeviceModules();
     const configurationValidator = new ConfigurationValidator();
     const configurationLoader = new ConfigurationLoader(configurationValidator);
     const configuration = await configurationLoader.load();
+    let executableServiceFactory;
     switch (configuration.provider) {
         case 'rest': {
-            const emulatorFactory = new RestServiceFactory(new EM1StatusProviderFactory(devicesProviderRegistry));
-            service = emulatorFactory.create(configuration);
+            executableServiceFactory = new RestServiceFactory(new EM1StatusProviderFactory(devicesProviderRegistry));
             break;
         }
         case 'mqtt': {
             const mqttFeedExecutableServiceFactory = new MqttFeedExecutableServiceFactory(new MqttPullExecutableServiceFactory(devicesProviderRegistry, devicesAdapterRegistry), new MqttPushExecutableServiceFactory(devicesAdapterRegistry));
-            const mqttFactory = new MqttServiceFactory(mqttFeedExecutableServiceFactory);
-            service = mqttFactory.create(configuration);
+            executableServiceFactory = new MqttServiceFactory(mqttFeedExecutableServiceFactory);
             break;
         }
     }
+    const service = executableServiceFactory.create(configuration);
     const shutdown = async () => {
         try {
             logger.info('Shutting down...');
-            if (service)
-                await service.stop();
+            await service?.stop();
             logger.info('Shutdown complete');
         }
         catch (err) {

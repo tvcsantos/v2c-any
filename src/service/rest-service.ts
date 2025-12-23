@@ -13,9 +13,9 @@ import { logger } from '../utils/logger.js';
 import type { IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from 'pino';
 import type { Provider } from '../provider/provider.js';
-import type { ExecutableService } from './executable-service.js';
 import { FixedValueProvider } from '../provider/fixed-value-provider.js';
 import type { EM1Status } from '../schema/rest-configuration.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 
 /**
  * Configuration properties for `RestService`.
@@ -29,7 +29,7 @@ export type RestServiceProperties = {
  * Provides health checks, mock expectation updates, and status queries for grid and solar.
  * Implements the executable service lifecycle to start and stop the HTTP server.
  */
-export class RestService implements ExecutableService {
+export class RestService extends AbstractExecutableService {
   private app: FastifyInstance<
     RawServerDefault,
     IncomingMessage,
@@ -42,7 +42,9 @@ export class RestService implements ExecutableService {
     private readonly gridEnergyProvider: Provider<EM1Status | undefined>,
     private readonly solarEnergyProvider: Provider<EM1Status | undefined>,
     private readonly properties: RestServiceProperties
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Resolves the energy provider by numeric identifier.
@@ -72,7 +74,8 @@ export class RestService implements ExecutableService {
    * - `GET /rpc/EM1.GetStatus` fetch status for a given id
    * @returns A promise that resolves when the server is listening
    */
-  async start(): Promise<void> {
+  async doStart(): Promise<void> {
+    logger.info('Starting REST service...');
     const app = Fastify({
       loggerInstance: logger,
       disableRequestLogging: true,
@@ -138,17 +141,18 @@ export class RestService implements ExecutableService {
 
     await app.listen({ port: this.properties.port, host: '0.0.0.0' });
     logger.info({ port: this.properties.port }, 'Listening');
+    logger.info('REST service started');
   }
 
   /**
    * Stops the REST server if running.
    * @returns A promise that resolves when the server has closed
    */
-  async stop(): Promise<void> {
-    logger.info('Stopping emulator...');
+  async doStop(): Promise<void> {
+    logger.info('Stopping REST service...');
     if (this.app) {
       await this.app.close();
     }
-    return Promise.resolve();
+    logger.info('REST service stopped');
   }
 }

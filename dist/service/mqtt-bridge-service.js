@@ -1,5 +1,6 @@
 import { logger } from '../utils/logger.js';
 import { createMqttClient } from '../utils/mqtt.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 /**
  * Service that bridges MQTT messages to a typed callback via an adapter.
  * Subscribes to a topic, parses incoming messages, adapts them, and forwards
@@ -8,7 +9,7 @@ import { createMqttClient } from '../utils/mqtt.js';
  * @template InputMessage - The raw message type received from MQTT
  * @template Payload - The adapted payload type passed to the callback
  */
-export class MqttBridgeService {
+export class MqttBridgeService extends AbstractExecutableService {
     /**
      * Creates a new MQTT bridge service.
      * @param properties - MQTT connection and subscription details
@@ -16,6 +17,7 @@ export class MqttBridgeService {
      * @param adapter - Adapter that transforms raw MQTT messages to the payload type
      */
     constructor(properties, callbackProperties, adapter) {
+        super();
         this.properties = properties;
         this.callbackProperties = callbackProperties;
         this.adapter = adapter;
@@ -25,7 +27,7 @@ export class MqttBridgeService {
      * Starts the bridge: connects to the broker, subscribes, and wires message handling.
      * @returns A promise that resolves when the subscription is active
      */
-    async start() {
+    async doStart() {
         logger.info('Starting MQTT bridge service');
         this.client = await createMqttClient(this.properties.url);
         this.client.on('message', (topic, message) => {
@@ -49,12 +51,10 @@ export class MqttBridgeService {
      * Stops the bridge: disconnects the MQTT client and clears resources.
      * @returns A promise that resolves when the client has disconnected
      */
-    async stop() {
+    async doStop() {
         logger.info('Stopping MQTT bridge service');
-        if (this.client) {
-            await this.client.endAsync();
-            this.client = null;
-        }
+        await this.client?.endAsync();
+        this.client = null;
         logger.info('MQTT bridge service stopped');
     }
 }

@@ -1,9 +1,9 @@
 import { logger } from '../utils/logger.js';
-import type { ExecutableService } from './executable-service.js';
 import type { Adapter } from '../adapter/adapter.js';
 import { createMqttClient } from '../utils/mqtt.js';
 import type { MqttClient } from 'mqtt';
 import type { CallbackProperties } from '../utils/callback-properties.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 
 /**
  * Properties for configuring an MQTT bridge service.
@@ -25,7 +25,7 @@ export type MqttBridgeServiceProperties = {
 export class MqttBridgeService<
   InputMessage,
   Payload,
-> implements ExecutableService {
+> extends AbstractExecutableService {
   private client: MqttClient | null = null;
 
   /**
@@ -38,13 +38,15 @@ export class MqttBridgeService<
     private readonly properties: MqttBridgeServiceProperties,
     private readonly callbackProperties: CallbackProperties<Payload>,
     private readonly adapter: Adapter<InputMessage, Payload>
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Starts the bridge: connects to the broker, subscribes, and wires message handling.
    * @returns A promise that resolves when the subscription is active
    */
-  async start() {
+  async doStart() {
     logger.info('Starting MQTT bridge service');
     this.client = await createMqttClient(this.properties.url);
     this.client.on('message', (topic: string, message: Buffer) => {
@@ -71,12 +73,10 @@ export class MqttBridgeService<
    * Stops the bridge: disconnects the MQTT client and clears resources.
    * @returns A promise that resolves when the client has disconnected
    */
-  async stop() {
+  async doStop() {
     logger.info('Stopping MQTT bridge service');
-    if (this.client) {
-      await this.client.endAsync();
-      this.client = null;
-    }
+    await this.client?.endAsync();
+    this.client = null;
     logger.info('MQTT bridge service stopped');
   }
 }

@@ -1,4 +1,5 @@
 import type { MqttProvider } from '../schema/mqtt-configuration.js';
+import { AbstractExecutableService } from '../service/abstract-executable-service.js';
 import type { ExecutableService } from '../service/executable-service.js';
 import { MqttService } from '../service/mqtt-service.js';
 import type { ExecutableServiceFactory } from './executable-service-factory.js';
@@ -55,17 +56,19 @@ export class MqttServiceFactory implements ExecutableServiceFactory<MqttProvider
       callbacks,
     });
 
-    return {
-      async start(): Promise<void> {
+    const mqttExecutableService = class extends AbstractExecutableService {
+      async doStart(): Promise<void> {
         await mqttService.start();
         await gridEnergyPublisher.start();
         await sunEnergyPublisher.start();
-      },
-      async stop(): Promise<void> {
+      }
+      async doStop(): Promise<void> {
         await sunEnergyPublisher.stop();
         await gridEnergyPublisher.stop();
         await mqttService.stop();
-      },
+      }
     };
+
+    return new mqttExecutableService();
   }
 }

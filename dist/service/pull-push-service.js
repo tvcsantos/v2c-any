@@ -1,4 +1,5 @@
 import { logger } from '../utils/logger.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 /**
  * Periodic pull-then-push service.
  * Fetches data from a `Provider` at a fixed interval and forwards it via a callback.
@@ -6,7 +7,7 @@ import { logger } from '../utils/logger.js';
  *
  * @template Payload - The type of data provided and pushed
  */
-export class PullPushService {
+export class PullPushService extends AbstractExecutableService {
     /**
      * Creates a new pull/push service.
      * @param provider - Source `Provider` that supplies data
@@ -14,6 +15,7 @@ export class PullPushService {
      * @param callbackProperties - Callback container invoked with fetched data
      */
     constructor(provider, intervalMs, callbackProperties) {
+        super();
         this.provider = provider;
         this.intervalMs = intervalMs;
         this.callbackProperties = callbackProperties;
@@ -24,7 +26,7 @@ export class PullPushService {
      * @returns A promise that resolves once the service starts
      * @throws {Error} If the service is already started
      */
-    async start() {
+    doStart() {
         if (this.abortController) {
             throw new Error('Adapter already started');
         }
@@ -37,7 +39,7 @@ export class PullPushService {
      * Stops periodic polling if running.
      * @returns A promise that resolves once the service stops
      */
-    stop() {
+    doStop() {
         this.abortController?.abort();
         this.abortController = null;
         return Promise.resolve();

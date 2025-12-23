@@ -1,3 +1,4 @@
+import { AbstractExecutableService } from '../service/abstract-executable-service.js';
 import { MqttService } from '../service/mqtt-service.js';
 /**
  * Factory for creating an MQTT service that manages energy publishing.
@@ -45,17 +46,18 @@ export class MqttServiceFactory {
             energyType: 'solar',
             callbacks,
         });
-        return {
-            async start() {
+        const mqttExecutableService = class extends AbstractExecutableService {
+            async doStart() {
                 await mqttService.start();
                 await gridEnergyPublisher.start();
                 await sunEnergyPublisher.start();
-            },
-            async stop() {
+            }
+            async doStop() {
                 await sunEnergyPublisher.stop();
                 await gridEnergyPublisher.stop();
                 await mqttService.stop();
-            },
+            }
         };
+        return new mqttExecutableService();
     }
 }

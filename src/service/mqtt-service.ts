@@ -1,7 +1,7 @@
 import { logger } from '../utils/logger.js';
-import type { ExecutableService } from './executable-service.js';
 import { createMqttClient } from '../utils/mqtt.js';
 import type { MqttClient } from 'mqtt';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 
 /**
  * MQTT topic for publishing solar power readings.
@@ -23,14 +23,16 @@ export type MqttServiceProperties = {
  * Service that publishes energy readings to an MQTT broker.
  * Manages MQTT client lifecycle and exposes methods to push grid and solar power values.
  */
-export class MqttService implements ExecutableService {
+export class MqttService extends AbstractExecutableService {
   private client: MqttClient | null = null;
 
   /**
    * Creates a new MQTT service.
    * @param properties - MQTT connection properties including broker URL
    */
-  constructor(private readonly properties: MqttServiceProperties) {}
+  constructor(private readonly properties: MqttServiceProperties) {
+    super();
+  }
 
   /**
    * Publishes a grid power reading to the MQTT broker.
@@ -66,12 +68,8 @@ export class MqttService implements ExecutableService {
    * @returns A promise that resolves when the client is connected
    * @throws {Error} If the client is already started
    */
-  async start() {
+  async doStart() {
     logger.info('Starting MQTT mode');
-    if (this.client) {
-      logger.error('MQTT client already started');
-      throw new Error('MQTT client already started');
-    }
     this.client = await createMqttClient(this.properties.url);
     logger.info('MQTT client started');
   }
@@ -81,15 +79,10 @@ export class MqttService implements ExecutableService {
    * @returns A promise that resolves when the client is disconnected
    * @throws {Error} If the client is not started
    */
-  async stop() {
+  async doStop() {
     logger.info('Stopping MQTT mode');
-    const client = this.client;
+    await this.client?.endAsync();
     this.client = null;
-    if (!client) {
-      logger.error('MQTT client not started');
-      throw new Error('MQTT client not started');
-    }
-    await client.endAsync();
     logger.info('MQTT client disconnected');
   }
 }

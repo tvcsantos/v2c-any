@@ -1,7 +1,7 @@
 import type { Provider } from '../provider/provider.js';
-import type { ExecutableService } from './executable-service.js';
 import { logger } from '../utils/logger.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 
 /**
  * Periodic pull-then-push service.
@@ -10,7 +10,7 @@ import type { CallbackProperties } from '../utils/callback-properties.js';
  *
  * @template Payload - The type of data provided and pushed
  */
-export class PullPushService<Payload> implements ExecutableService {
+export class PullPushService<Payload> extends AbstractExecutableService {
   private abortController: AbortController | null = null;
 
   /**
@@ -23,14 +23,16 @@ export class PullPushService<Payload> implements ExecutableService {
     private readonly provider: Provider<Payload>,
     private readonly intervalMs: number,
     private readonly callbackProperties: CallbackProperties<Payload>
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Starts periodic polling and an immediate initial cycle.
    * @returns A promise that resolves once the service starts
    * @throws {Error} If the service is already started
    */
-  async start() {
+  doStart() {
     if (this.abortController) {
       throw new Error('Adapter already started');
     }
@@ -46,7 +48,7 @@ export class PullPushService<Payload> implements ExecutableService {
    * Stops periodic polling if running.
    * @returns A promise that resolves once the service stops
    */
-  stop() {
+  doStop() {
     this.abortController?.abort();
     this.abortController = null;
     return Promise.resolve();

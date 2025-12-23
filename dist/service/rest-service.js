@@ -4,13 +4,15 @@ import { expectationBodySchema } from '../schema/expectation-body.js';
 import { statusQuerySchema } from '../schema/status-query.js';
 import { logger } from '../utils/logger.js';
 import { FixedValueProvider } from '../provider/fixed-value-provider.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
 /**
  * REST service that exposes Shelly EM1-like endpoints for energy status.
  * Provides health checks, mock expectation updates, and status queries for grid and solar.
  * Implements the executable service lifecycle to start and stop the HTTP server.
  */
-export class RestService {
+export class RestService extends AbstractExecutableService {
     constructor(gridEnergyProvider, solarEnergyProvider, properties) {
+        super();
         this.gridEnergyProvider = gridEnergyProvider;
         this.solarEnergyProvider = solarEnergyProvider;
         this.properties = properties;
@@ -41,7 +43,8 @@ export class RestService {
      * - `GET /rpc/EM1.GetStatus` fetch status for a given id
      * @returns A promise that resolves when the server is listening
      */
-    async start() {
+    async doStart() {
+        logger.info('Starting REST service...');
         const app = Fastify({
             loggerInstance: logger,
             disableRequestLogging: true,
@@ -92,16 +95,17 @@ export class RestService {
         //app.post('/rpc/EM1.GetStatus', async () => app.inject({ method: 'GET', url: '/rpc/EM1.GetStatus' }).then(r => r.json()));
         await app.listen({ port: this.properties.port, host: '0.0.0.0' });
         logger.info({ port: this.properties.port }, 'Listening');
+        logger.info('REST service started');
     }
     /**
      * Stops the REST server if running.
      * @returns A promise that resolves when the server has closed
      */
-    async stop() {
-        logger.info('Stopping emulator...');
+    async doStop() {
+        logger.info('Stopping REST service...');
         if (this.app) {
             await this.app.close();
         }
-        return Promise.resolve();
+        logger.info('REST service stopped');
     }
 }
