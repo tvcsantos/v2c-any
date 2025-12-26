@@ -3,6 +3,7 @@
 ![GitHub License](https://img.shields.io/github/license/tvcsantos/v2c-any)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/tvcsantos/v2c-any/ci-build.yml)
 ![GitHub package.json version](https://img.shields.io/github/package-json/v/tvcsantos/v2c-any)
+![Node Current](https://img.shields.io/node/v/v2c-any)
 
 ![GitHub Release](https://img.shields.io/github/v/release/tvcsantos/v2c-any)
 ![GitHub Release Date](https://img.shields.io/github/release-date/tvcsantos/v2c-any)
