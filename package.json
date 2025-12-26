@@ -1,6 +1,6 @@
 {
   "name": "v2c-any",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "type": "module",
   "description": "Turn any device into V2C Dynamic Power Control",
   "main": "dist/index.js",
@@ -12,10 +12,24 @@
     "README.md",
     "LICENSE"
   ],
+  "keywords": [
+    "v2c",
+    "adapter",
+    "dynamic",
+    "power",
+    "energy",
+    "wallbox",
+    "meter"
+  ],
+  "author": "tvcsantos",
+  "license": "MIT",
   "homepage": "https://github.com/tvcsantos/v2c-any#readme",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/tvcsantos/v2c-any.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tvcsantos/v2c-any/issues"
   },
   "scripts": {
     "dev": "tsx watch src/index.ts",
