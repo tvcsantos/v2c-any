@@ -44,7 +44,12 @@ export const em1StatusSchema = z.object({
   flags: z.array(z.string()).optional(),
 });
 
-export const restAdapterFeedSchema = z.object({ ip: z.string() }).loose();
+export const restAdapterFeedSchema = z
+  .object({
+    ip: z.string(),
+    device: z.string(),
+  })
+  .loose();
 
 export const restMockFeedSchema = z
   .object({ value: em1StatusSchema.optional() })
@@ -73,7 +78,6 @@ export const restProviderSchema = z.object({
   provider: z.literal('rest'),
   properties: z.object({
     port: z.number().int().positive(),
-    device: z.string(),
     meters: restMetersSchema,
   }),
 });

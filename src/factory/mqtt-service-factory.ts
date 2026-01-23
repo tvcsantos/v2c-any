@@ -44,14 +44,12 @@ export class MqttServiceFactory implements ExecutableServiceFactory<MqttProvider
 
     const gridEnergyPublisher = this.mqttFeedExecutableServiceFactory.create({
       configuration: configuration.properties.meters.grid,
-      device: configuration.properties.device,
       energyType: 'grid',
       callbacks,
     });
 
     const sunEnergyPublisher = this.mqttFeedExecutableServiceFactory.create({
       configuration: configuration.properties.meters.solar,
-      device: configuration.properties.device,
       energyType: 'solar',
       callbacks,
     });

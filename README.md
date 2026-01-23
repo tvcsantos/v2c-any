@@ -40,7 +40,7 @@ It adapts **any input** into the protocol and format expected by a V2C wallbox �
 
 Or in practical terms:
 
-```
+```text
 [Any Meter | MQTT | API | Simulator]
             │
             ▼
@@ -129,6 +129,7 @@ docker run -v $(pwd)/.v2carc.yaml:/app/.v2carc.yaml v2c-any
 Emulates a **Shelly Pro EM** energy meter by exposing a REST API that V2C wallboxes can poll.
 
 **Use this when:**
+
 - Your V2C wallbox is configured to poll a Shelly meter
 - You want to act as a drop-in replacement for physical hardware
 - You prefer a pull-based (polling) approach
@@ -139,12 +140,12 @@ Emulates a **Shelly Pro EM** energy meter by exposing a REST API that V2C wallbo
 provider: rest
 properties:
   port: 3000
-  device: shelly-pro-em
   meters:
     grid:
       feed:
         type: adapter
         properties:
+          device: shelly-pro-em
           ip: 192.168.1.100
     solar:
       feed:
@@ -162,6 +163,7 @@ properties:
 ```
 
 **How it works:**
+
 1. `v2ca` starts a Fastify HTTP server
 2. Exposes endpoints matching Shelly Pro EM API format
 3. V2C wallbox polls these endpoints (e.g., `/rpc/EM1.GetStatus?id=0`)
@@ -172,6 +174,7 @@ properties:
 Publishes power data directly to MQTT topics that V2C wallboxes subscribe to.
 
 **Use this when:**
+
 - Your V2C wallbox is configured for MQTT integration
 - You have an existing MQTT broker
 - You want push-based (event-driven) updates
@@ -183,13 +186,13 @@ Publishes power data directly to MQTT topics that V2C wallboxes subscribe to.
 provider: mqtt
 properties:
   url: mqtt://broker.local:1883
-  device: shelly-pro-em
   meters:
     grid:
       mode: pull       # v2ca polls your device
       feed:
         type: adapter
         properties:
+          device: shelly-pro-em
           interval: 2000   # Every 2 seconds
           ip: 192.168.1.100
     solar:
@@ -202,6 +205,7 @@ properties:
 ```
 
 **How it works:**
+
 1. `v2ca` connects to your MQTT broker
 2. Publishes to V2C-expected topics (e.g., `trydan_v2c_sun_power`)
 3. Supports both **pull** (polling devices) and **push** (subscribing to topics)

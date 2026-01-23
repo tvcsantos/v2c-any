@@ -1,7 +1,8 @@
-import { RestProvider } from '../schema/rest-configuration.js';
+import { ProviderFactory } from '../provider/provider-factory.js';
+import { EM1Status, RestProvider } from '../schema/rest-configuration.js';
 import { ExecutableService } from '../service/executable-service.js';
 import { RestService } from '../service/rest-service.js';
-import { EM1StatusProviderFactory } from './em1-status-provider-factory.js';
+import { EM1StatusProviderFactoryProperties } from './em1-status-provider-factory.js';
 import { ExecutableServiceFactory } from './executable-service-factory.js';
 
 /**
@@ -15,7 +16,10 @@ export class RestServiceFactory implements ExecutableServiceFactory<RestProvider
    * @param em1StatusProviderFactory - Factory used to build device-specific energy providers
    */
   constructor(
-    private readonly em1StatusProviderFactory: EM1StatusProviderFactory
+    private readonly em1StatusProviderFactory: ProviderFactory<
+      EM1StatusProviderFactoryProperties,
+      EM1Status | undefined
+    >
   ) {}
 
   /**
@@ -26,12 +30,10 @@ export class RestServiceFactory implements ExecutableServiceFactory<RestProvider
   create(configuration: RestProvider): ExecutableService {
     const gridEnergyProvider = this.em1StatusProviderFactory.create({
       energyType: 'grid',
-      device: configuration.properties.device,
       configuration: configuration.properties.meters.grid,
     });
     const solarEnergyProvider = this.em1StatusProviderFactory.create({
       energyType: 'solar',
-      device: configuration.properties.device,
       configuration: configuration.properties.meters.solar,
     });
     return new RestService(gridEnergyProvider, solarEnergyProvider, {

@@ -19,8 +19,6 @@ import { noOpExecutableService } from '../service/no-op-executable-service.js';
 export type MqttPullExecutableServiceFactoryProperties = {
   /** The type of energy data (solar or grid) */
   energyType: string;
-  /** The device identifier */
-  device: string;
   /** MQTT pull feed configuration specifying the data source */
   configuration: MqttPullFeed;
   /** Callback to invoke with fetched energy information */
@@ -43,14 +41,14 @@ export class MqttPullExecutableServiceFactory implements Factory<
 > {
   /**
    * Creates a new MQTT pull executable service factory.
-   * @param devicesProviderRegistry - Registry of device providers for adapter-based sources
-   * @param devicesAdapterRegistry - Registry of device adapters for transforming provider output
+   * @param providerFactoryRegistry - Registry of device providers for adapter-based sources
+   * @param adapterRegistry - Registry of device adapters for transforming provider output
    */
   constructor(
-    private readonly devicesProviderRegistry: Registry<
+    private readonly providerFactoryRegistry: Registry<
       ProviderFactory<unknown, unknown>
     >,
-    private readonly devicesAdapterRegistry: Registry<
+    private readonly adapterRegistry: Registry<
       Adapter<unknown, EnergyInformation | undefined>
     >
   ) {}
@@ -68,20 +66,17 @@ export class MqttPullExecutableServiceFactory implements Factory<
   ): MqttPullProviderFactory | null {
     switch (options.configuration.type) {
       case 'adapter': {
-        const provider = this.devicesProviderRegistry.get(options.device);
-        if (!provider) {
-          throw new Error(
-            `No provider registered for device: ${options.device}`
-          );
+        const device = options.configuration.properties.device;
+        const providerFactory = this.providerFactoryRegistry.get(device);
+        if (!providerFactory) {
+          throw new Error(`No provider registered for device: ${device}`);
         }
-        const adapter = this.devicesAdapterRegistry.get(options.device);
+        const adapter = this.adapterRegistry.get(device);
         if (!adapter) {
-          throw new Error(
-            `No adapter registered for device: ${options.device}`
-          );
+          throw new Error(`No adapter registered for device: ${device}`);
         }
         return {
-          providerFactory: new AdapterProviderFactory(provider, adapter),
+          providerFactory: new AdapterProviderFactory(providerFactory, adapter),
           interval: options.configuration.properties.interval,
         };
       }

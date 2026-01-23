@@ -136,9 +136,6 @@ export class RestService extends AbstractExecutableService {
       }
     );
 
-    // Alias for JSON-RPC style (POST)
-    //app.post('/rpc/EM1.GetStatus', async () => app.inject({ method: 'GET', url: '/rpc/EM1.GetStatus' }).then(r => r.json()));
-
     await app.listen({ port: this.properties.port, host: '0.0.0.0' });
     logger.info({ port: this.properties.port }, 'Listening');
     logger.info('REST service started');

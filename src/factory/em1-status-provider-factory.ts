@@ -2,7 +2,6 @@ import type { Registry } from '../registry/registry.js';
 import type { ProviderFactory } from '../provider/provider-factory.js';
 import { FixedValueProviderFactory } from '../provider/fixed-value-provider.js';
 import type { EM1Status, RestFeed } from '../schema/rest-configuration.js';
-import type { Factory } from '../provider/factory.js';
 import type { EnergyType } from '../schema/configuration.js';
 import type { Provider } from '../provider/provider.js';
 
@@ -12,8 +11,6 @@ import type { Provider } from '../provider/provider.js';
 export type EM1StatusProviderFactoryProperties = {
   /** The type of energy data to retrieve */
   energyType: EnergyType;
-  /** The device identifier */
-  device: string;
   /** REST feed configuration specifying the data source strategy */
   configuration: RestFeed;
 };
@@ -22,16 +19,16 @@ export type EM1StatusProviderFactoryProperties = {
  * Factory for creating EM1Status providers with flexible data source strategies.
  * Supports multiple feed types: adapter-based providers, mock values, or disabled providers.
  */
-export class EM1StatusProviderFactory implements Factory<
+export class EM1StatusProviderFactory implements ProviderFactory<
   EM1StatusProviderFactoryProperties,
-  Provider<EM1Status | undefined>
+  EM1Status | undefined
 > {
   /**
    * Creates a new EM1Status provider factory.
-   * @param devicesProvider - Registry containing provider factories for different devices
+   * @param providerFactoryRegistry - Registry containing provider factories for different devices
    */
   constructor(
-    private readonly devicesProvider: Registry<
+    private readonly providerFactoryRegistry: Registry<
       ProviderFactory<unknown, EM1Status>
     >
   ) {}
@@ -47,13 +44,12 @@ export class EM1StatusProviderFactory implements Factory<
   ): ProviderFactory<unknown, EM1Status | undefined> {
     switch (options.configuration.feed.type) {
       case 'adapter': {
-        const provider = this.devicesProvider.get(options.device);
-        if (!provider) {
-          throw new Error(
-            `No provider registered for device: ${options.device}`
-          );
+        const device = options.configuration.feed.properties.device;
+        const providerFactory = this.providerFactoryRegistry.get(device);
+        if (!providerFactory) {
+          throw new Error(`No provider registered for device: ${device}`);
         }
-        return provider;
+        return providerFactory;
       }
       case 'mock':
         return new FixedValueProviderFactory({

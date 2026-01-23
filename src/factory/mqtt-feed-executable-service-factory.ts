@@ -35,8 +35,6 @@ function convertCallbackProperties(
 export type MqttFeedExecutableServiceFactoryProperties = {
   /** The type of energy data (solar or grid) */
   energyType: EnergyType;
-  /** The device identifier */
-  device: string;
   /** MQTT feed mode configuration specifying pull or push behavior */
   configuration: MqttFeedMode;
   /** Callbacks for push operations based on energy type */
@@ -84,14 +82,12 @@ export class MqttFeedExecutableServiceFactory implements ExecutableServiceFactor
       case 'pull':
         return this.pullExecutableServiceFactory.create({
           energyType: options.energyType,
-          device: options.device,
           configuration: options.configuration.feed,
           callbackProperties,
         });
       case 'push':
         return this.pushExecutableServiceFactory.create({
           energyType: options.energyType,
-          device: options.device,
           configuration: options.configuration.feed,
           callbackProperties,
         });

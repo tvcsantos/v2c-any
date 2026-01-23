@@ -5,21 +5,29 @@ import { energyTypeToId } from '../../utils/mappers.js';
 import type { ProviderFactory } from '../../provider/provider-factory.js';
 import type { EM1Status } from '../../schema/rest-configuration.js';
 import type { EnergyType } from '../../schema/configuration.js';
+import { AsymmetricEMAProvider } from '../../provider/asymmetric-emea-provider.js';
+import { RetryableProvider } from '../../provider/retryable-provider.js';
+import { em1StatusInterpolator } from '../../utils/interpolator.js';
+import { DecoratorProviderFactory } from '../../factory/decorator-provider-factory.js';
 
 /**
  * Provider that fetches EM1 status data from a Shelly Pro EM device via HTTP.
  * Retrieves real-time energy monitoring data by querying the device's RPC API endpoint.
  */
 export class EM1StatusProvider implements Provider<EM1Status> {
+  private readonly id: number;
+
   /**
    * Creates a new EM1 status provider.
    * @param host - The IP address or hostname of the Shelly Pro EM device
    * @param energyType - The type of energy data to retrieve (e.g., active, reactive)
    */
   constructor(
-    private host: string,
+    private readonly host: string,
     private readonly energyType: EnergyType
-  ) {}
+  ) {
+    this.id = energyTypeToId(energyType);
+  }
 
   /**
    * Fetches the current EM1 status from the device.
@@ -31,10 +39,9 @@ export class EM1StatusProvider implements Provider<EM1Status> {
       { host: this.host, energyType: this.energyType },
       'Fetching EM1Status'
     );
-    const id = energyTypeToId(this.energyType);
     const res = await request(
-      `http://${this.host}/rpc/EM1.GetStatus?id=${id}`,
-      { method: 'GET' }
+      `http://${this.host}/rpc/EM1.GetStatus?id=${this.id}`,
+      { method: 'GET', throwOnError: true }
     );
     return (await res.body.json()) as EM1Status;
   }
@@ -76,4 +83,22 @@ class EM1StatusProviderFactory implements ProviderFactory<
  * Singleton factory instance for creating `EM1StatusProvider` objects.
  * Provides a ready-to-use factory to build providers with supplied options.
  */
-export const em1StatusProviderFactory = new EM1StatusProviderFactory();
+const localEm1StatusProviderFactory = new EM1StatusProviderFactory();
+
+export const em1StatusProviderFactory = new DecoratorProviderFactory(
+  localEm1StatusProviderFactory,
+  (provider) =>
+    new AsymmetricEMAProvider(
+      new RetryableProvider(provider, { retries: 3 }),
+      em1StatusInterpolator,
+      {
+        alphaRise: 1,
+        alphaFall: 0.2,
+        comparator: (a, b) => {
+          const powerA = a?.act_power ?? 0;
+          const powerB = b?.act_power ?? 0;
+          return powerA - powerB;
+        },
+      }
+    )
+);

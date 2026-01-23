@@ -16,8 +16,6 @@ import { MqttBridgeService } from '../service/mqtt-bridge-service.js';
 export type MqttPushExecutableServiceFactoryProperties = {
   /** The type of energy data (solar or grid) */
   energyType: string;
-  /** The device identifier */
-  device: string;
   /** MQTT push feed configuration specifying the push strategy */
   configuration: MqttPushFeed;
   /** Callback invoked with energy information updates */
@@ -55,11 +53,10 @@ export class MqttPushExecutableServiceFactory implements Factory<
   ): ExecutableService {
     switch (options.configuration.type) {
       case 'bridge': {
-        const adapter = this.devicesAdapter.get(options.device);
+        const device = options.configuration.properties.device;
+        const adapter = this.devicesAdapter.get(device);
         if (!adapter) {
-          throw new Error(
-            `No adapter registered for device: ${options.device}`
-          );
+          throw new Error(`No adapter registered for device: ${device}`);
         }
         return new MqttBridgeService(
           options.configuration.properties,
