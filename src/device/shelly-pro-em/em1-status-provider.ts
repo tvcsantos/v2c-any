@@ -1,4 +1,4 @@
-import { request } from 'undici';
+import { Client, Dispatcher, interceptors } from 'undici';
 import type { Provider } from '../../provider/provider.js';
 import { logger } from '../../utils/logger.js';
 import { energyTypeToId } from '../../utils/mappers.js';
@@ -16,6 +16,7 @@ import { DecoratorProviderFactory } from '../../factory/decorator-provider-facto
  */
 export class EM1StatusProvider implements Provider<EM1Status> {
   private readonly id: number;
+  private readonly client: Dispatcher;
 
   /**
    * Creates a new EM1 status provider.
@@ -26,6 +27,8 @@ export class EM1StatusProvider implements Provider<EM1Status> {
     private readonly host: string,
     private readonly energyType: EnergyType
   ) {
+    const { responseError } = interceptors;
+    this.client = new Client(`http://${this.host}`).compose(responseError());
     this.id = energyTypeToId(energyType);
   }
 
@@ -39,10 +42,10 @@ export class EM1StatusProvider implements Provider<EM1Status> {
       { host: this.host, energyType: this.energyType },
       'Fetching EM1Status'
     );
-    const res = await request(
-      `http://${this.host}/rpc/EM1.GetStatus?id=${this.id}`,
-      { method: 'GET', throwOnError: true }
-    );
+    const res = await this.client.request({
+      path: `/rpc/EM1.GetStatus?id=${this.id}`,
+      method: 'GET',
+    });
     return (await res.body.json()) as EM1Status;
   }
 }
