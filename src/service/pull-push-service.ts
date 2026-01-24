@@ -88,7 +88,7 @@ export class PullPushService<Payload> extends AbstractExecutableService {
   private async cycle() {
     const data = await this.provider.get();
     if (data) {
-      logger.info({ data }, 'Pushing data');
+      logger.debug({ data }, 'Pushing data');
       await this.callbackProperties.callback(data);
     }
   }
