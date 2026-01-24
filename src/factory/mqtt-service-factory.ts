@@ -27,7 +27,11 @@ export class MqttServiceFactory implements ExecutableServiceFactory<MqttProvider
    * @returns An ExecutableService with coordinated start/stop for MQTT client and feed publishers
    */
   create(configuration: MqttProvider): ExecutableService {
-    const mqttService = new MqttService({ url: configuration.properties.url });
+    const mqttService = new MqttService({
+      url: configuration.properties.url,
+      username: configuration.properties.username,
+      password: configuration.properties.password,
+    });
 
     const callbacks = {
       grid: {
