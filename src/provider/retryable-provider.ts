@@ -1,6 +1,5 @@
 import pRetry, { Options } from 'p-retry';
 import { Provider } from './provider.js';
-import { logger } from '../utils/logger.js';
 
 /**
  * Provider that wraps another provider with automatic retry logic.
