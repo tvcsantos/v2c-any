@@ -1,3 +1,4 @@
+import { logger } from '../utils/logger.js';
 import { Interpolator } from './interpolator.js';
 import { Provider } from './provider.js';
 
@@ -91,9 +92,11 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
         this.lastUpdateTime === null ||
         Date.now() - this.lastUpdateTime >= this.options.freshnessThreshold
       ) {
+        logger.info('Handling missing value');
         this.onMissingValue();
       }
       if (this.ema !== null) {
+        logger.warn({ ema: this.ema }, 'Returning last EMA value');
         return this.ema;
       }
       throw error;
