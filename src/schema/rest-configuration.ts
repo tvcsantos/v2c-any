@@ -1,4 +1,9 @@
 import z from 'zod';
+import {
+  breakerScehema,
+  emaSchema,
+  retrySchema,
+} from './common-configuration.js';
 
 // EM1 status (used by mock emulator response)
 export const em1StatusSchema = z.object({
@@ -48,6 +53,9 @@ export const restAdapterFeedSchema = z
   .object({
     ip: z.string(),
     device: z.string(),
+    breaker: breakerScehema.optional(),
+    retry: retrySchema.optional(),
+    ema: emaSchema.optional(),
   })
   .loose();
 

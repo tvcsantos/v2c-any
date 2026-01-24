@@ -1,4 +1,9 @@
 import z from 'zod';
+import {
+  breakerScehema,
+  emaSchema,
+  retrySchema,
+} from './common-configuration.js';
 
 export const energyInformationSchema = z.object({
   power: z.number(),
@@ -32,6 +37,9 @@ export const mqttPullAdapterFeedSchema = z
     interval: z.number().int().nonnegative(),
     device: z.string(),
     ip: z.string(),
+    breaker: breakerScehema.optional(),
+    retry: retrySchema.optional(),
+    ema: emaSchema.optional(),
   })
   .loose();
 

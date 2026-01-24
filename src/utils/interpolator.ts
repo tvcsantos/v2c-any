@@ -14,3 +14,22 @@ export const em1StatusInterpolator: Interpolator<EM1Status> =
     errors: Interpolators.identity(),
     flags: Interpolators.identity(),
   });
+
+export const em1StatusComparator = (a: EM1Status, b: EM1Status): number => {
+  const powerA = a.act_power ?? 0;
+  const powerB = b.act_power ?? 0;
+  return powerA - powerB;
+};
+
+export const em1StatusZeroValue: EM1Status = {
+  id: 0,
+  calibration: '',
+  current: 0,
+  voltage: 0,
+  act_power: 0,
+  aprt_power: 0,
+  pf: 0,
+  freq: 0,
+  errors: [],
+  flags: [],
+};
