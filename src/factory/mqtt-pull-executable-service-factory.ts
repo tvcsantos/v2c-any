@@ -2,7 +2,6 @@ import { AdapterProviderFactory } from '../provider/adapter-provider.js';
 import { FixedValueProviderFactory } from '../provider/fixed-value-provider.js';
 import type { ProviderFactory } from '../provider/provider-factory.js';
 import type { Registry } from '../registry/registry.js';
-import type { Adapter } from '../adapter/adapter.js';
 import type {
   EnergyInformation,
   MqttPullFeed,
@@ -12,6 +11,7 @@ import { PullPushService } from '../service/pull-push-service.js';
 import type { ExecutableService } from '../service/executable-service.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
 import { noOpExecutableService } from '../service/no-op-executable-service.js';
+import { AdapterFactory } from '../adapter/adapter-factory.js';
 
 /**
  * Configuration properties for creating an MQTT pull-mode executable service.
@@ -49,7 +49,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
       ProviderFactory<unknown, unknown>
     >,
     private readonly adapterRegistry: Registry<
-      Adapter<unknown, EnergyInformation | undefined>
+      AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >
   ) {}
 
@@ -71,10 +71,13 @@ export class MqttPullExecutableServiceFactory implements Factory<
         if (!providerFactory) {
           throw new Error(`No provider registered for device: ${device}`);
         }
-        const adapter = this.adapterRegistry.get(device);
-        if (!adapter) {
+        const adapterFactory = this.adapterRegistry.get(device);
+        if (!adapterFactory) {
           throw new Error(`No adapter registered for device: ${device}`);
         }
+        const adapter = adapterFactory.create({
+          energyType: options.energyType,
+        });
         return {
           providerFactory: new AdapterProviderFactory(providerFactory, adapter),
           interval: options.configuration.properties.interval,

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import {
-  devicesAdapterRegistry,
-  devicesProviderRegistry,
+  devicesAdapterFactoryRegistry as devicesAdapterFactoryRegistry,
+  devicesProviderFactoryRegistry as devicesProviderFactoryRegistry,
   loadDeviceModules,
 } from './application-context.js';
 import { ConfigurationLoader } from './configuration/configuration-loader.js';
@@ -28,7 +28,7 @@ async function main() {
   switch (configuration.provider) {
     case 'rest': {
       executableServiceFactory = new RestServiceFactory(
-        new EM1StatusProviderFactory(devicesProviderRegistry)
+        new EM1StatusProviderFactory(devicesProviderFactoryRegistry)
       );
       break;
     }
@@ -36,10 +36,10 @@ async function main() {
       const mqttFeedExecutableServiceFactory =
         new MqttFeedExecutableServiceFactory(
           new MqttPullExecutableServiceFactory(
-            devicesProviderRegistry,
-            devicesAdapterRegistry
+            devicesProviderFactoryRegistry,
+            devicesAdapterFactoryRegistry
           ),
-          new MqttPushExecutableServiceFactory(devicesAdapterRegistry)
+          new MqttPushExecutableServiceFactory(devicesAdapterFactoryRegistry)
         );
       executableServiceFactory = new MqttServiceFactory(
         mqttFeedExecutableServiceFactory

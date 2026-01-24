@@ -1,3 +1,4 @@
+import { AdapterFactory } from '../../adapter/adapter-factory.js';
 import type { Adapter } from '../../adapter/adapter.js';
 import type { EnergyInformation } from '../../schema/mqtt-configuration.js';
 import type { EM1Status } from '../../schema/rest-configuration.js';
@@ -29,5 +30,15 @@ class EnergyInformationEM1StatusAdapter implements Adapter<
  * Singleton adapter instance for converting `EM1Status` to `EnergyInformation`.
  * Use this ready-to-use instance where an adapter object is required.
  */
-export const energyInformationEM1StatusAdapter =
+const energyInformationEM1StatusAdapter =
   new EnergyInformationEM1StatusAdapter();
+
+export const energyInformationEM1StatusAdapterFactory: AdapterFactory<
+  unknown,
+  EM1Status,
+  EnergyInformation | undefined
+> = {
+  create(): Adapter<EM1Status, EnergyInformation | undefined> {
+    return energyInformationEM1StatusAdapter;
+  },
+};

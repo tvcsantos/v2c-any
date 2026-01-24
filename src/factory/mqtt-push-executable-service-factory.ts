@@ -1,4 +1,3 @@
-import type { Adapter } from '../adapter/adapter.js';
 import type { Registry } from '../registry/registry.js';
 import type {
   EnergyInformation,
@@ -9,6 +8,7 @@ import type { ExecutableService } from '../service/executable-service.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
 import { noOpExecutableService } from '../service/no-op-executable-service.js';
 import { MqttBridgeService } from '../service/mqtt-bridge-service.js';
+import { AdapterFactory } from '../adapter/adapter-factory.js';
 
 /**
  * Configuration properties for creating an MQTT push-mode executable service.
@@ -37,7 +37,7 @@ export class MqttPushExecutableServiceFactory implements Factory<
    */
   constructor(
     private readonly devicesAdapter: Registry<
-      Adapter<unknown, EnergyInformation | undefined>
+      AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >
   ) {}
 
@@ -61,7 +61,7 @@ export class MqttPushExecutableServiceFactory implements Factory<
         return new MqttBridgeService(
           options.configuration.properties,
           options.callbackProperties,
-          adapter
+          adapter.create({ energyType: options.energyType })
         );
       }
       case 'off':

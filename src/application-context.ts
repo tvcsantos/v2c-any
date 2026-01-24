@@ -4,15 +4,15 @@ import { dirname } from 'path';
 import { globSync } from 'glob';
 import { logger } from './utils/logger.js';
 import type { ProviderFactory } from './provider/provider-factory.js';
-import type { Adapter } from './adapter/adapter.js';
 import type { EM1Status } from './schema/rest-configuration.js';
 import type { EnergyInformation } from './schema/mqtt-configuration.js';
+import { AdapterFactory } from './adapter/adapter-factory.js';
 
 /**
  * Registry of device provider factories keyed by device identifier.
  * Each factory produces an `EM1Status` provider for a specific device.
  */
-export const devicesProviderRegistry = new Registry<
+export const devicesProviderFactoryRegistry = new Registry<
   ProviderFactory<unknown, EM1Status>
 >();
 
@@ -20,8 +20,8 @@ export const devicesProviderRegistry = new Registry<
  * Registry of device adapters keyed by device identifier.
  * Each adapter transforms raw device messages into `EnergyInformation`.
  */
-export const devicesAdapterRegistry = new Registry<
-  Adapter<unknown, EnergyInformation | undefined>
+export const devicesAdapterFactoryRegistry = new Registry<
+  AdapterFactory<unknown, unknown, EnergyInformation | undefined>
 >();
 
 /**
