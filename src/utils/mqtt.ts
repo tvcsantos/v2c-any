@@ -9,8 +9,11 @@ import { logger } from './logger.js';
  * @returns A promise that resolves to a connected MqttClient instance
  * @throws {Error} If the underlying connection fails
  */
-export async function createMqttClient(url: string): Promise<MqttClient> {
-  const client = await mqtt.connectAsync(url);
+export async function createMqttClient(
+  url: string,
+  options?: { username?: string; password?: string }
+): Promise<MqttClient> {
+  const client = await mqtt.connectAsync(url, options);
   client.on('reconnect', () => logger.info('Reconnecting...'));
   return client;
 }

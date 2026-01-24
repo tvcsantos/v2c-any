@@ -12,6 +12,8 @@ export const energyInformationSchema = z.object({
 export const mqttPushBridgeFeedSchema = z
   .object({
     url: z.string(),
+    username: z.string().optional(),
+    password: z.string().optional(),
     device: z.string(),
     topic: z.string(),
   })
@@ -75,6 +77,8 @@ export const mqttProviderSchema = z.object({
   provider: z.literal('mqtt'),
   properties: z.object({
     url: z.string(),
+    username: z.string().optional(),
+    password: z.string().optional(),
     meters: mqttMetersSchema,
   }),
 });

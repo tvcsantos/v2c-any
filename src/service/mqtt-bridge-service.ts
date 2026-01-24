@@ -11,6 +11,8 @@ import { AbstractExecutableService } from './abstract-executable-service.js';
  */
 export type MqttBridgeServiceProperties = {
   url: string;
+  username?: string;
+  password?: string;
   topic: string;
 };
 
@@ -48,7 +50,10 @@ export class MqttBridgeService<
    */
   async doStart() {
     logger.info('Starting MQTT bridge service');
-    this.client = await createMqttClient(this.properties.url);
+    this.client = await createMqttClient(this.properties.url, {
+      username: this.properties.username,
+      password: this.properties.password,
+    });
     this.client.on('message', (topic: string, message: Buffer) => {
       if (topic === this.properties.topic) {
         const data: InputMessage = JSON.parse(

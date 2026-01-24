@@ -17,6 +17,8 @@ const GRID_POWER_TOPIC = 'trydan_v2c_grid_power';
  */
 export type MqttServiceProperties = {
   url: string;
+  username?: string;
+  password?: string;
 };
 
 /**
@@ -70,7 +72,10 @@ export class MqttService extends AbstractExecutableService {
    */
   async doStart() {
     logger.info('Starting MQTT mode');
-    this.client = await createMqttClient(this.properties.url);
+    this.client = await createMqttClient(this.properties.url, {
+      username: this.properties.username,
+      password: this.properties.password,
+    });
     logger.info('MQTT client started');
   }
 
