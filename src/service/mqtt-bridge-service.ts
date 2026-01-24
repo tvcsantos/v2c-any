@@ -70,7 +70,7 @@ export class MqttBridgeService<
       }
     });
     logger.info({ topic: this.properties.topic }, 'Subscribing to MQTT topic');
-    await this.client.subscribeAsync(this.properties.topic);
+    await this.client.subscribeAsync(this.properties.topic, { qos: 1 });
     logger.info('MQTT bridge service started');
   }
 

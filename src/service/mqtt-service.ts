@@ -63,7 +63,10 @@ export class MqttService extends AbstractExecutableService {
       throw new Error('MQTT client not initialized');
     }
     logger.debug({ value, topic }, 'Publishing MQTT message');
-    await this.client.publishAsync(topic, String(value));
+    await this.client.publishAsync(topic, String(value), {
+      qos: 1,
+      retain: true,
+    });
   }
   /**
    * Starts the MQTT client connection.
