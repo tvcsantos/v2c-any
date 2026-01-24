@@ -26,7 +26,9 @@ export class EnergyInformationEM1NotifyStatusAdapter implements Adapter<
   NotificationFrame<EM1NotifyStatus>,
   EnergyInformation | undefined
 > {
-  adapt(input: NotificationFrame<EM1NotifyStatus>): Promise<EnergyInformation | undefined> {
+  adapt(
+    input: NotificationFrame<EM1NotifyStatus>
+  ): Promise<EnergyInformation | undefined> {
     const em1Status = input.params['em1:1'];
     if (em1Status !== undefined) {
       return Promise.resolve({ power: em1Status.act_power });
