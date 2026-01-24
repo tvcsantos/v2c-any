@@ -19,16 +19,19 @@ type EM1StatusParam = {
 
 export type EM1NotifyStatus = {
   ts: number;
-  'em1:1': EM1StatusParam;
+  'em1:1'?: EM1StatusParam;
 };
 
 export class EnergyInformationEM1NotifyStatusAdapter implements Adapter<
   NotificationFrame<EM1NotifyStatus>,
-  EnergyInformation
+  EnergyInformation | undefined
 > {
-  adapt(input: NotificationFrame<EM1NotifyStatus>): Promise<EnergyInformation> {
+  adapt(input: NotificationFrame<EM1NotifyStatus>): Promise<EnergyInformation | undefined> {
     const em1Status = input.params['em1:1'];
-    return Promise.resolve({ power: em1Status.act_power });
+    if (em1Status !== undefined) {
+      return Promise.resolve({ power: em1Status.act_power });
+    }
+    return Promise.resolve(undefined);
   }
 }
 
