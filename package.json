@@ -1,6 +1,6 @@
 {
   "name": "v2c-any",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "type": "module",
   "description": "Turn any device into V2C Dynamic Power Control",
   "main": "dist/index.js",
@@ -37,6 +37,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
+    "prebuild": "node scripts/generate-version.js",
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint src",
