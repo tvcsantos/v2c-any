@@ -187,8 +187,12 @@ properties:
 **Usage:**
 
 1. Start v2c-any: `v2ca`
-2. Configure V2C wallbox to poll `http://your-host:3000/rpc/EM1.GetStatus?id=0` for grid
-3. Configure V2C wallbox to poll `http://your-host:3000/rpc/EM1.GetStatus?id=1` for solar
+2. Configure V2C wallbox to use Shelly PRO EM
+
+> Note that V2C wallbox considers meter ID `0` as grid and `1` as solar.
+>
+> Also V2C does not allow to define the port number, and uses `80` by default.
+> So make sure to set the correct port in v2c-any configuration.
 
 ### Example 2: Mock Solar, Real Grid
 
