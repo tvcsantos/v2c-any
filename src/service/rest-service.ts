@@ -21,6 +21,7 @@ import { AbstractExecutableService } from './abstract-executable-service.js';
  * Configuration properties for `RestService`.
  */
 export type RestServiceProperties = {
+  /** The port number on which the HTTP server will listen */
   port: number;
 };
 
@@ -30,6 +31,7 @@ export type RestServiceProperties = {
  * Implements the executable service lifecycle to start and stop the HTTP server.
  */
 export class RestService extends AbstractExecutableService {
+  /** The Fastify application instance, or null when the service is not running */
   private app: FastifyInstance<
     RawServerDefault,
     IncomingMessage,
@@ -38,6 +40,12 @@ export class RestService extends AbstractExecutableService {
     FastifyTypeProviderDefault
   > | null = null;
 
+  /**
+   * Creates a new REST service with configured energy providers.
+   * @param gridEnergyProvider - Provider for grid energy status data (EM1 channel 0)
+   * @param solarEnergyProvider - Provider for solar energy status data (EM1 channel 1)
+   * @param properties - Configuration properties including the server port
+   */
   constructor(
     private readonly gridEnergyProvider: Provider<EM1Status | undefined>,
     private readonly solarEnergyProvider: Provider<EM1Status | undefined>,

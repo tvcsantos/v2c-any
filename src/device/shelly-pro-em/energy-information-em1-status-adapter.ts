@@ -33,11 +33,22 @@ class EnergyInformationEM1StatusAdapter implements Adapter<
 const energyInformationEM1StatusAdapter =
   new EnergyInformationEM1StatusAdapter();
 
+/**
+ * Factory for creating EnergyInformationEM1StatusAdapter instances.
+ * Returns a singleton adapter instance that transforms EM1Status data into EnergyInformation.
+ * Implements the AdapterFactory pattern without requiring configuration options.
+ */
 export const energyInformationEM1StatusAdapterFactory: AdapterFactory<
   unknown,
   EM1Status,
   EnergyInformation | undefined
 > = {
+  /**
+   * Creates and returns the singleton EM1 Status adapter instance.
+   * No configuration options are required as the adapter uses a fixed transformation logic.
+   *
+   * @returns An adapter that transforms EM1Status data into energy information
+   */
   create(): Adapter<EM1Status, EnergyInformation | undefined> {
     return energyInformationEM1StatusAdapter;
   },

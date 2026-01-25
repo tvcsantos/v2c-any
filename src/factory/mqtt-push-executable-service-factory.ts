@@ -33,10 +33,10 @@ export class MqttPushExecutableServiceFactory implements Factory<
 > {
   /**
    * Creates a new MQTT push executable service factory.
-   * @param devicesAdapter - Registry of device adapters to transform incoming messages
+   * @param devicesAdapterFactoryRegistry - Registry of device adapters to transform incoming messages
    */
   constructor(
-    private readonly devicesAdapter: Registry<
+    private readonly devicesAdapterFactoryRegistry: Registry<
       AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >
   ) {}
@@ -54,14 +54,14 @@ export class MqttPushExecutableServiceFactory implements Factory<
     switch (options.configuration.type) {
       case 'bridge': {
         const device = options.configuration.properties.device;
-        const adapter = this.devicesAdapter.get(device);
-        if (!adapter) {
+        const adapterFactory = this.devicesAdapterFactoryRegistry.get(device);
+        if (!adapterFactory) {
           throw new Error(`No adapter registered for device: ${device}`);
         }
         return new MqttBridgeService(
           options.configuration.properties,
           options.callbackProperties,
-          adapter.create({ energyType: options.energyType })
+          adapterFactory.create({ energyType: options.energyType })
         );
       }
       case 'off':

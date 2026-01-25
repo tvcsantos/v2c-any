@@ -17,26 +17,32 @@ import {
   em1StatusZeroValue,
 } from '../../utils/interpolator.js';
 
+type EM1StatusProviderProperties = {
+  energyType: EnergyType;
+  protocol: 'http' | 'https';
+  host: string;
+  port: number;
+};
+
 /**
  * Provider that fetches EM1 status data from a Shelly Pro EM device via HTTP.
  * Retrieves real-time energy monitoring data by querying the device's RPC API endpoint.
  */
-export class EM1StatusProvider implements Provider<EM1Status> {
+class EM1StatusProvider implements Provider<EM1Status> {
   private readonly id: number;
   private readonly client: Dispatcher;
+  private readonly url: string;
 
   /**
    * Creates a new EM1 status provider.
    * @param host - The IP address or hostname of the Shelly Pro EM device
    * @param energyType - The type of energy data to retrieve (e.g., active, reactive)
    */
-  constructor(
-    private readonly host: string,
-    private readonly energyType: EnergyType
-  ) {
+  constructor(private readonly properties: EM1StatusProviderProperties) {
+    this.url = `${properties.protocol}://${properties.host}:${properties.port}`;
     const { responseError } = interceptors;
-    this.client = new Client(`http://${this.host}`).compose(responseError());
-    this.id = energyTypeToId(energyType);
+    this.client = new Client(this.url).compose(responseError());
+    this.id = energyTypeToId(properties.energyType);
   }
 
   /**
@@ -46,7 +52,7 @@ export class EM1StatusProvider implements Provider<EM1Status> {
    */
   async get(): Promise<EM1Status> {
     logger.debug(
-      { host: this.host, energyType: this.energyType },
+      { url: this.url, energyType: this.properties.energyType },
       'Fetching EM1Status'
     );
     const res = await this.client.request({
@@ -60,10 +66,12 @@ export class EM1StatusProvider implements Provider<EM1Status> {
 /**
  * Configuration options for creating an EM1StatusProvider instance.
  */
-export type EM1StatusProviderOptions = {
+type EM1StatusProviderFactoryOptions = {
   energyType: EnergyType;
   properties: {
-    ip: string;
+    host: string;
+    protocol: 'http' | 'https';
+    port: number;
     breaker?: BreakerOptions;
     retry?: RetryOptions;
     ema?: EmaOptions;
@@ -75,7 +83,7 @@ export type EM1StatusProviderOptions = {
  * Implements the factory pattern to instantiate providers with the appropriate configuration.
  */
 class EM1StatusProviderFactory implements ProviderFactory<
-  EM1StatusProviderOptions,
+  EM1StatusProviderFactoryOptions,
   EM1Status
 > {
   /**
@@ -83,24 +91,28 @@ class EM1StatusProviderFactory implements ProviderFactory<
    * @param options - Configuration options including target IP and energy type
    * @returns A configured EM1StatusProvider instance
    */
-  create(options: EM1StatusProviderOptions): Provider<EM1Status> {
+  create(options: EM1StatusProviderFactoryOptions): Provider<EM1Status> {
     logger.debug(
-      { ip: options.properties.ip, energyType: options.energyType },
+      {
+        url: `${options.properties.protocol}://${options.properties.host}:${options.properties.port}`,
+        energyType: options.energyType,
+      },
       'Creating EM1StatusProvider'
     );
-    const provider = new EM1StatusProvider(
-      options.properties.ip,
-      options.energyType
-    );
-    return createResiliantProvider(
+    const provider = new EM1StatusProvider({
+      energyType: options.energyType,
+      ...options.properties,
+    });
+
+    return createResiliantProvider({
       provider,
-      em1StatusInterpolator,
-      em1StatusZeroValue,
-      em1StatusComparator,
-      options.properties.breaker,
-      options.properties.retry,
-      options.properties.ema
-    );
+      interpolator: em1StatusInterpolator,
+      zeroValue: em1StatusZeroValue,
+      comparator: em1StatusComparator,
+      breakerOptions: options.properties.breaker,
+      retryOptions: options.properties.retry,
+      emaOptions: options.properties.ema,
+    });
   }
 }
 

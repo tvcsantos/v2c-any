@@ -28,11 +28,13 @@ export type AsymmetricEMAOptions<T> = {
  * @template T - The type of value this provider supplies
  */
 export class AsymmetricEMAProvider<T> implements Provider<T> {
+  /** The current exponential moving average value, or null if not yet initialized */
   private ema: T | null = null;
+  /** Timestamp of the last successful value update in milliseconds since epoch */
   private lastUpdateTime: number | null = null;
 
   /**
-   * Creates a new InnerAsymmetricEMAProvider.
+   * Creates a new AsymmetricEMAProvider.
    * @param provider - The underlying provider to fetch raw values from
    * @param interpolator - The interpolator to use for blending values
    * @param options - Configuration options for the asymmetric EMA calculation
@@ -51,6 +53,13 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
     }
   }
 
+  /**
+   * Updates the EMA with a newly received value.
+   * Determines whether the value is rising or falling and applies the appropriate smoothing factor.
+   * Initializes the EMA on first call.
+   *
+   * @param newValue - The new value to incorporate into the EMA
+   */
   private onNewValue(newValue: T) {
     if (this.ema === null) {
       this.ema = newValue;
@@ -63,6 +72,11 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
     this.ema = this.interpolator.interpolate(newValue, this.ema, alpha);
   }
 
+  /**
+   * Handles the case when a value fetch fails or returns no data.
+   * Decays the current EMA toward the configured zero value using the missing value smoothing factor.
+   * Only applies if the EMA has been previously initialized.
+   */
   private onMissingValue() {
     if (this.ema !== null) {
       this.ema = this.interpolator.interpolate(
@@ -78,7 +92,10 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
    * On first call, initializes the EMA with the fetched value.
    * On subsequent calls, interpolates between the new value and current EMA,
    * using alphaRise if the value is increasing or alphaFall if decreasing.
-   * @returns A promise that resolves to the updated EMA value
+   * If the fetch fails and a freshness threshold is configured, decays toward zero value.
+   *
+   * @returns A promise that resolves to the newly fetched value, or the current EMA if fetch fails
+   * @throws {Error} If fetch fails and no EMA has been initialized yet
    */
   async get(): Promise<T> {
     try {
@@ -114,6 +131,8 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
   /**
    * Resets the EMA to its initial state.
    * The next call to get() will reinitialize the EMA.
+   *
+   * @param value - Optional value to set as the new EMA. Defaults to null (uninitialized state)
    */
   reset(value: T | null = null): void {
     this.ema = value;

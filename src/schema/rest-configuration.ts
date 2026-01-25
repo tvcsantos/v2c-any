@@ -51,8 +51,10 @@ export const em1StatusSchema = z.object({
 
 export const restAdapterFeedSchema = z
   .object({
-    ip: z.string(),
     device: z.string(),
+    host: z.string(),
+    protocol: z.enum(['http', 'https']).default('http'),
+    port: z.number().int().min(1).max(65535).default(80),
     breaker: breakerScehema.optional(),
     retry: retrySchema.optional(),
     ema: emaSchema.optional(),

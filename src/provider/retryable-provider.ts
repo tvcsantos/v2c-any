@@ -12,7 +12,7 @@ export class RetryableProvider<T> implements Provider<T> {
   /**
    * Creates a new RetryableProvider.
    * @param provider - The underlying provider to wrap with retry logic
-   * @param options - Configuration options for retry behavior
+   * @param options - Configuration options for retry behavior (retries, minTimeout, maxTimeout, factor, etc.)
    */
   constructor(
     private readonly provider: Provider<T>,

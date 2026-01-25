@@ -42,13 +42,13 @@ export class MqttPullExecutableServiceFactory implements Factory<
   /**
    * Creates a new MQTT pull executable service factory.
    * @param providerFactoryRegistry - Registry of device providers for adapter-based sources
-   * @param adapterRegistry - Registry of device adapters for transforming provider output
+   * @param adapterFactoryRegistry - Registry of device adapters for transforming provider output
    */
   constructor(
     private readonly providerFactoryRegistry: Registry<
       ProviderFactory<unknown, unknown>
     >,
-    private readonly adapterRegistry: Registry<
+    private readonly adapterFactoryRegistry: Registry<
       AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >
   ) {}
@@ -71,7 +71,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
         if (!providerFactory) {
           throw new Error(`No provider registered for device: ${device}`);
         }
-        const adapterFactory = this.adapterRegistry.get(device);
+        const adapterFactory = this.adapterFactoryRegistry.get(device);
         if (!adapterFactory) {
           throw new Error(`No adapter registered for device: ${device}`);
         }

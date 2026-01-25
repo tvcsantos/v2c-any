@@ -38,7 +38,9 @@ export const mqttPullAdapterFeedSchema = z
   .object({
     interval: z.number().int().nonnegative(),
     device: z.string(),
-    ip: z.string(),
+    host: z.string(),
+    protocol: z.enum(['http', 'https']).default('http'),
+    port: z.number().int().min(1).max(65535).default(80),
     breaker: breakerScehema.optional(),
     retry: retrySchema.optional(),
     ema: emaSchema.optional(),
