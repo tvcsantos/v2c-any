@@ -17,9 +17,13 @@ import { PullPushService } from '../service/pull-push-service.js';
 import { PullPushTriggerableService } from '../service/pull-push-triggerable-service.js';
 import type { ExecutableService } from '../service/executable-service.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
-import { NoOpExecutableService } from '../service/no-op-executable-service.js';
+import {
+  asNoOpExecutableService,
+  NoOpExecutableService,
+} from '../service/no-op-executable-service.js';
 import { AdapterFactory } from '../adapter/adapter-factory.js';
 import { RpcMqttPushTriggerableService } from '../service/rpc-mqtt-push-service.js';
+import { RpcRequestFrame } from '../utils/rpc.js';
 
 /**
  * Configuration properties for creating an MQTT pull-mode executable service.
@@ -56,7 +60,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
       AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >,
     private readonly rpcMqttRequestProviderFactoryRegistry: Registry<
-      RpcMqttRequestProviderFactory<unknown, unknown>
+      RpcMqttRequestProviderFactory<unknown, RpcRequestFrame<unknown>>
     >
   ) {}
 
@@ -100,7 +104,9 @@ export class MqttPullExecutableServiceFactory implements Factory<
 
     const service = new PullPushService(
       properties.interval,
-      new PullPushTriggerableService(provider, callbackProperties)
+      asNoOpExecutableService(
+        new PullPushTriggerableService(provider, callbackProperties)
+      )
     );
 
     return service;
@@ -175,7 +181,9 @@ export class MqttPullExecutableServiceFactory implements Factory<
 
     const service = new PullPushService(
       properties.interval,
-      new PullPushTriggerableService(provider, callbackProperties)
+      asNoOpExecutableService(
+        new PullPushTriggerableService(provider, callbackProperties)
+      )
     );
 
     return service;

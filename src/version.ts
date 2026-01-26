@@ -11,4 +11,4 @@ export const PROJECT_NAME = 'v2c-any';
 /**
  * Project version from package.json
  */
-export const PROJECT_VERSION = '0.7.1';
+export const PROJECT_VERSION = '0.8.0';

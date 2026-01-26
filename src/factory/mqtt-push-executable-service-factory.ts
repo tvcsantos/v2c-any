@@ -24,6 +24,7 @@ import {
   RpcMqttRequestProviderFactory,
 } from '../provider/provider-factory.js';
 import { RpcMqttPushTriggerableService } from '../service/rpc-mqtt-push-service.js';
+import { RpcRequestFrame } from '../utils/rpc.js';
 
 /**
  * Configuration properties for creating an MQTT push-mode executable service.
@@ -60,7 +61,7 @@ export class MqttPushExecutableServiceFactory implements Factory<
       AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >,
     private readonly rpcMqttRequestProviderFactoryRegistry: Registry<
-      RpcMqttRequestProviderFactory<unknown, unknown>
+      RpcMqttRequestProviderFactory<unknown, RpcRequestFrame<unknown>>
     >
   ) {}
 
@@ -103,7 +104,9 @@ export class MqttPushExecutableServiceFactory implements Factory<
       properties,
     });
 
-    return new PullPushTriggerableService(provider, callbackProperties);
+    return asNoOpExecutableService(
+      new PullPushTriggerableService(provider, callbackProperties)
+    );
   }
 
   /**

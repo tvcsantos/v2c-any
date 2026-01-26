@@ -2,19 +2,13 @@ import { RpcMqttRequestProviderFactory } from '../../provider/provider-factory.j
 import { EnergyType } from '../../schema/configuration.js';
 import { RpcMqttRequestProvider } from '../../service/rpc-mqtt-push-service.js';
 import { energyTypeToId } from '../../utils/mappers.js';
+import { RpcRequestFrame } from '../../utils/rpc.js';
 
 /**
  * RPC request structure for EM1.GetStatus method.
  * Represents a request to retrieve the status of a specific EM1 energy monitor.
  */
-type EM1GetStatusRpcRequest = {
-  id: number;
-  src: string;
-  method: 'EM1.GetStatus';
-  params: {
-    id: number;
-  };
-};
+type EM1GetStatusRpcRequest = { src: string } & RpcRequestFrame<{ id: number }>;
 
 /**
  * Provider for generating EM1.GetStatus RPC requests.

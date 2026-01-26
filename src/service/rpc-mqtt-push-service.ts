@@ -6,6 +6,7 @@ import type { MqttClient } from 'mqtt';
 import { createMqttClient } from '../utils/mqtt.js';
 import { Adapter } from '../adapter/adapter.js';
 import { Triggerable } from './triggerable.js';
+import { RpcRequestFrame } from '../utils/rpc.js';
 
 /**
  * Properties for configuring an RPC MQTT push service.
@@ -25,7 +26,7 @@ export type RpcMqttPushServiceProperties = {
  * @template RequestMessage - The type of RPC request message generated
  */
 export interface RpcMqttRequestProvider<
-  RequestMessage,
+  RequestMessage extends RpcRequestFrame<unknown>,
 > extends Provider<RequestMessage> {
   readonly topic: string;
 }
@@ -40,7 +41,7 @@ export interface RpcMqttRequestProvider<
  * @template Payload - The adapted payload type passed to the callback
  */
 export class RpcMqttPushTriggerableService<
-  RequestMessage,
+  RequestMessage extends RpcRequestFrame<unknown>,
   InputMessage,
   Payload,
 >

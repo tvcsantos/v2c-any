@@ -1,4 +1,5 @@
 import { RpcMqttRequestProvider } from '../service/rpc-mqtt-push-service.js';
+import { RpcRequestFrame } from '../utils/rpc.js';
 import type { Factory } from './factory.js';
 import type { Provider } from './provider.js';
 
@@ -18,7 +19,7 @@ export type ProviderFactory<Options, T> = Factory<Options, Provider<T>>;
  * @template Options - The configuration options type required to create an RPC MQTT request provider
  * @template T - The type of request message the created providers will generate
  */
-export type RpcMqttRequestProviderFactory<Options, T> = Factory<
+export type RpcMqttRequestProviderFactory<
   Options,
-  RpcMqttRequestProvider<T>
->;
+  T extends RpcRequestFrame<unknown>,
+> = Factory<Options, RpcMqttRequestProvider<T>>;

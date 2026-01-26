@@ -31,3 +31,12 @@ export type RpcResponseFrame<T> = {
   /** Response result data of type T */
   result: T;
 };
+
+export type RpcRequestFrame<T> = {
+  /** Unique request ID for correlation */
+  id: number;
+  /** RPC method name being requested */
+  method: string;
+  /** Optional parameters for the RPC request */
+  params?: T;
+};

@@ -10,6 +10,7 @@ import type {
 import type { EM1Status } from './schema/rest-configuration.js';
 import type { EnergyInformation } from './schema/mqtt-configuration.js';
 import { AdapterFactory } from './adapter/adapter-factory.js';
+import { RpcRequestFrame } from './utils/rpc.js';
 
 /**
  * Registry of device provider factories keyed by device identifier.
@@ -20,7 +21,7 @@ export const em1StatusProviderFactoryRegistry = new Registry<
 >();
 
 export const rpcMqttRequestProviderFactoryRegistry = new Registry<
-  RpcMqttRequestProviderFactory<unknown, unknown>
+  RpcMqttRequestProviderFactory<unknown, RpcRequestFrame<unknown>>
 >();
 
 /**
