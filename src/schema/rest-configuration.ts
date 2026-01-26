@@ -68,7 +68,7 @@ export const restMockFeedSchema = z
 export const restFeedSchema = z.object({
   feed: z.discriminatedUnion('type', [
     z.object({
-      type: z.literal('adapter'),
+      type: z.literal('http-adapter'),
       properties: restAdapterFeedSchema,
     }),
     z.object({

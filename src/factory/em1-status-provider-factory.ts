@@ -43,7 +43,7 @@ export class EM1StatusProviderFactory implements ProviderFactory<
     options: EM1StatusProviderFactoryProperties
   ): ProviderFactory<unknown, EM1Status | undefined> {
     switch (options.configuration.feed.type) {
-      case 'adapter': {
+      case 'http-adapter': {
         const device = options.configuration.feed.properties.device;
         const providerFactory = this.providerFactoryRegistry.get(device);
         if (!providerFactory) {

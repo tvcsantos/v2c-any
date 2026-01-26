@@ -1,3 +1,4 @@
+import { RpcMqttRequestProvider } from '../service/rpc-mqtt-push-service.js';
 import type { Factory } from './factory.js';
 import type { Provider } from './provider.js';
 
@@ -9,3 +10,8 @@ import type { Provider } from './provider.js';
  * @template T - The type of data the created providers will supply
  */
 export type ProviderFactory<Options, T> = Factory<Options, Provider<T>>;
+
+export type RcpMqttRequestProviderFactory<Options, T> = Factory<
+  Options,
+  RpcMqttRequestProvider<T>
+>;

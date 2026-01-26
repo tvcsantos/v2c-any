@@ -1,7 +1,10 @@
 import { AdapterFactory } from '../../adapter/adapter-factory.js';
 import type { Adapter } from '../../adapter/adapter.js';
+import { RcpMqttRequestProviderFactory } from '../../provider/provider-factory.js';
 import { EnergyType } from '../../schema/configuration.js';
 import type { EnergyInformation } from '../../schema/mqtt-configuration.js';
+import { EM1Status } from '../../schema/rest-configuration.js';
+import { RpcMqttRequestProvider } from '../../service/rpc-mqtt-push-service.js';
 import { energyTypeToId } from '../../utils/mappers.js';
 
 /**
@@ -133,3 +136,101 @@ class EnergyInformationEM1NotifyStatusAdapterFactory implements AdapterFactory<
  */
 export const energyInformationEM1NotifyStatusAdapterFactory =
   new EnergyInformationEM1NotifyStatusAdapterFactory();
+
+type EM1GetStatusRequest = {
+  id: number;
+  src: string;
+  method: 'EM1.GetStatus';
+  params: {
+    id: number;
+  };
+};
+
+class EM1GetStatusRequestProvider implements RpcMqttRequestProvider<EM1GetStatusRequest> {
+  private id: number;
+  readonly src: string;
+  private requestCount = 0;
+
+  constructor(energyType: EnergyType, deviceId: string) {
+    this.id = energyTypeToId(energyType);
+    this.src = `devices/${deviceId}/messages/events`;
+  }
+
+  get topic(): string {
+    return `${this.src}/rpc`;
+  }
+
+  get(): Promise<EM1GetStatusRequest> {
+    const request: EM1GetStatusRequest = {
+      id: this.requestCount++,
+      src: this.src,
+      method: 'EM1.GetStatus',
+      params: {
+        id: this.id,
+      },
+    };
+    return Promise.resolve(request);
+  }
+}
+
+type EM1GetStatusRequestProviderFactoryOptions = {
+  energyType: EnergyType;
+  properties: {
+    id: string;
+  };
+};
+
+export class EM1GetStatusRequestProviderFactory implements RcpMqttRequestProviderFactory<
+  EM1GetStatusRequestProviderFactoryOptions,
+  EM1GetStatusRequest
+> {
+  create(
+    options: EM1GetStatusRequestProviderFactoryOptions
+  ): RpcMqttRequestProvider<EM1GetStatusRequest> {
+    return new EM1GetStatusRequestProvider(
+      options.energyType,
+      options.properties.id
+    );
+  }
+}
+
+export const em1GetStatusRequestProviderFactory =
+  new EM1GetStatusRequestProviderFactory();
+
+type RpcResponseFrame<T> = {
+  id: number;
+  src: string;
+  dst: string;
+  result: T;
+};
+
+class EM1GetStatusRpcResponseAdapter implements Adapter<
+  RpcResponseFrame<EM1Status>,
+  EnergyInformation | undefined
+> {
+  adapt(
+    input: RpcResponseFrame<EM1Status>
+  ): Promise<EnergyInformation | undefined> {
+    const em1Status = input.result;
+    if (em1Status.act_power !== undefined) {
+      return Promise.resolve({ power: em1Status.act_power });
+    }
+    return Promise.resolve(undefined);
+  }
+}
+
+export class EM1GetStatusRpcResponseAdapterFactory implements AdapterFactory<
+  unknown,
+  RpcResponseFrame<EM1Status>,
+  EnergyInformation | undefined
+> {
+  create(): Adapter<
+    RpcResponseFrame<EM1Status>,
+    EnergyInformation | undefined
+  > {
+    return new EM1GetStatusRpcResponseAdapter();
+  }
+}
+
+export const em1GetStatusRpcResponseAdapterFactory =
+  new EM1GetStatusRpcResponseAdapterFactory();

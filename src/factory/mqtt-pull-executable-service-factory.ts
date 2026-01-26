@@ -1,17 +1,27 @@
 import { AdapterProviderFactory } from '../provider/adapter-provider.js';
 import { FixedValueProviderFactory } from '../provider/fixed-value-provider.js';
-import type { ProviderFactory } from '../provider/provider-factory.js';
+import type {
+  ProviderFactory,
+  RcpMqttRequestProviderFactory,
+} from '../provider/provider-factory.js';
 import type { Registry } from '../registry/registry.js';
 import type {
   EnergyInformation,
   MqttPullFeed,
+  MqttPullHttpAdapterFeed,
+  MqttPullMockFeed,
+  MqttPullRpcMqttAdapterFeed,
 } from '../schema/mqtt-configuration.js';
 import type { Factory } from '../provider/factory.js';
-import { PullPushService } from '../service/pull-push-service.js';
+import {
+  PullPushService,
+  PullPushTriggerableService,
+} from '../service/pull-push-service.js';
 import type { ExecutableService } from '../service/executable-service.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
 import { noOpExecutableService } from '../service/no-op-executable-service.js';
 import { AdapterFactory } from '../adapter/adapter-factory.js';
+import { RpcMqttPushTriggerableService } from '../service/rpc-mqtt-push-service.js';
 
 /**
  * Configuration properties for creating an MQTT pull-mode executable service.
@@ -23,11 +33,6 @@ export type MqttPullExecutableServiceFactoryProperties = {
   configuration: MqttPullFeed;
   /** Callback to invoke with fetched energy information */
   callbackProperties: CallbackProperties<EnergyInformation | undefined>;
-};
-
-type MqttPullProviderFactory = {
-  providerFactory: ProviderFactory<unknown, EnergyInformation | undefined>;
-  interval: number;
 };
 
 /**
@@ -50,49 +55,109 @@ export class MqttPullExecutableServiceFactory implements Factory<
     >,
     private readonly adapterFactoryRegistry: Registry<
       AdapterFactory<unknown, unknown, EnergyInformation | undefined>
+    >,
+    private readonly rcpMqttRequestProviderFactoryRegistry: Registry<
+      RcpMqttRequestProviderFactory<unknown, unknown>
     >
   ) {}
 
-  /**
-   * Creates the appropriate provider factory based on the feed configuration type.
-   * Combines provider and adapter for adapter-based sources, or returns mock/off providers.
-   *
-   * @param options - Configuration options specifying the feed type and device
-   * @returns A provider factory matching the requested feed type
-   * @throws {Error} If an adapter feed is requested but the device provider or adapter is not registered
-   */
-  private createProviderFactory(
-    options: MqttPullExecutableServiceFactoryProperties
-  ): MqttPullProviderFactory | null {
-    switch (options.configuration.type) {
-      case 'adapter': {
-        const device = options.configuration.properties.device;
-        const providerFactory = this.providerFactoryRegistry.get(device);
-        if (!providerFactory) {
-          throw new Error(`No provider registered for device: ${device}`);
-        }
-        const adapterFactory = this.adapterFactoryRegistry.get(device);
-        if (!adapterFactory) {
-          throw new Error(`No adapter registered for device: ${device}`);
-        }
-        const adapter = adapterFactory.create({
-          energyType: options.energyType,
-        });
-        return {
-          providerFactory: new AdapterProviderFactory(providerFactory, adapter),
-          interval: options.configuration.properties.interval,
-        };
-      }
-      case 'mock':
-        return {
-          providerFactory: new FixedValueProviderFactory({
-            value: options.configuration.properties.value,
-          }),
-          interval: options.configuration.properties.interval,
-        };
-      case 'off':
-        return null;
+  private createHttpAdapterPullPushService(
+    energyType: string,
+    callbackProperties: CallbackProperties<EnergyInformation | undefined>,
+    properties: MqttPullHttpAdapterFeed
+  ) {
+    const device = properties.device;
+
+    const providerFactory = this.providerFactoryRegistry.get(device);
+    if (!providerFactory) {
+      throw new Error(`No provider registered for device: ${device}`);
     }
+
+    const adapterFactory = this.adapterFactoryRegistry.get(device);
+    if (!adapterFactory) {
+      throw new Error(`No adapter registered for device: ${device}`);
+    }
+    const adapter = adapterFactory.create({
+      energyType,
+    });
+
+    const adapterProviderFactory = new AdapterProviderFactory(
+      providerFactory,
+      adapter
+    );
+
+    const provider = adapterProviderFactory.create({
+      energyType,
+      properties,
+    });
+
+    const service = new PullPushService(
+      properties.interval,
+      new PullPushTriggerableService(provider, callbackProperties)
+    );
+
+    return service;
+  }
+
+  private createRpcMqttAdapterPullPushService(
+    energyType: string,
+    callbackProperties: CallbackProperties<EnergyInformation | undefined>,
+    properties: MqttPullRpcMqttAdapterFeed
+  ) {
+    const device = properties.device;
+
+    const requestProviderFactory =
+      this.rcpMqttRequestProviderFactoryRegistry.get(device);
+    if (!requestProviderFactory) {
+      throw new Error(
+        `No RPC MQTT request provider registered for device: ${device}`
+      );
+    }
+
+    const adapterFactory = this.adapterFactoryRegistry.get(device);
+    if (!adapterFactory) {
+      throw new Error(`No adapter registered for device: ${device}`);
+    }
+    const adapter = adapterFactory.create({
+      energyType,
+    });
+
+    const requestProvider = requestProviderFactory.create({
+      energyType,
+      properties,
+    });
+
+    const service = new PullPushService(
+      properties.interval,
+      new RpcMqttPushTriggerableService(
+        properties,
+        requestProvider,
+        callbackProperties,
+        adapter
+      )
+    );
+
+    return service;
+  }
+
+  private createMockPullPushService(
+    callbackProperties: CallbackProperties<EnergyInformation | undefined>,
+    properties: MqttPullMockFeed
+  ) {
+    const providerFactory = new FixedValueProviderFactory<
+      EnergyInformation | undefined
+    >({
+      value: properties.value,
+    });
+
+    const provider = providerFactory.create();
+
+    const service = new PullPushService(
+      properties.interval,
+      new PullPushTriggerableService(provider, callbackProperties)
+    );
+
+    return service;
   }
 
   /**
@@ -103,23 +168,27 @@ export class MqttPullExecutableServiceFactory implements Factory<
   create(
     options: MqttPullExecutableServiceFactoryProperties
   ): ExecutableService {
-    const energyProviderFactory = this.createProviderFactory(options);
-
-    if (!energyProviderFactory) {
-      return noOpExecutableService;
+    switch (options.configuration.type) {
+      case 'http-adapter':
+        return this.createHttpAdapterPullPushService(
+          options.energyType,
+          options.callbackProperties,
+          options.configuration.properties
+        );
+      case 'rpc-mqtt-adapter': {
+        return this.createRpcMqttAdapterPullPushService(
+          options.energyType,
+          options.callbackProperties,
+          options.configuration.properties
+        );
+      }
+      case 'mock':
+        return this.createMockPullPushService(
+          options.callbackProperties,
+          options.configuration.properties
+        );
+      case 'off':
+        return noOpExecutableService;
     }
-
-    const { providerFactory, interval } = energyProviderFactory;
-    const energyProvider = providerFactory.create({
-      energyType: options.energyType,
-      ...options.configuration,
-    });
-
-    const service = new PullPushService(
-      energyProvider,
-      interval,
-      options.callbackProperties
-    );
-    return service;
   }
 }

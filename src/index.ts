@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
 import {
-  devicesAdapterFactoryRegistry as devicesAdapterFactoryRegistry,
-  devicesProviderFactoryRegistry as devicesProviderFactoryRegistry,
+  energyInformationAdapterFactoryRegistry as energyInformationAdapterFactoryRegistry,
+  em1StatusProviderFactoryRegistry as em1StatusProviderFactoryRegistry,
   loadDeviceModules,
+  rcpMqttRequestProviderFactoryRegistry,
 } from './application-context.js';
 import { ConfigurationLoader } from './configuration/configuration-loader.js';
 import { ConfigurationValidator } from './configuration/configuration-validator.js';
@@ -31,7 +32,7 @@ async function main() {
   switch (configuration.provider) {
     case 'rest': {
       executableServiceFactory = new RestServiceFactory(
-        new EM1StatusProviderFactory(devicesProviderFactoryRegistry)
+        new EM1StatusProviderFactory(em1StatusProviderFactoryRegistry)
       );
       break;
     }
@@ -39,10 +40,13 @@ async function main() {
       const mqttFeedExecutableServiceFactory =
         new MqttFeedExecutableServiceFactory(
           new MqttPullExecutableServiceFactory(
-            devicesProviderFactoryRegistry,
-            devicesAdapterFactoryRegistry
+            em1StatusProviderFactoryRegistry,
+            energyInformationAdapterFactoryRegistry,
+            rcpMqttRequestProviderFactoryRegistry
           ),
-          new MqttPushExecutableServiceFactory(devicesAdapterFactoryRegistry)
+          new MqttPushExecutableServiceFactory(
+            energyInformationAdapterFactoryRegistry
+          )
         );
       executableServiceFactory = new MqttServiceFactory(
         mqttFeedExecutableServiceFactory

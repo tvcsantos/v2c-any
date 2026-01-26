@@ -34,7 +34,7 @@ export const mqttPullMockFeedSchema = z
   })
   .loose();
 
-export const mqttPullAdapterFeedSchema = z
+export const mqttPullHttpAdapterFeedSchema = z
   .object({
     interval: z.number().int().nonnegative(),
     device: z.string(),
@@ -47,10 +47,26 @@ export const mqttPullAdapterFeedSchema = z
   })
   .loose();
 
+export const mqttPullRpcMqttAdapterFeedSchema = z
+  .object({
+    id: z.string(),
+    interval: z.number().int().nonnegative(),
+    device: z.string(),
+    url: z.string(),
+    username: z.string().optional(),
+    password: z.string().optional(),
+    topic: z.string(),
+  })
+  .loose();
+
 export const mqttPullFeedSchema = z.discriminatedUnion('type', [
   z.object({
-    type: z.literal('adapter'),
-    properties: mqttPullAdapterFeedSchema,
+    type: z.literal('http-adapter'),
+    properties: mqttPullHttpAdapterFeedSchema,
+  }),
+  z.object({
+    type: z.literal('rpc-mqtt-adapter'),
+    properties: mqttPullRpcMqttAdapterFeedSchema,
   }),
   z.object({
     type: z.literal('mock'),
@@ -95,7 +111,13 @@ export type MqttFeedMode = z.infer<typeof mqttFeedModeSchema>;
 
 export type MqttPullFeed = z.infer<typeof mqttPullFeedSchema>;
 
-export type MqttPullAdapterFeed = z.infer<typeof mqttPullAdapterFeedSchema>;
+export type MqttPullHttpAdapterFeed = z.infer<
+  typeof mqttPullHttpAdapterFeedSchema
+>;
+
+export type MqttPullRpcMqttAdapterFeed = z.infer<
+  typeof mqttPullRpcMqttAdapterFeedSchema
+>;
 
 export type MqttPullMockFeed = z.infer<typeof mqttPullMockFeedSchema>;
 

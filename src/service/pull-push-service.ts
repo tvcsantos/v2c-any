@@ -2,6 +2,7 @@ import type { Provider } from '../provider/provider.js';
 import { logger } from '../utils/logger.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
 import { AbstractExecutableService } from './abstract-executable-service.js';
+import { ExecutableService } from './executable-service.js';
 
 /**
  * Periodic pull-then-push service.
@@ -10,19 +11,18 @@ import { AbstractExecutableService } from './abstract-executable-service.js';
  *
  * @template Payload - The type of data provided and pushed
  */
-export class PullPushService<Payload> extends AbstractExecutableService {
+export class PullPushService extends AbstractExecutableService {
   private abortController: AbortController | null = null;
 
   /**
    * Creates a new pull/push service.
    * @param provider - Source `Provider` that supplies data
-   * @param intervalMs - Polling interval in milliseconds
+   * @param interval - Polling interval in milliseconds
    * @param callbackProperties - Callback container invoked with fetched data
    */
   constructor(
-    private readonly provider: Provider<Payload>,
-    private readonly intervalMs: number,
-    private readonly callbackProperties: CallbackProperties<Payload>
+    private readonly interval: number,
+    private readonly triggerable: Triggerable
   ) {
     super();
   }
@@ -32,11 +32,13 @@ export class PullPushService<Payload> extends AbstractExecutableService {
    * @returns A promise that resolves once the service starts
    * @throws {Error} If the service is already started
    */
-  doStart() {
+  async doStart() {
     if (this.abortController) {
       throw new Error('Adapter already started');
     }
     this.abortController = new AbortController();
+
+    await this.triggerable.start();
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.run(this.abortController.signal);
@@ -48,9 +50,12 @@ export class PullPushService<Payload> extends AbstractExecutableService {
    * Stops periodic polling if running.
    * @returns A promise that resolves once the service stops
    */
-  doStop() {
+  async doStop() {
     this.abortController?.abort();
     this.abortController = null;
+
+    await this.triggerable.stop();
+
     return Promise.resolve();
   }
 
@@ -66,7 +71,7 @@ export class PullPushService<Payload> extends AbstractExecutableService {
 
     while (!signal.aborted) {
       try {
-        await this.cycle();
+        await this.triggerable.trigger();
       } catch (err) {
         logger.error(err, 'Error during pull-push cycle');
       }
@@ -74,18 +79,40 @@ export class PullPushService<Payload> extends AbstractExecutableService {
       // Wait for either the interval or abort signal
       if (!signal.aborted) {
         const timeoutPromise = new Promise<void>((resolve) => {
-          setTimeout(resolve, this.intervalMs);
+          setTimeout(resolve, this.interval);
         });
         await Promise.race([timeoutPromise, abortPromise]);
       }
     }
   }
+}
 
-  /**
-   * Single poll-and-push cycle.
-   * Retrieves data from the provider and forwards it to the callback when present.
-   */
-  private async cycle() {
+export interface Triggerable extends ExecutableService {
+  trigger(): Promise<void>;
+}
+
+export class PullPushTriggerableService<Payload>
+  extends AbstractExecutableService
+  implements Triggerable
+{
+  constructor(
+    private readonly provider: Provider<Payload>,
+    private readonly callbackProperties: CallbackProperties<Payload>
+  ) {
+    super();
+  }
+
+  doStart(): Promise<void> {
+    // No-op
+    return Promise.resolve();
+  }
+
+  doStop(): Promise<void> {
+    // No-op
+    return Promise.resolve();
+  }
+
+  async trigger(): Promise<void> {
     const data = await this.provider.get();
     if (data) {
       logger.debug({ data }, 'Pushing data');

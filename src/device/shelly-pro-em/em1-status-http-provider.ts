@@ -28,7 +28,7 @@ type EM1StatusProviderProperties = {
  * Provider that fetches EM1 status data from a Shelly Pro EM device via HTTP.
  * Retrieves real-time energy monitoring data by querying the device's RPC API endpoint.
  */
-class EM1StatusProvider implements Provider<EM1Status> {
+class EM1StatusHttpProvider implements Provider<EM1Status> {
   private readonly id: number;
   private readonly client: Dispatcher;
   private readonly url: string;
@@ -82,7 +82,7 @@ type EM1StatusProviderFactoryOptions = {
  * Factory for creating EM1StatusProvider instances.
  * Implements the factory pattern to instantiate providers with the appropriate configuration.
  */
-class EM1StatusProviderFactory implements ProviderFactory<
+class EM1StatusHttpProviderFactory implements ProviderFactory<
   EM1StatusProviderFactoryOptions,
   EM1Status
 > {
@@ -99,7 +99,7 @@ class EM1StatusProviderFactory implements ProviderFactory<
       },
       'Creating EM1StatusProvider'
     );
-    const provider = new EM1StatusProvider({
+    const provider = new EM1StatusHttpProvider({
       energyType: options.energyType,
       ...options.properties,
     });
@@ -120,4 +120,4 @@ class EM1StatusProviderFactory implements ProviderFactory<
  * Singleton factory instance for creating `EM1StatusProvider` objects.
  * Provides a ready-to-use factory to build providers with supplied options.
  */
-export const em1StatusProviderFactory = new EM1StatusProviderFactory();
+export const em1StatusHttpProviderFactory = new EM1StatusHttpProviderFactory();
