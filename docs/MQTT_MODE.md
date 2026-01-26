@@ -66,15 +66,15 @@ v2c-any subscribes to MQTT topics and republishes to V2C topics:
 
 ### Pull Feed Types
 
-#### 1. Adapter Feed (Poll Device)
+#### 1. HTTP Adapter Feed (Poll Device via HTTP)
 
-Polls a device at regular intervals and publishes to MQTT:
+Polls a device via HTTP at regular intervals and publishes to MQTT:
 
 ```typescript
 {
   mode: 'pull',
   feed: {
-    type: 'adapter',
+    type: 'http-adapter',
     properties: {
       interval: number,        // Polling interval in ms
       device: string,          // Device type (e.g., 'shelly-pro-em')
@@ -89,7 +89,29 @@ Polls a device at regular intervals and publishes to MQTT:
 }
 ```
 
-#### 2. Mock Feed (Simulated)
+#### 2. RPC MQTT Adapter Feed (Poll Device via RPC over MQTT)
+
+Sends RPC requests over MQTT and processes responses:
+
+```typescript
+{
+  mode: 'pull',
+  feed: {
+    type: 'rpc-mqtt-adapter',
+    properties: {
+      interval: number,        // Request interval in ms
+      device: string,          // Device type (e.g., 'shelly-pro-em')
+      url: string,             // MQTT broker URL for RPC
+      username?: string,       // Optional authentication
+      password?: string,       // Optional authentication
+      topic: string,           // Topic to publish RPC requests
+      id: string               // Device identifier
+    }
+  }
+}
+```
+
+#### 3. Mock Feed (Simulated)
 
 Publishes fixed or computed values at regular intervals:
 
@@ -137,11 +159,54 @@ Subscribes to an MQTT topic and republishes to V2C topics:
       username?: string,      // Optional authentication
       password?: string,      // Optional authentication
       device: string,         // Device type (for parsing messages)
-      topic: string           // Topic to subscribe to
+      topic: string,          // Topic to subscribe to
+      keepAlive: KeepAliveConfig  // Keep-alive configuration
     }
   }
 }
 ```
+
+**Keep-Alive Configuration:**
+
+In push mode, v2c-any subscribes to MQTT topics and waits for messages. To ensure fresh data, you can configure a keep-alive mechanism that periodically requests data if no messages are received:
+
+```typescript
+// No keep-alive (default)
+keepAlive: {
+  type: 'off'
+}
+
+// HTTP-based keep-alive
+keepAlive: {
+  type: 'http-adapter',
+  properties: {
+    interval: number,        // Request interval in ms
+    device: string,          // Device type
+    host: string,            // Device IP address
+    protocol?: 'http' | 'https',
+    port?: number,
+    breaker?: BreakerOptions,     // Circuit breaker config (optional)
+    retry?: RetryOptions,         // Retry config (optional)
+    ema?: EmaOptions             // Smoothing config (optional)
+  }
+}
+
+// RPC MQTT-based keep-alive
+keepAlive: {
+  type: 'rpc-mqtt-adapter',
+  properties: {
+    interval: number,        // Request interval in ms
+    device: string,          // Device type
+    url: string,             // MQTT broker URL
+    username?: string,
+    password?: string,
+    topic: string,           // RPC request topic
+    id: string               // Device identifier
+  }
+}
+```
+
+The keep-alive timer resets whenever a message is received on the subscribed topic. If no message arrives within the interval, a request is triggered.
 
 #### 2. Off Feed (Disabled)
 
@@ -168,7 +233,7 @@ Disables the meter:
 
 ### Pull Mode Options
 
-#### Adapter Feed
+#### HTTP Adapter Feed
 
 | Option     | Type                | Required | Default  | Description                                         |
 | ---------- | ------------------- | -------- | -------- | --------------------------------------------------- |
@@ -177,6 +242,21 @@ Disables the meter:
 | `host`     | `string`            | Yes      | -        | IP address or hostname of the device                |
 | `protocol` | `'http' \| 'https'` | No       | `'http'` | Protocol to use for communication                   |
 | `port`     | `number`            | No       | `80`     | Port number of the device                           |
+| `breaker`  | `BreakerOptions`    | No       | -        | Circuit breaker configuration                       |
+| `retry`    | `RetryOptions`      | No       | -        | Retry strategy configuration                        |
+| `ema`      | `EmaOptions`        | No       | -        | Exponential moving average smoothing configuration  |
+
+#### RPC MQTT Adapter Feed
+
+| Option     | Type     | Required | Default | Description                                         |
+| ---------- | -------- | -------- | ------- | --------------------------------------------------- |
+| `interval` | `number` | Yes      | -       | Request interval in milliseconds                    |
+| `device`   | `string` | Yes      | -       | Device type identifier (currently: `shelly-pro-em`) |
+| `url`      | `string` | Yes      | -       | MQTT broker URL for RPC communication               |
+| `username` | `string` | No       | -       | Username for MQTT broker authentication             |
+| `password` | `string` | No       | -       | Password for MQTT broker authentication             |
+| `topic`    | `string` | Yes      | -       | MQTT topic to publish RPC requests                  |
+| `id`       | `string` | Yes      | -       | Device identifier used in RPC requests              |
 
 #### Mock Feed
 
@@ -189,13 +269,14 @@ Disables the meter:
 
 #### Bridge Feed
 
-| Option     | Type     | Required | Default | Description                                              |
-| ---------- | -------- | -------- | ------- | -------------------------------------------------------- |
-| `url`      | `string` | Yes      | -       | Source MQTT broker URL                                   |
-| `username` | `string` | No       | -       | Username for source broker authentication                |
-| `password` | `string` | No       | -       | Password for source broker authentication                |
-| `device`   | `string` | Yes      | -       | Device type for parsing messages (e.g., `shelly-pro-em`) |
-| `topic`    | `string` | Yes      | -       | MQTT topic to subscribe to                               |
+| Option      | Type              | Required | Default | Description                                                             |
+| ----------- | ----------------- | -------- | ------- | ----------------------------------------------------------------------- |
+| `url`       | `string`          | Yes      | -       | Source MQTT broker URL                                                  |
+| `username`  | `string`          | No       | -       | Username for source broker authentication                               |
+| `password`  | `string`          | No       | -       | Password for source broker authentication                               |
+| `device`    | `string`          | Yes      | -       | Device type for parsing messages (e.g., `shelly-pro-em`)                |
+| `topic`     | `string`          | Yes      | -       | MQTT topic to subscribe to                                              |
+| `keepAlive` | `KeepAliveConfig` | Yes      | -       | Keep-alive configuration (`off`, `http-adapter`, or `rpc-mqtt-adapter`) |
 
 ### Resilience Options
 
@@ -235,7 +316,7 @@ properties:
     grid:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 2000
           device: shelly-pro-em
@@ -243,7 +324,7 @@ properties:
     solar:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 2000
           device: shelly-pro-em
@@ -271,6 +352,8 @@ properties:
           url: mqtt://solar-system.local:1883
           device: shelly-pro-em
           topic: home/energy/grid
+          keepAlive:
+            type: off
     solar:
       mode: push
       feed:
@@ -279,6 +362,8 @@ properties:
           url: mqtt://solar-system.local:1883
           device: shelly-pro-em
           topic: home/energy/solar
+          keepAlive:
+            type: off
 ```
 
 **Use case:** You already have meters publishing to MQTT topics and want to republish them in V2C format.
@@ -295,7 +380,7 @@ properties:
     grid:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 1000
           device: shelly-pro-em
@@ -308,6 +393,12 @@ properties:
           url: mqtt://solar-system.local:1883
           device: shelly-pro-em
           topic: solar/inverter/power
+          keepAlive:
+            type: http-adapter
+            properties:
+              interval: 30000
+              device: shelly-pro-em
+              host: 192.168.1.101
 ```
 
 **Use case:** Mixed environment where grid uses REST polling but solar already publishes to MQTT.
@@ -324,7 +415,7 @@ properties:
     grid:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 2000
           device: shelly-pro-em
@@ -353,7 +444,7 @@ properties:
     grid:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 500 # Poll every 500ms
           device: shelly-pro-em
@@ -373,7 +464,7 @@ properties:
     solar:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 500
           device: shelly-pro-em
@@ -396,7 +487,7 @@ properties:
     grid:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           interval: 2000
           device: shelly-pro-em

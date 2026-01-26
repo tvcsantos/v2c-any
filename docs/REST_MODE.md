@@ -39,14 +39,14 @@ Use REST mode when:
 
 Each meter (grid/solar) supports three feed types:
 
-#### 1. Adapter Feed (Real Device)
+#### 1. HTTP Adapter Feed (Real Device)
 
 Polls a real Shelly Pro EM device and forwards its data:
 
 ```typescript
 {
   feed: {
-    type: 'adapter',
+    type: 'http-adapter',
     properties: {
       device: string,          // Device type (e.g., 'shelly-pro-em')
       host: string,            // Device IP address
@@ -104,7 +104,7 @@ Disables the meter:
 | ------ | -------- | -------- | ------- | ------------------------------------------- |
 | `port` | `number` | Yes      | -       | Port for the HTTP server (e.g., 3000, 8080) |
 
-### Adapter Feed Options
+### HTTP Adapter Feed Options
 
 | Option     | Type                | Required | Default  | Description                                         |
 | ---------- | ------------------- | -------- | -------- | --------------------------------------------------- |
@@ -172,13 +172,13 @@ properties:
   meters:
     grid:
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           host: 192.168.1.100
     solar:
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           host: 192.168.1.101
@@ -205,7 +205,7 @@ properties:
   meters:
     grid:
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           host: 192.168.1.100
@@ -237,7 +237,7 @@ properties:
   meters:
     grid:
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           host: 192.168.1.100
@@ -277,7 +277,7 @@ properties:
   meters:
     grid:
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           host: secure-meter.local
@@ -460,7 +460,7 @@ To migrate from a physical Shelly Pro EM to v2c-any:
 1. **Note your current V2C wallbox configuration** (Shelly IP address)
 2. **Deploy v2c-any** with REST mode on the same IP (or update V2C config)
 3. **Configure v2c-any** to either:
-   - Proxy the existing Shelly (adapter feed)
+   - Proxy the existing Shelly (http-adapter feed)
    - Replace it with another data source
    - Use mock data for testing
 4. **No changes needed on V2C wallbox** if using the same IP address
@@ -468,7 +468,7 @@ To migrate from a physical Shelly Pro EM to v2c-any:
 ## Performance Considerations
 
 - **Polling interval:** The V2C wallbox controls how often it polls. Typical intervals are 1-10 seconds.
-- **Response time:** Adapter feeds add minimal latency (~50-200ms depending on network)
+- **Response time:** HTTP adapter feeds add minimal latency (~50-200ms depending on network)
 - **Concurrent requests:** Fastify server handles multiple simultaneous requests efficiently
 - **Resource usage:** Very lightweight (~30-50 MB RAM)
 

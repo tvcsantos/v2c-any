@@ -90,13 +90,13 @@ npx v2c-any
 provider: mqtt
 properties:
   url: mqtt://localhost:1883
-  device: shelly-pro-em
   meters:
     grid:
       mode: pull
       feed:
-        type: adapter
+        type: http-adapter
         properties:
+          device: shelly-pro-em
           interval: 5000
           host: 192.168.1.100
     solar:
@@ -145,7 +145,7 @@ properties:
   meters:
     grid:
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           host: 192.168.1.100
@@ -189,7 +189,7 @@ properties:
     grid:
       mode: pull # v2ca polls your device
       feed:
-        type: adapter
+        type: http-adapter
         properties:
           device: shelly-pro-em
           interval: 2000
