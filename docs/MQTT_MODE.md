@@ -482,7 +482,7 @@ provider: mqtt
 properties:
   url: mqtts://secure-broker.local:8883
   username: v2c-client
-  password: ${MQTT_PASSWORD} # Use environment variable
+  password: secure-password
   meters:
     grid:
       mode: pull
