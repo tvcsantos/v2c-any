@@ -4,7 +4,7 @@ import {
   energyInformationAdapterFactoryRegistry as energyInformationAdapterFactoryRegistry,
   em1StatusProviderFactoryRegistry as em1StatusProviderFactoryRegistry,
   loadDeviceModules,
-  rcpMqttRequestProviderFactoryRegistry,
+  rpcMqttRequestProviderFactoryRegistry,
 } from './application-context.js';
 import { ConfigurationLoader } from './configuration/configuration-loader.js';
 import { ConfigurationValidator } from './configuration/configuration-validator.js';
@@ -42,10 +42,12 @@ async function main() {
           new MqttPullExecutableServiceFactory(
             em1StatusProviderFactoryRegistry,
             energyInformationAdapterFactoryRegistry,
-            rcpMqttRequestProviderFactoryRegistry
+            rpcMqttRequestProviderFactoryRegistry
           ),
           new MqttPushExecutableServiceFactory(
-            energyInformationAdapterFactoryRegistry
+            em1StatusProviderFactoryRegistry,
+            energyInformationAdapterFactoryRegistry,
+            rpcMqttRequestProviderFactoryRegistry
           )
         );
       executableServiceFactory = new MqttServiceFactory(

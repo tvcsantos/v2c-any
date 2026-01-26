@@ -5,7 +5,7 @@ import { globSync } from 'glob';
 import { logger } from './utils/logger.js';
 import type {
   ProviderFactory,
-  RcpMqttRequestProviderFactory,
+  RpcMqttRequestProviderFactory,
 } from './provider/provider-factory.js';
 import type { EM1Status } from './schema/rest-configuration.js';
 import type { EnergyInformation } from './schema/mqtt-configuration.js';
@@ -19,8 +19,8 @@ export const em1StatusProviderFactoryRegistry = new Registry<
   ProviderFactory<unknown, EM1Status>
 >();
 
-export const rcpMqttRequestProviderFactoryRegistry = new Registry<
-  RcpMqttRequestProviderFactory<unknown, unknown>
+export const rpcMqttRequestProviderFactoryRegistry = new Registry<
+  RpcMqttRequestProviderFactory<unknown, unknown>
 >();
 
 /**

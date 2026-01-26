@@ -1,28 +1,24 @@
-import type { Provider } from '../provider/provider.js';
 import { logger } from '../utils/logger.js';
-import type { CallbackProperties } from '../utils/callback-properties.js';
 import { AbstractExecutableService } from './abstract-executable-service.js';
 import { ExecutableService } from './executable-service.js';
+import { Triggerable } from './triggerable.js';
 
 /**
  * Periodic pull-then-push service.
- * Fetches data from a `Provider` at a fixed interval and forwards it via a callback.
+ * Invokes a `Triggerable` service at a fixed interval.
  * Implements start/stop lifecycle control.
- *
- * @template Payload - The type of data provided and pushed
  */
 export class PullPushService extends AbstractExecutableService {
   private abortController: AbortController | null = null;
 
   /**
    * Creates a new pull/push service.
-   * @param provider - Source `Provider` that supplies data
    * @param interval - Polling interval in milliseconds
-   * @param callbackProperties - Callback container invoked with fetched data
+   * @param triggerable - Triggerable service that is invoked at each interval
    */
   constructor(
     private readonly interval: number,
-    private readonly triggerable: Triggerable
+    private readonly triggerable: Triggerable & ExecutableService
   ) {
     super();
   }
@@ -83,40 +79,6 @@ export class PullPushService extends AbstractExecutableService {
         });
         await Promise.race([timeoutPromise, abortPromise]);
       }
-    }
-  }
-}
-
-export interface Triggerable extends ExecutableService {
-  trigger(): Promise<void>;
-}
-
-export class PullPushTriggerableService<Payload>
-  extends AbstractExecutableService
-  implements Triggerable
-{
-  constructor(
-    private readonly provider: Provider<Payload>,
-    private readonly callbackProperties: CallbackProperties<Payload>
-  ) {
-    super();
-  }
-
-  doStart(): Promise<void> {
-    // No-op
-    return Promise.resolve();
-  }
-
-  doStop(): Promise<void> {
-    // No-op
-    return Promise.resolve();
-  }
-
-  async trigger(): Promise<void> {
-    const data = await this.provider.get();
-    if (data) {
-      logger.debug({ data }, 'Pushing data');
-      await this.callbackProperties.callback(data);
     }
   }
 }

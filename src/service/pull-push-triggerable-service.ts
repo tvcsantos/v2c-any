@@ -1,0 +1,62 @@
+import type { Provider } from '../provider/provider.js';
+import type { CallbackProperties } from '../utils/callback-properties.js';
+import { logger } from '../utils/logger.js';
+import { AbstractExecutableService } from './abstract-executable-service.js';
+import { Triggerable } from './triggerable.js';
+
+/**
+ * Triggerable service that fetches data from a provider and pushes it to a callback.
+ * Implements the Triggerable interface to allow external control of when data is fetched.
+ * The start/stop lifecycle methods are no-ops as this service has no background operations.
+ *
+ * @template Payload - The type of data provided and pushed to the callback
+ */
+export class PullPushTriggerableService<Payload>
+  extends AbstractExecutableService
+  implements Triggerable
+{
+  /**
+   * Creates a new pull-push triggerable service.
+   * @param provider - Source provider that supplies data when triggered
+   * @param callbackProperties - Callback container invoked with fetched data
+   */
+  constructor(
+    private readonly provider: Provider<Payload>,
+    private readonly callbackProperties: CallbackProperties<Payload>
+  ) {
+    super();
+  }
+
+  /**
+   * Starts the service (no-op).
+   * This service has no background operations, so starting does nothing.
+   * @returns A promise that resolves immediately
+   */
+  doStart(): Promise<void> {
+    // No-op
+    return Promise.resolve();
+  }
+
+  /**
+   * Stops the service (no-op).
+   * This service has no background operations, so stopping does nothing.
+   * @returns A promise that resolves immediately
+   */
+  doStop(): Promise<void> {
+    // No-op
+    return Promise.resolve();
+  }
+
+  /**
+   * Triggers a data fetch and push cycle.
+   * Retrieves data from the provider and forwards it to the callback if data is present.
+   * @returns A promise that resolves when the data has been fetched and pushed
+   */
+  async trigger(): Promise<void> {
+    const data = await this.provider.get();
+    if (data) {
+      logger.debug({ data }, 'Pushing data');
+      await this.callbackProperties.callback(data);
+    }
+  }
+}

@@ -9,24 +9,6 @@ export const energyInformationSchema = z.object({
   power: z.number(),
 });
 
-export const mqttPushBridgeFeedSchema = z
-  .object({
-    url: z.string(),
-    username: z.string().optional(),
-    password: z.string().optional(),
-    device: z.string(),
-    topic: z.string(),
-  })
-  .loose();
-
-export const mqttPushFeedSchema = z.discriminatedUnion('type', [
-  z.object({
-    type: z.literal('bridge'),
-    properties: mqttPushBridgeFeedSchema,
-  }),
-  z.object({ type: z.literal('off') }),
-]);
-
 export const mqttPullMockFeedSchema = z
   .object({
     interval: z.number().int().nonnegative(),
@@ -58,6 +40,37 @@ export const mqttPullRpcMqttAdapterFeedSchema = z
     topic: z.string(),
   })
   .loose();
+
+export const mqttPushBridgeKeepAliveSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('http-adapter'),
+    properties: mqttPullHttpAdapterFeedSchema,
+  }),
+  z.object({
+    type: z.literal('rpc-mqtt-adapter'),
+    properties: mqttPullRpcMqttAdapterFeedSchema,
+  }),
+  z.object({ type: z.literal('off') }),
+]);
+
+export const mqttPushBridgeFeedSchema = z
+  .object({
+    url: z.string(),
+    username: z.string().optional(),
+    password: z.string().optional(),
+    device: z.string(),
+    topic: z.string(),
+    keepAlive: mqttPushBridgeKeepAliveSchema.default({ type: 'off' }),
+  })
+  .loose();
+
+export const mqttPushFeedSchema = z.discriminatedUnion('type', [
+  z.object({
+    type: z.literal('bridge'),
+    properties: mqttPushBridgeFeedSchema,
+  }),
+  z.object({ type: z.literal('off') }),
+]);
 
 export const mqttPullFeedSchema = z.discriminatedUnion('type', [
   z.object({

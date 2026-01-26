@@ -2,7 +2,7 @@ import { AdapterProviderFactory } from '../provider/adapter-provider.js';
 import { FixedValueProviderFactory } from '../provider/fixed-value-provider.js';
 import type {
   ProviderFactory,
-  RcpMqttRequestProviderFactory,
+  RpcMqttRequestProviderFactory,
 } from '../provider/provider-factory.js';
 import type { Registry } from '../registry/registry.js';
 import type {
@@ -13,13 +13,11 @@ import type {
   MqttPullRpcMqttAdapterFeed,
 } from '../schema/mqtt-configuration.js';
 import type { Factory } from '../provider/factory.js';
-import {
-  PullPushService,
-  PullPushTriggerableService,
-} from '../service/pull-push-service.js';
+import { PullPushService } from '../service/pull-push-service.js';
+import { PullPushTriggerableService } from '../service/pull-push-triggerable-service.js';
 import type { ExecutableService } from '../service/executable-service.js';
 import type { CallbackProperties } from '../utils/callback-properties.js';
-import { noOpExecutableService } from '../service/no-op-executable-service.js';
+import { NoOpExecutableService } from '../service/no-op-executable-service.js';
 import { AdapterFactory } from '../adapter/adapter-factory.js';
 import { RpcMqttPushTriggerableService } from '../service/rpc-mqtt-push-service.js';
 
@@ -48,6 +46,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
    * Creates a new MQTT pull executable service factory.
    * @param providerFactoryRegistry - Registry of device providers for adapter-based sources
    * @param adapterFactoryRegistry - Registry of device adapters for transforming provider output
+   * @param rpcMqttRequestProviderFactoryRegistry - Registry of RPC MQTT request providers for RPC-based sources
    */
   constructor(
     private readonly providerFactoryRegistry: Registry<
@@ -56,11 +55,19 @@ export class MqttPullExecutableServiceFactory implements Factory<
     private readonly adapterFactoryRegistry: Registry<
       AdapterFactory<unknown, unknown, EnergyInformation | undefined>
     >,
-    private readonly rcpMqttRequestProviderFactoryRegistry: Registry<
-      RcpMqttRequestProviderFactory<unknown, unknown>
+    private readonly rpcMqttRequestProviderFactoryRegistry: Registry<
+      RpcMqttRequestProviderFactory<unknown, unknown>
     >
   ) {}
 
+  /**
+   * Creates a pull-push service using an HTTP adapter to fetch device data.
+   * @param energyType - The type of energy data to monitor
+   * @param callbackProperties - Callback to invoke with energy information
+   * @param properties - HTTP adapter feed configuration including device, host, and interval
+   * @returns A configured PullPushService for HTTP-based data polling
+   * @throws {Error} If no provider or adapter is registered for the specified device
+   */
   private createHttpAdapterPullPushService(
     energyType: string,
     callbackProperties: CallbackProperties<EnergyInformation | undefined>,
@@ -99,6 +106,14 @@ export class MqttPullExecutableServiceFactory implements Factory<
     return service;
   }
 
+  /**
+   * Creates a pull-push service using RPC over MQTT to fetch device data.
+   * @param energyType - The type of energy data to monitor
+   * @param callbackProperties - Callback to invoke with energy information
+   * @param properties - RPC MQTT adapter feed configuration including device and MQTT connection details
+   * @returns A configured PullPushService for RPC MQTT-based data polling
+   * @throws {Error} If no RPC MQTT request provider or adapter is registered for the specified device
+   */
   private createRpcMqttAdapterPullPushService(
     energyType: string,
     callbackProperties: CallbackProperties<EnergyInformation | undefined>,
@@ -107,7 +122,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
     const device = properties.device;
 
     const requestProviderFactory =
-      this.rcpMqttRequestProviderFactoryRegistry.get(device);
+      this.rpcMqttRequestProviderFactoryRegistry.get(device);
     if (!requestProviderFactory) {
       throw new Error(
         `No RPC MQTT request provider registered for device: ${device}`
@@ -140,6 +155,12 @@ export class MqttPullExecutableServiceFactory implements Factory<
     return service;
   }
 
+  /**
+   * Creates a pull-push service using a fixed mock value for testing.
+   * @param callbackProperties - Callback to invoke with the mock energy information
+   * @param properties - Mock feed configuration including the fixed value and interval
+   * @returns A configured PullPushService that returns the mock value at each interval
+   */
   private createMockPullPushService(
     callbackProperties: CallbackProperties<EnergyInformation | undefined>,
     properties: MqttPullMockFeed
@@ -162,8 +183,9 @@ export class MqttPullExecutableServiceFactory implements Factory<
 
   /**
    * Creates an executable service that periodically polls energy data.
-   * @param options - Configuration options including device, interval, and callback
-   * @returns A PullPushService configured to poll at the specified interval
+   * Supports multiple feed types: http-adapter, rpc-mqtt-adapter, mock, and off (disabled).
+   * @param options - Configuration options including energy type, feed configuration, and callback
+   * @returns An ExecutableService configured to poll at the specified interval, or NoOpExecutableService if disabled
    */
   create(
     options: MqttPullExecutableServiceFactoryProperties
@@ -188,7 +210,7 @@ export class MqttPullExecutableServiceFactory implements Factory<
           options.configuration.properties
         );
       case 'off':
-        return noOpExecutableService;
+        return new NoOpExecutableService();
     }
   }
 }

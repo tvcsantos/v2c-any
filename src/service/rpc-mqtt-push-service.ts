@@ -5,8 +5,11 @@ import { AbstractExecutableService } from './abstract-executable-service.js';
 import type { MqttClient } from 'mqtt';
 import { createMqttClient } from '../utils/mqtt.js';
 import { Adapter } from '../adapter/adapter.js';
-import { Triggerable } from './pull-push-service.js';
+import { Triggerable } from './triggerable.js';
 
+/**
+ * Properties for configuring an RPC MQTT push service.
+ */
 export type RpcMqttPushServiceProperties = {
   interval: number;
   url: string;
@@ -15,12 +18,27 @@ export type RpcMqttPushServiceProperties = {
   password?: string;
 };
 
+/**
+ * Provider interface for RPC MQTT requests.
+ * Extends the Provider interface to include the MQTT topic where responses will be received.
+ *
+ * @template RequestMessage - The type of RPC request message generated
+ */
 export interface RpcMqttRequestProvider<
   RequestMessage,
 > extends Provider<RequestMessage> {
   readonly topic: string;
 }
 
+/**
+ * Triggerable service that sends RPC requests over MQTT and processes responses.
+ * Connects to an MQTT broker, subscribes to a response topic, and publishes RPC requests when triggered.
+ * Responses are adapted and forwarded to a callback.
+ *
+ * @template RequestMessage - The type of RPC request message sent
+ * @template InputMessage - The type of raw response message received from MQTT
+ * @template Payload - The adapted payload type passed to the callback
+ */
 export class RpcMqttPushTriggerableService<
   RequestMessage,
   InputMessage,
@@ -31,6 +49,13 @@ export class RpcMqttPushTriggerableService<
 {
   private client: MqttClient | null = null;
 
+  /**
+   * Creates a new RPC MQTT push triggerable service.
+   * @param properties - MQTT connection details including broker URL and topic
+   * @param provider - RPC request provider that generates request messages and specifies the response topic
+   * @param callbackProperties - Callback container invoked with adapted response data
+   * @param adapter - Adapter that transforms raw MQTT response messages to the payload type
+   */
   constructor(
     private readonly properties: RpcMqttPushServiceProperties,
     private readonly provider: RpcMqttRequestProvider<RequestMessage>,
@@ -40,6 +65,11 @@ export class RpcMqttPushTriggerableService<
     super();
   }
 
+  /**
+   * Starts the service: connects to the MQTT broker and subscribes to the response topic.
+   * Sets up message handling to adapt and forward responses to the callback.
+   * @returns A promise that resolves when the connection and subscription are established
+   */
   async doStart() {
     logger.info('Starting MQTT bridge service');
     this.client = await createMqttClient(this.properties.url, {
@@ -67,6 +97,10 @@ export class RpcMqttPushTriggerableService<
     return Promise.resolve();
   }
 
+  /**
+   * Stops the service: disconnects the MQTT client and clears resources.
+   * @returns A promise that resolves when the client has disconnected
+   */
   async doStop() {
     logger.info('Stopping MQTT bridge service');
     await this.client?.endAsync();
@@ -75,6 +109,11 @@ export class RpcMqttPushTriggerableService<
     return Promise.resolve();
   }
 
+  /**
+   * Triggers an RPC request by publishing a message to the configured topic.
+   * Retrieves a request message from the provider and publishes it to MQTT with QoS 1 and retain flag.
+   * @returns A promise that resolves when the request message has been generated and published
+   */
   async trigger(): Promise<void> {
     const requestMessage = await this.provider.get();
     this.client?.publish(

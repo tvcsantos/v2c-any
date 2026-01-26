@@ -11,7 +11,14 @@ import type { Provider } from './provider.js';
  */
 export type ProviderFactory<Options, T> = Factory<Options, Provider<T>>;
 
-export type RcpMqttRequestProviderFactory<Options, T> = Factory<
+/**
+ * Type alias for a factory that creates RpcMqttRequestProvider instances.
+ * Extends the generic Factory interface to specialize it for RPC MQTT request provider creation.
+ *
+ * @template Options - The configuration options type required to create an RPC MQTT request provider
+ * @template T - The type of request message the created providers will generate
+ */
+export type RpcMqttRequestProviderFactory<Options, T> = Factory<
   Options,
   RpcMqttRequestProvider<T>
 >;
