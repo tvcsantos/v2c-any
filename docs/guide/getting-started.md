@@ -18,18 +18,19 @@ V2C wallboxes support Dynamic Power Control via specific meters or MQTT inputs. 
 - An MQTT broker (for MQTT mode) - e.g. [Mosquitto](https://mosquitto.org/)
 - A V2C wallbox configured for Dynamic Power Control
 
-## Installation
+## Quick Start
 
-### npm (global)
-
-```bash
-npm install -g v2c-any
-```
-
-### npx (no install)
+### npx (no install needed)
 
 ```bash
 npx v2c-any
+```
+
+### Global install
+
+```bash
+npm install -g v2c-any
+v2ca
 ```
 
 ### From source
@@ -42,7 +43,20 @@ npm run build
 npm start
 ```
 
-## Quick Configuration
+### Docker
+
+```bash
+# Published image
+docker run -v $(pwd)/.v2carc.yaml:/app/.v2carc.yaml ghcr.io/tvcsantos/v2c-any
+
+# Or build locally
+docker build -t v2c-any .
+docker run -v $(pwd)/.v2carc.yaml:/app/.v2carc.yaml v2c-any
+```
+
+See [Docker](./docker) for full Docker and Docker Compose setup.
+
+## Configuration
 
 Create a `.v2carc.yaml` file in your working directory:
 
@@ -70,19 +84,6 @@ properties:
 ```
 
 See [Configuration](./configuration) for all options and formats.
-
-## Running
-
-```bash
-# With auto-detected configuration
-v2ca
-
-# Development mode (with hot-reload)
-npm run dev
-
-# With Docker
-docker run -v $(pwd)/.v2carc.yaml:/app/.v2carc.yaml v2c-any
-```
 
 ## Choosing a Mode
 

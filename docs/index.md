@@ -37,26 +37,20 @@ features:
     details: Add new adapters easily. TypeScript-first for predictable, typed, maintainable code.
 ---
 
-## The Idea
+## What is v2c-any?
 
-```ts
-{ device: any } → V2C
-```
+V2C wallboxes expect power data from specific meters or MQTT inputs - but real setups are rarely that simple.
 
-![Overview Flow](/images/diagrams/overview-flow.svg)
+**v2c-any** sits in between, adapting **any power data source** into the protocol your V2C wallbox expects:
 
-## What v2c-any is _not_
+- **REST mode** - emulates a Shelly Pro EM so your wallbox polls v2c-any directly
+- **MQTT mode** - publishes power data to the MQTT topics your wallbox subscribes to
+- **Any input** - physical meters, MQTT bridges, HTTP APIs, or simulated data
+
+The name says it all - from the TypeScript `any` type: _"I don't care what you are, I can work with you."_
+
+## What it is _not_
 
 - Not a replacement for your existing meters
 - Not tied to a single vendor or ecosystem
-- Not limited to one communication protocol
-
-It's an **adapter**, not a lock-in.
-
-## Name Origin
-
-`v2c-any` comes from the TypeScript `any` type:
-
-> "I don't care what you are - I can work with you."
-
-Exactly the philosophy behind this project.
+- Not a lock-in - it's an **adapter**
