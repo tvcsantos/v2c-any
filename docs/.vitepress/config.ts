@@ -7,7 +7,7 @@ export default withMermaid(
     title: 'v2c-any',
     description:
       'Turn any device into V2C Dynamic Power Control',
-    head: [['link', { rel: 'icon', href: '/images/v2ca.png' }]],
+    head: [['link', { rel: 'icon', href: '/images/v2c-any-icon-alpha.png' }]],
 
     vite: {
       plugins: [llmstxt()],
@@ -24,7 +24,7 @@ export default withMermaid(
     },
 
     themeConfig: {
-      logo: '/images/v2ca.png',
+      logo: '/images/v2c-any-icon-alpha.png',
 
       nav: [
         { text: 'Guide', link: '/guide/getting-started' },

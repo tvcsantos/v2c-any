@@ -1,0 +1,46 @@
+<mxfile>
+  <diagram name="MQTT Push Flow" id="mqtt-push">
+    <mxGraphModel dx="1000" dy="700" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="800" pageHeight="700" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <!-- Source System -->
+        <mxCell id="2" value="Source System" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="120" y="30" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <!-- Source MQTT Broker -->
+        <mxCell id="3" value="Source MQTT Broker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="120" y="110" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <!-- v2c-any -->
+        <mxCell id="4" value="v2c-any" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" vertex="1" parent="1">
+          <mxGeometry x="120" y="190" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <!-- V2C MQTT Broker -->
+        <mxCell id="5" value="V2C MQTT Broker" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" vertex="1" parent="1">
+          <mxGeometry x="120" y="270" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <!-- V2C Wallbox -->
+        <mxCell id="6" value="V2C Wallbox" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;" vertex="1" parent="1">
+          <mxGeometry x="120" y="350" width="280" height="50" as="geometry"/>
+        </mxCell>
+        <!-- Edge: Source System -> Source MQTT Broker -->
+        <mxCell id="7" value="PUBLISH home/energy/grid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="2" target="3" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Edge: Source MQTT Broker -> v2c-any -->
+        <mxCell id="8" value="SUBSCRIBE home/energy/grid" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="3" target="4" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Edge: v2c-any -> V2C MQTT Broker -->
+        <mxCell id="9" value="PUBLISH trydan_v2c_grid_power" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="4" target="5" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <!-- Edge: V2C MQTT Broker -> V2C Wallbox -->
+        <mxCell id="10" value="SUBSCRIBE trydan_v2c_grid_power" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" source="5" target="6" parent="1">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

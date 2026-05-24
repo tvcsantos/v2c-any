@@ -43,26 +43,13 @@ Each meter (grid/solar) supports two modes:
 
 v2c-any actively polls a device at regular intervals and publishes to MQTT.
 
-```mermaid
-graph TD
-    A["v2c-any"] -- "Every interval" --> B["Shelly Pro EM"]
-    B -- "GET /rpc/EM1.GetStatus?id=0" --> A
-    A -- "PUBLISH trydan_v2c_grid_power: 3450" --> C["MQTT Broker"]
-    C -- "SUBSCRIBE trydan_v2c_grid_power" --> D["V2C Wallbox"]
-```
+![MQTT Pull Mode Flow](/images/diagrams/mqtt-pull-flow.svg)
 
 ### Push Mode
 
 v2c-any subscribes to MQTT topics and republishes to V2C topics.
 
-```mermaid
-graph TD
-    A["Source System"] -- "PUBLISH home/energy/grid: {...}" --> B["Source MQTT Broker"]
-    B -- "SUBSCRIBE home/energy/grid" --> C["v2c-any"]
-    C -- "Transform & republish" --> C
-    C -- "PUBLISH trydan_v2c_grid_power: 3450" --> D["V2C MQTT Broker"]
-    D -- "SUBSCRIBE trydan_v2c_grid_power" --> E["V2C Wallbox"]
-```
+![MQTT Push Mode Flow](/images/diagrams/mqtt-push-flow.svg)
 
 ## Configuration
 

@@ -6,7 +6,7 @@ hero:
   text: Turn any device into V2C Dynamic Power Control
   tagline: A universal adapter that bridges any power data source to V2C wallboxes for dynamic EV charging.
   image:
-    src: /images/v2ca.png
+    src: /images/v2c-any-icon-alpha.png
     alt: v2c-any
   actions:
     - theme: brand
@@ -43,11 +43,7 @@ features:
 { device: any } → V2C
 ```
 
-```mermaid
-graph TD
-  A["Any Meter | MQTT | API | Simulator"] --> B[v2c-any]
-  B --> C[V2C Wallbox]
-```
+![Overview Flow](/images/diagrams/overview-flow.svg)
 
 ## What v2c-any is _not_
 

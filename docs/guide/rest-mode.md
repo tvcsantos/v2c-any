@@ -20,12 +20,7 @@ Use REST mode when:
 
 ## How It Works
 
-```mermaid
-graph TD
-    A["V2C Wallbox"] -- "HTTP GET /rpc/EM1.GetStatus?id=0" --> B["v2c-any<br>(REST API)"]
-    B -- "Grid Feed (adapter)" --> C["Polls real Shelly @ 192.168.1.100"]
-    B -- "Solar Feed (mock)" --> D["Returns fixed value"]
-```
+![REST Mode Flow](/images/diagrams/rest-mode-flow.svg)
 
 1. `v2ca` starts a Fastify HTTP server
 2. Exposes endpoints matching the Shelly Pro EM API format (`/rpc/EM1.GetStatus`)

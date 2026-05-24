@@ -18,18 +18,7 @@ A circuit breaker protects your system from cascading failures when a data sourc
 
 ### Circuit States
 
-```mermaid
-stateDiagram-v2
-    CLOSED : CLOSED\nNormal operation, requests pass through
-    OPEN : OPEN\nFailing fast, no requests sent
-    HALF_OPEN : HALF_OPEN\nTesting with single request
-
-    [*] --> CLOSED
-    CLOSED --> OPEN : Errors exceed threshold
-    OPEN --> HALF_OPEN : After resetTimeout
-    HALF_OPEN --> CLOSED : Success
-    HALF_OPEN --> OPEN : Failure
-```
+![Circuit Breaker States](/images/diagrams/circuit-breaker-states.svg)
 
 ### Configuration
 
@@ -112,14 +101,7 @@ Automatic retry with exponential backoff handles transient failures by retrying 
 
 ### Retry Behavior
 
-```mermaid
-flowchart TD
-    A1["Attempt 1: Immediate"] -->|FAIL| A2["Attempt 2: Wait minTimeout (1000ms)"]
-    A2 -->|FAIL| A3["Attempt 3: Wait minTimeout × factor (2000ms)"]
-    A3 -->|FAIL| A4["Attempt 4: Wait minTimeout × factor² (4000ms)"]
-    A4 -->|FAIL| A5["..."]
-    A5 -->|FAIL| A6["Final: Wait up to maxTimeout"]
-```
+![Retry Behavior](/images/diagrams/retry-behavior.svg)
 
 ### Configuration
 
@@ -309,12 +291,7 @@ ema:
 
 The three features are applied in layers:
 
-```mermaid
-flowchart TD
-    CB["Circuit Breaker (outermost)"] --> RS["Retry Strategy"]
-    RS --> EMA["EMA Smoothing"]
-    EMA --> BP["Base Provider (device)"]
-```
+![Request Flow](/images/diagrams/request-flow.svg)
 
 ### Full Resilience Stack
 
@@ -359,16 +336,7 @@ feed:
 
 ### Decision Tree
 
-```mermaid
-flowchart TD
-    Q1{"Is your data source reliable?"}
-    Q1 -->|YES| A1["Minimal or no resilience features needed"]
-    Q1 -->|NO| Q2{"What type of failures occur?"}
-    Q2 -->|Brief network glitches| A2["Use RETRY"]
-    Q2 -->|Occasional long outages| A3["Use CIRCUIT BREAKER"]
-    Q2 -->|Noisy/fluctuating readings| A4["Use EMA"]
-    Q2 -->|All of the above| A5["Use ALL THREE"]
-```
+![Decision Tree](/images/diagrams/decision-tree.svg)
 
 ### Common Scenarios
 
