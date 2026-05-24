@@ -15,7 +15,7 @@
 
 > **Turn `{ device: any }` into V2C Dynamic Power Control**
 
-**v2c-any** (binary: `v2ca`) is a universal adapter that allows **any device** — physical meters, MQTT topics, simulators, or proxies — to integrate with **V2C wallboxes** for **Dynamic Power Control**.
+**v2c-any** (binary: `v2ca`) is a universal adapter that allows **any device** - physical meters, MQTT topics, simulators, or proxies - to integrate with **V2C wallboxes** for **Dynamic Power Control**.
 
 If it can expose power data, **v2c-any** can make it speak _V2C_.
 
@@ -32,7 +32,7 @@ In real installations, however, power data often comes from **heterogeneous sour
 
 **v2c-any** bridges that gap.
 
-It adapts **any input** into the protocol and format expected by a V2C wallbox — without changing your existing setup.
+It adapts **any input** into the protocol and format expected by a V2C wallbox - without changing your existing setup.
 
 ## The idea
 
@@ -235,7 +235,7 @@ It’s an **adapter**, not a lock-in.
 
 `v2c-any` comes from the TypeScript `any` type:
 
-> “I don’t care what you are — I can work with you.”
+> “I don’t care what you are - I can work with you.”
 
 Exactly the philosophy behind this project.
 
