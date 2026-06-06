@@ -64,7 +64,7 @@ breaker:
 
 ### When to Use
 
-Use circuit breaker when:
+**Use circuit breaker when:**
 
 - Data source is sometimes slow or unresponsive
 - You want to prevent cascading failures
@@ -72,13 +72,11 @@ Use circuit breaker when:
 - System should give failing services time to recover
 - Dealing with remote devices over unreliable networks
 
-> [!WARNING]
->
-> Don't use circuit breaker when
->
-> - Data source is always reliable and fast
-> - Temporary failures are unacceptable (prefer retries instead)
-> - You need every request to be attempted
+**Don't use circuit breaker when:**
+
+- Data source is always reliable and fast
+- Temporary failures are unacceptable (prefer retries instead)
+- You need every request to be attempted
 
 ### Examples
 
@@ -164,20 +162,18 @@ retry:
 
 ### When to Use
 
-Use retry strategy when
+**Use retry strategy when:**
 
 - Network connections are occasionally flaky
 - Data source has brief, transient failures
 - API endpoints occasionally return 5xx errors
 - You want to handle temporary outages gracefully
 
-> [!WARNING]
->
-> Don't use retry strategy when
->
-> - Failures are permanent (e.g., authentication errors)
-> - You need immediate failure feedback
-> - Retry delays would cause unacceptable latency
+**Don't use retry strategy when:**
+
+- Failures are permanent (e.g., authentication errors)
+- You need immediate failure feedback
+- Retry delays would cause unacceptable latency
 
 ### Examples
 
@@ -274,20 +270,18 @@ ema:
 
 ### When to Use
 
-Use EMA when:
+**Use EMA when:**
 
 - Power readings are noisy or fluctuating
 - You want to filter out brief spikes/dips
 - Graceful degradation during outages is important
-- You need different response rates for increases vs decreases :::
+- You need different response rates for increases vs decreases
 
-> [!WARNING]
->
-> Don't use EMA when:
->
-> - You need real-time, unfiltered values
-> - Power changes need immediate reflection
-> - Your data source already provides smoothed values :::
+**Don't use EMA when:**
+
+- You need real-time, unfiltered values
+- Power changes need immediate reflection
+- Your data source already provides smoothed values
 
 ### Examples
 

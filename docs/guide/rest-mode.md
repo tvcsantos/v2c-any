@@ -6,7 +6,7 @@ drop-in replacement for physical Shelly hardware.
 
 ## When to Use REST Mode
 
-Use REST mode when:
+**Use REST mode when:**
 
 - Your V2C wallbox is configured to poll a Shelly Pro EM meter
 - You want to replace physical Shelly hardware without reconfiguring your
@@ -15,14 +15,12 @@ Use REST mode when:
 - You don't have or don't want to set up an MQTT broker
 - You're testing or simulating meter behavior
 
-> [!WARNING]
->
-> Don't use REST mode when:
->
-> - Your V2C wallbox is already configured for MQTT (use
->   [MQTT mode](./mqtt-mode) instead)
-> - You need very low latency updates (MQTT is faster)
-> - You want push-based event-driven updates
+**Don't use REST mode when:**
+
+- Your V2C wallbox is already configured for MQTT (use [MQTT mode](./mqtt-mode)
+  instead)
+- You need very low latency updates (MQTT is faster)
+- You want push-based event-driven updates
 
 ## How It Works
 

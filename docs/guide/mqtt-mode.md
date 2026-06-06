@@ -6,7 +6,7 @@ lower latency compared to REST polling.
 
 ## When to Use MQTT Mode
 
-Use MQTT mode when:
+**Use MQTT mode when:**
 
 - Your V2C wallbox is configured for MQTT integration
 - You have an existing MQTT broker (Mosquitto, HiveMQ, etc.)
@@ -15,15 +15,12 @@ Use MQTT mode when:
 - You're integrating with other MQTT-based home automation systems
 - You want to bridge multiple MQTT sources
 
-> [!WARNING]
->
-> Don't use MQTT mode when:
->
-> - Your V2C wallbox is only configured for Shelly REST polling (use
->   [REST mode](./rest-mode))
-> - You don't have an MQTT broker and don't want to set one up
-> - Your data sources don't update frequently enough to benefit from push
->   updates
+**Don't use MQTT mode when:**
+
+- Your V2C wallbox is only configured for Shelly REST polling (use
+  [REST mode](./rest-mode))
+- You don't have an MQTT broker and don't want to set one up
+- Your data sources don't update frequently enough to benefit from push updates
 
 ## MQTT Topics
 
