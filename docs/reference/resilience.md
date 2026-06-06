@@ -23,7 +23,19 @@ instead of waiting for timeouts, giving the failing service time to recover.
 
 ### Circuit States
 
-![Circuit Breaker States](/images/diagrams/circuit-breaker-states.svg)
+```mermaid
+stateDiagram-v2
+    [*] --> CLOSED
+
+    CLOSED --> OPEN: Errors exceed threshold
+    OPEN --> HALF_OPEN: After resetTimeout
+    HALF_OPEN --> CLOSED: Success
+    HALF_OPEN --> OPEN: Failure
+
+    note right of CLOSED: Normal operation
+    note right of OPEN: Failing fast
+    note right of HALF_OPEN: Testing recovery
+```
 
 ### Configuration
 
@@ -52,19 +64,21 @@ breaker:
 
 ### When to Use
 
-::: tip Use circuit breaker when
+Use circuit breaker when:
 
 - Data source is sometimes slow or unresponsive
 - You want to prevent cascading failures
 - You need to fail fast during outages
 - System should give failing services time to recover
-- Dealing with remote devices over unreliable networks :::
+- Dealing with remote devices over unreliable networks
 
-::: warning Don't use circuit breaker when
-
-- Data source is always reliable and fast
-- Temporary failures are unacceptable (prefer retries instead)
-- You need every request to be attempted :::
+> [!WARNING]
+>
+> Don't use circuit breaker when
+>
+> - Data source is always reliable and fast
+> - Temporary failures are unacceptable (prefer retries instead)
+> - You need every request to be attempted
 
 ### Examples
 
@@ -132,23 +146,29 @@ retry:
 | `randomize`    | `boolean` | `true`   | Add jitter to prevent thundering herd.   |
 | `maxRetryTime` | `number`  | `300000` | Maximum total time (ms) for all retries. |
 
-::: info Circuit Breaker Integration When used with a circuit breaker, retries
-automatically stop if the circuit opens, preventing wasted retry attempts. :::
+> [!INFO]
+>
+> Circuit Breaker Integration
+>
+> When used with a circuit breaker, retries automatically stop if the circuit
+> opens, preventing wasted retry attempts.
 
 ### When to Use
 
-::: tip Use retry strategy when
+Use retry strategy when
 
 - Network connections are occasionally flaky
 - Data source has brief, transient failures
 - API endpoints occasionally return 5xx errors
-- You want to handle temporary outages gracefully :::
+- You want to handle temporary outages gracefully
 
-::: warning Don't use retry strategy when
-
-- Failures are permanent (e.g., authentication errors)
-- You need immediate failure feedback
-- Retry delays would cause unacceptable latency :::
+> [!WARNING]
+>
+> Don't use retry strategy when
+>
+> - Failures are permanent (e.g., authentication errors)
+> - You need immediate failure feedback
+> - Retry delays would cause unacceptable latency
 
 ### Examples
 
@@ -198,7 +218,7 @@ when data becomes unavailable, and creating asymmetric response curves.
 
 EMA maintains a running average that gives more weight to recent values:
 
-```
+```text
 EMA_new = α × new_value + (1 - α) × EMA_old
 ```
 
@@ -216,9 +236,13 @@ falling values:
 - `alphaFall` - Used when new value < current EMA
 - `alphaMissing` - Used when data fetch fails (decays toward zero)
 
-::: tip Example use case Solar power often rises quickly (cloud clears) but
-falls slowly (cloud approaches). You might want `alphaRise: 0.6` (responsive to
-increases) and `alphaFall: 0.3` (smooth decreases). :::
+> [!TIP]
+>
+> Example use case
+>
+> Solar power often rises quickly (cloud clears) but falls slowly (cloud
+> approaches). You might want `alphaRise: 0.6` (responsive to increases) and
+> `alphaFall: 0.3` (smooth decreases).
 
 ### Configuration
 
@@ -241,18 +265,20 @@ ema:
 
 ### When to Use
 
-::: tip Use EMA when
+Use EMA when:
 
 - Power readings are noisy or fluctuating
 - You want to filter out brief spikes/dips
 - Graceful degradation during outages is important
 - You need different response rates for increases vs decreases :::
 
-::: warning Don't use EMA when
-
-- You need real-time, unfiltered values
-- Power changes need immediate reflection
-- Your data source already provides smoothed values :::
+> [!WARNING]
+>
+> Don't use EMA when:
+>
+> - You need real-time, unfiltered values
+> - Power changes need immediate reflection
+> - Your data source already provides smoothed values :::
 
 ### Examples
 

@@ -114,7 +114,7 @@ When running in **MQTT mode**, v2c-any publishes to these topics:
 
 **Example:**
 
-```
+```text
 trydan_v2c_grid_power: 3450
 trydan_v2c_sun_power: 2100
 ```
