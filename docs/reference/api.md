@@ -1,6 +1,7 @@
 # API Reference
 
-This page documents the HTTP endpoints exposed by v2c-any when running in **REST mode**.
+This page documents the HTTP endpoints exposed by v2c-any when running in **REST
+mode**.
 
 ## Endpoints
 
@@ -30,8 +31,8 @@ Get energy meter status. Compatible with the Shelly Pro EM API format.
 
 **Query Parameters:**
 
-| Parameter | Type     | Required | Description                       |
-| --------- | -------- | -------- | --------------------------------- |
+| Parameter | Type     | Required | Description                        |
+| --------- | -------- | -------- | ---------------------------------- |
 | `id`      | `number` | Yes      | Meter ID (`0` = grid, `1` = solar) |
 
 **Success Response (`200`):**
@@ -51,18 +52,18 @@ Get energy meter status. Compatible with the Shelly Pro EM API format.
 
 **Response Fields:**
 
-| Field         | Type     | Description                                      |
-| ------------- | -------- | ------------------------------------------------ |
-| `id`          | `number` | EM1 component instance ID                        |
-| `voltage`     | `number` | Voltage measurement (V)                          |
-| `current`     | `number` | Current measurement (A)                          |
-| `act_power`   | `number` | Active power measurement (W)                     |
-| `aprt_power`  | `number` | Apparent power measurement (VA)                  |
-| `pf`          | `number` | Power factor                                     |
-| `freq`        | `number` | Network frequency (Hz)                           |
-| `calibration` | `string` | Calibration status (e.g., `"factory"`)           |
-| `errors`      | `string[]` | Error conditions (present only if not empty)   |
-| `flags`       | `string[]` | Condition flags (present only if not empty)    |
+| Field         | Type       | Description                                  |
+| ------------- | ---------- | -------------------------------------------- |
+| `id`          | `number`   | EM1 component instance ID                    |
+| `voltage`     | `number`   | Voltage measurement (V)                      |
+| `current`     | `number`   | Current measurement (A)                      |
+| `act_power`   | `number`   | Active power measurement (W)                 |
+| `aprt_power`  | `number`   | Apparent power measurement (VA)              |
+| `pf`          | `number`   | Power factor                                 |
+| `freq`        | `number`   | Network frequency (Hz)                       |
+| `calibration` | `string`   | Calibration status (e.g., `"factory"`)       |
+| `errors`      | `string[]` | Error conditions (present only if not empty) |
+| `flags`       | `string[]` | Condition flags (present only if not empty)  |
 
 **Error Response:**
 
@@ -77,7 +78,8 @@ Get energy meter status. Compatible with the Shelly Pro EM API format.
 
 ### `POST /expectaction`
 
-Update mock meter values at runtime. Only works with feeds configured as `type: mock`.
+Update mock meter values at runtime. Only works with feeds configured as
+`type: mock`.
 
 **Request Body:**
 
@@ -90,24 +92,25 @@ Update mock meter values at runtime. Only works with feeds configured as `type: 
 }
 ```
 
-The body follows the same schema as the `EM1Status` object. At minimum, `id` and `calibration` are required.
+The body follows the same schema as the `EM1Status` object. At minimum, `id` and
+`calibration` are required.
 
 **Status Codes:**
 
-| Code  | Description                                 |
-| ----- | ------------------------------------------- |
-| `200` | Value updated successfully                  |
-| `400` | Unknown meter ID or meter not in mock mode  |
-| `500` | Internal error                              |
+| Code  | Description                                |
+| ----- | ------------------------------------------ |
+| `200` | Value updated successfully                 |
+| `400` | Unknown meter ID or meter not in mock mode |
+| `500` | Internal error                             |
 
 ## MQTT Topics
 
 When running in **MQTT mode**, v2c-any publishes to these topics:
 
-| Topic                      | Direction | Format               | Description  |
-| -------------------------- | --------- | -------------------- | ------------ |
-| `trydan_v2c_grid_power`    | Publish   | Plain number (watts) | Grid power   |
-| `trydan_v2c_sun_power`     | Publish   | Plain number (watts) | Solar power  |
+| Topic                   | Direction | Format               | Description |
+| ----------------------- | --------- | -------------------- | ----------- |
+| `trydan_v2c_grid_power` | Publish   | Plain number (watts) | Grid power  |
+| `trydan_v2c_sun_power`  | Publish   | Plain number (watts) | Solar power |
 
 **Example:**
 
@@ -118,7 +121,9 @@ trydan_v2c_sun_power: 2100
 
 ## CLI
 
-v2c-any is invoked via the `v2ca` binary. It accepts no command-line arguments - all configuration is loaded from configuration files (see [Configuration](/guide/configuration)).
+v2c-any is invoked via the `v2ca` binary. It accepts no command-line arguments -
+all configuration is loaded from configuration files (see
+[Configuration](/guide/configuration)).
 
 ```bash
 # Run with auto-detected configuration
@@ -131,4 +136,5 @@ npx v2c-any
 npm run dev
 ```
 
-The application logs to stdout using [pino](https://github.com/pinojs/pino) with [pino-pretty](https://github.com/pinojs/pino-pretty) formatting.
+The application logs to stdout using [pino](https://github.com/pinojs/pino) with
+[pino-pretty](https://github.com/pinojs/pino-pretty) formatting.

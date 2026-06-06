@@ -1,6 +1,7 @@
 # Docker
 
-v2c-any provides Docker support out of the box for easy deployment and management.
+v2c-any provides Docker support out of the box for easy deployment and
+management.
 
 ## Docker Image
 
@@ -13,7 +14,8 @@ docker build -t v2c-any .
 The Dockerfile uses a multi-stage build:
 
 1. **Builder stage** - Installs all dependencies and compiles TypeScript
-2. **Production stage** - Copies only the built output and production dependencies, runs as a non-root user
+2. **Production stage** - Copies only the built output and production
+   dependencies, runs as a non-root user
 
 ### Running
 
@@ -32,21 +34,22 @@ docker run \
 
 ### Environment Variables
 
-| Variable         | Default | Description        |
-| ---------------- | ------- | ------------------ |
+| Variable         | Default      | Description         |
+| ---------------- | ------------ | ------------------- |
 | `NODE_ENV`       | `production` | Node.js environment |
-| `V2CA_LOG_LEVEL` | `info`  | Logging level       |
+| `V2CA_LOG_LEVEL` | `info`       | Logging level       |
 
 ## Docker Compose
 
-The project includes a ready-to-use `docker-compose.yml` that starts both an MQTT broker (Mosquitto) and v2c-any.
+The project includes a ready-to-use `docker-compose.yml` that starts both an
+MQTT broker (Mosquitto) and v2c-any.
 
 ### Services
 
-| Service  | Image                  | Ports      | Description                 |
-| -------- | ---------------------- | ---------- | --------------------------- |
-| `broker` | `eclipse-mosquitto:2.0`| `1883`     | MQTT broker                 |
-| `app`    | Built from Dockerfile  | `3000`     | v2c-any application         |
+| Service  | Image                   | Ports  | Description         |
+| -------- | ----------------------- | ------ | ------------------- |
+| `broker` | `eclipse-mosquitto:2.0` | `1883` | MQTT broker         |
+| `app`    | Built from Dockerfile   | `3000` | v2c-any application |
 
 ### Starting
 
@@ -85,7 +88,7 @@ services:
     image: eclipse-mosquitto:2.0
     container_name: mqtt-broker
     ports:
-      - "1883:1883"
+      - '1883:1883'
     volumes:
       - ./docker/mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
       - mosquitto_data:/mosquitto/data
@@ -99,7 +102,7 @@ services:
       dockerfile: Dockerfile
     container_name: v2c-any
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       - NODE_ENV=production
       - V2CA_LOG_LEVEL=${V2CA_LOG_LEVEL:-info}
@@ -145,4 +148,5 @@ This starts Mosquitto on `localhost:1883`.
 - Mount configuration as read-only (`:ro`).
 - Use named volumes for Mosquitto data persistence.
 - Set `V2CA_LOG_LEVEL=warn` in production to reduce log noise.
-- Place the MQTT broker and v2c-any on the same Docker network for low-latency communication.
+- Place the MQTT broker and v2c-any on the same Docker network for low-latency
+  communication.

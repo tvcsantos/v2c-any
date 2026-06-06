@@ -1,25 +1,29 @@
 # Configuration
 
-`v2ca` uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to load configuration, which means it automatically searches for configuration in several standard locations and formats.
+`v2ca` uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to load
+configuration, which means it automatically searches for configuration in
+several standard locations and formats.
 
 ## Configuration Files
 
 Create a configuration file in one of these formats:
 
-| File                  | Format        |
-| --------------------- | ------------- |
-| `.v2carc`             | JSON or YAML  |
-| `.v2carc.json`        | JSON          |
-| `.v2carc.yaml`        | YAML          |
-| `.v2carc.yml`         | YAML          |
-| `v2ca.config.js`      | CommonJS/ESM  |
-| `package.json`        | `"v2ca"` key  |
+| File             | Format       |
+| ---------------- | ------------ |
+| `.v2carc`        | JSON or YAML |
+| `.v2carc.json`   | JSON         |
+| `.v2carc.yaml`   | YAML         |
+| `.v2carc.yml`    | YAML         |
+| `v2ca.config.js` | CommonJS/ESM |
+| `package.json`   | `"v2ca"` key |
 
-cosmiconfig searches from the current working directory upward, using the first configuration file it finds.
+cosmiconfig searches from the current working directory upward, using the first
+configuration file it finds.
 
 ## Top-Level Schema
 
-Every configuration file has the same top-level structure - a `provider` discriminator and a `properties` object:
+Every configuration file has the same top-level structure - a `provider`
+discriminator and a `properties` object:
 
 ```yaml
 provider: rest | mqtt
@@ -32,12 +36,12 @@ properties:
 ```yaml
 provider: rest
 properties:
-  port: 3000           # HTTP server port
+  port: 3000 # HTTP server port
   meters:
     grid:
-      feed: { ... }    # Feed configuration
+      feed: { ... } # Feed configuration
     solar:
-      feed: { ... }    # Feed configuration
+      feed: { ... } # Feed configuration
 ```
 
 See [REST Mode](./rest-mode) for full details.
@@ -47,16 +51,16 @@ See [REST Mode](./rest-mode) for full details.
 ```yaml
 provider: mqtt
 properties:
-  url: mqtt://localhost:1883   # MQTT broker URL
-  username: user               # Optional
-  password: pass               # Optional
+  url: mqtt://localhost:1883 # MQTT broker URL
+  username: user # Optional
+  password: pass # Optional
   meters:
     grid:
       mode: pull | push
-      feed: { ... }           # Feed configuration
+      feed: { ... } # Feed configuration
     solar:
       mode: pull | push
-      feed: { ... }           # Feed configuration
+      feed: { ... } # Feed configuration
 ```
 
 See [MQTT Mode](./mqtt-mode) for full details.
@@ -65,12 +69,18 @@ See [MQTT Mode](./mqtt-mode) for full details.
 
 Both modes require configuring two meters:
 
-| Meter    | ID  | Description                         |
-| -------- | --- | ----------------------------------- |
-| `grid`   | `0` | Grid power consumption              |
-| `solar`  | `1` | Solar power production              |
+| Meter   | ID  | Description            |
+| ------- | --- | ---------------------- |
+| `grid`  | `0` | Grid power consumption |
+| `solar` | `1` | Solar power production |
 
 Each meter must have a feed configuration, even if it's set to `off`.
+
+> [!NOTE]
+>
+> These IDs are fixed and cannot be changed, as they correspond to the V2C
+> protocol specification. The `id` property in feed configurations is optional
+> and only used for certain feed types (e.g. `mock`).
 
 ## Feed Types
 
@@ -84,12 +94,12 @@ feed:
   properties:
     device: shelly-pro-em
     host: 192.168.1.100
-    protocol: http        # Optional, default: http
-    port: 80              # Optional, default: 80
-    interval: 2000        # Required in MQTT pull mode
-    breaker: { ... }      # Optional circuit breaker
-    retry: { ... }        # Optional retry strategy
-    ema: { ... }          # Optional EMA smoothing
+    protocol: http # Optional, default: http
+    port: 80 # Optional, default: 80
+    interval: 2000 # Required in MQTT pull mode
+    breaker: { ... } # Optional circuit breaker
+    retry: { ... } # Optional retry strategy
+    ema: { ... } # Optional EMA smoothing
 ```
 
 ### `rpc-mqtt-adapter`
@@ -103,8 +113,8 @@ feed:
     device: shelly-pro-em
     interval: 2000
     url: mqtt://broker:1883
-    username: user           # Optional
-    password: pass           # Optional
+    username: user # Optional
+    password: pass # Optional
     topic: shellyproem/rpc
     id: shellyproem-abc123
 ```
@@ -145,12 +155,12 @@ feed:
   type: bridge
   properties:
     url: mqtt://source-broker:1883
-    username: user           # Optional
-    password: pass           # Optional
+    username: user # Optional
+    password: pass # Optional
     device: shelly-pro-em
     topic: home/energy/grid
     keepAlive:
-      type: off              # or http-adapter / rpc-mqtt-adapter
+      type: off # or http-adapter / rpc-mqtt-adapter
 ```
 
 ### `off`
@@ -164,7 +174,8 @@ feed:
 
 ## Resilience Options
 
-All `http-adapter` feeds support optional resilience configuration. These can be combined freely.
+All `http-adapter` feeds support optional resilience configuration. These can be
+combined freely.
 
 ```yaml
 feed:
@@ -185,7 +196,8 @@ feed:
       freshnessThreshold: 10000
 ```
 
-See [Resilience](/reference/resilience) for complete documentation on circuit breaker, retry, and EMA options.
+See [Resilience](/reference/resilience) for complete documentation on circuit
+breaker, retry, and EMA options.
 
 ## Example Configurations
 

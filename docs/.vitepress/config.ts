@@ -1,13 +1,14 @@
 import { defineConfig } from 'vitepress';
 import { withMermaid } from 'vitepress-plugin-mermaid';
-import llmstxt, { copyOrDownloadAsMarkdownButtons } from 'vitepress-plugin-llms'
+import llmstxt, {
+  copyOrDownloadAsMarkdownButtons,
+} from 'vitepress-plugin-llms';
 
 export default withMermaid(
   defineConfig({
     title: 'v2c-any',
-    description:
-      'Turn any device into V2C Dynamic Power Control',
-    head: [['link', { rel: 'icon', href: '/images/v2c-any-icon-alpha.png' }]],
+    description: 'Turn any device into V2C Dynamic Power Control',
+    head: [['link', { rel: 'icon', href: 'favicon.ico' }]],
 
     vite: {
       plugins: [llmstxt()],
@@ -15,16 +16,16 @@ export default withMermaid(
 
     markdown: {
       config(md) {
-        md.use(copyOrDownloadAsMarkdownButtons)
-      }
+        md.use(copyOrDownloadAsMarkdownButtons);
+      },
     },
 
     mermaid: {
-      theme: 'neutral'
+      theme: 'neutral',
     },
 
     themeConfig: {
-      logo: '/images/v2c-any-icon-alpha.png',
+      logo: '/images/v2ca-logo-200.png',
 
       nav: [
         { text: 'Guide', link: '/guide/getting-started' },
@@ -87,9 +88,8 @@ export default withMermaid(
       },
 
       editLink: {
-        pattern:
-          'https://github.com/tvcsantos/v2c-any/edit/main/docs/:path',
+        pattern: 'https://github.com/tvcsantos/v2c-any/edit/main/docs/:path',
       },
     },
-  }),
+  })
 );

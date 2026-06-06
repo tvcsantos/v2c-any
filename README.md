@@ -1,5 +1,7 @@
 <!-- markdownlint-disable MD041 -->
+
 ![v2a - V2C any](docs/assets/images/v2ca.png)
+
 <!-- markdownlint-enable MD041 -->
 
 ![GitHub License](https://img.shields.io/github/license/tvcsantos/v2c-any)
@@ -15,14 +17,18 @@
 
 > **Turn `{ device: any }` into V2C Dynamic Power Control**
 
-**v2c-any** (binary: `v2ca`) is a universal adapter that allows **any device** - physical meters, MQTT topics, simulators, or proxies - to integrate with **V2C wallboxes** for **Dynamic Power Control**.
+**v2c-any** (binary: `v2ca`) is a universal adapter that allows **any device** -
+physical meters, MQTT topics, simulators, or proxies - to integrate with **V2C
+wallboxes** for **Dynamic Power Control**.
 
 If it can expose power data, **v2c-any** can make it speak _V2C_.
 
 ## Why v2c-any?
 
-V2C wallboxes support Dynamic Power Control via specific meters or MQTT inputs.  
-In real installations, however, power data often comes from **heterogeneous sources**:
+V2C wallboxes support Dynamic Power Control via specific meters or MQTT
+inputs.  
+In real installations, however, power data often comes from **heterogeneous
+sources**:
 
 - Different brands of energy meters
 - Existing MQTT infrastructures
@@ -32,7 +38,8 @@ In real installations, however, power data often comes from **heterogeneous sour
 
 **v2c-any** bridges that gap.
 
-It adapts **any input** into the protocol and format expected by a V2C wallbox - without changing your existing setup.
+It adapts **any input** into the protocol and format expected by a V2C wallbox -
+without changing your existing setup.
 
 ## The idea
 
@@ -76,7 +83,8 @@ npx v2c-any
 
 ### Configuration
 
-`v2ca` uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to load configuration. Create a configuration file in one of these formats:
+`v2ca` uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to load
+configuration. Create a configuration file in one of these formats:
 
 - `.v2carc` (JSON or YAML)
 - `.v2carc.json`
@@ -124,11 +132,13 @@ docker run -v $(pwd)/.v2carc.yaml:/app/.v2carc.yaml v2c-any
 
 ## Operating Modes
 
-`v2c-any` supports two primary operating modes depending on how your V2C wallbox is configured:
+`v2c-any` supports two primary operating modes depending on how your V2C wallbox
+is configured:
 
 ### REST Mode (Shelly EM1 Emulator)
 
-Emulates a **Shelly Pro EM** energy meter by exposing a REST API that V2C wallboxes can poll.
+Emulates a **Shelly Pro EM** energy meter by exposing a REST API that V2C
+wallboxes can poll.
 
 **Use this when:**
 
@@ -162,11 +172,13 @@ properties:
 **How it works:**
 
 1. `v2ca` starts a Fastify HTTP server
-2. Exposes endpoint matching Shelly Pro EM API format (i.e., `/rpc/EM1.GetStatus`)
+2. Exposes endpoint matching Shelly Pro EM API format (i.e.,
+   `/rpc/EM1.GetStatus`)
 3. V2C wallbox polls the endpoint at configured intervals
 4. Returns real-time power data from your configured sources
 
-📖 **[See full REST Mode documentation](docs/REST_MODE.md)** for detailed configuration options, schemas, and examples.
+📖 **[See full REST Mode documentation](docs/REST_MODE.md)** for detailed
+configuration options, schemas, and examples.
 
 ### MQTT Mode (Direct Publisher)
 
@@ -210,7 +222,8 @@ properties:
 3. Supports both **pull** (polling devices) and **push** (subscribing to topics)
 4. V2C wallbox subscribes and receives real-time updates
 
-📖 **[See full MQTT Mode documentation](docs/MQTT_MODE.md)** for detailed configuration options, schemas, and examples.
+📖 **[See full MQTT Mode documentation](docs/MQTT_MODE.md)** for detailed
+configuration options, schemas, and examples.
 
 ### Mode Comparison
 

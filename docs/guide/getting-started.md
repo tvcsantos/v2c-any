@@ -2,7 +2,9 @@
 
 ## Why v2c-any?
 
-V2C wallboxes support Dynamic Power Control via specific meters or MQTT inputs. In real installations, however, power data often comes from **heterogeneous sources**:
+V2C wallboxes support Dynamic Power Control via specific meters or MQTT inputs.
+In real installations, however, power data often comes from **heterogeneous
+sources**:
 
 - Different brands of energy meters
 - Existing MQTT infrastructures
@@ -10,7 +12,8 @@ V2C wallboxes support Dynamic Power Control via specific meters or MQTT inputs. 
 - Custom hardware or software systems
 - Simulated or virtual meters for testing
 
-**v2c-any** bridges that gap. It adapts **any input** into the protocol and format expected by a V2C wallbox - without changing your existing setup.
+**v2c-any** bridges that gap. It adapts **any input** into the protocol and
+format expected by a V2C wallbox - without changing your existing setup.
 
 ## Prerequisites
 
@@ -36,7 +39,7 @@ v2ca
 ### From source
 
 ```bash
-git clone https://github.com/tvcsantos/v2c-any.git
+git clone git@github.com:tvcsantos/v2c-any.git
 cd v2c-any
 npm install
 npm run build
@@ -98,13 +101,17 @@ v2c-any supports two primary operating modes:
 | **Use Case**    | Shelly meter replacement   | MQTT-native setups          |
 | **Scalability** | Limited by polling         | Better for multiple devices |
 
-- **[REST Mode](./rest-mode)** - Emulates a Shelly Pro EM. Use when your V2C wallbox polls a Shelly meter.
-- **[MQTT Mode](./mqtt-mode)** - Publishes to MQTT topics. Use when your wallbox is configured for MQTT integration.
+- **[REST Mode](./rest-mode)** - Emulates a Shelly Pro EM. Use when your V2C
+  wallbox polls a Shelly meter.
+- **[MQTT Mode](./mqtt-mode)** - Publishes to MQTT topics. Use when your wallbox
+  is configured for MQTT integration.
 
 ## Next Steps
 
-- [Configuration](./configuration) - Learn about all configuration file formats and options.
+- [Configuration](./configuration) - Learn about all configuration file formats
+  and options.
 - [REST Mode](./rest-mode) - Detailed guide for REST mode.
 - [MQTT Mode](./mqtt-mode) - Detailed guide for MQTT mode.
 - [Docker](./docker) - Deploy with Docker and Docker Compose.
-- [Resilience](/reference/resilience) - Circuit breaker, retry, and EMA smoothing options.
+- [Resilience](/reference/resilience) - Circuit breaker, retry, and EMA
+  smoothing options.

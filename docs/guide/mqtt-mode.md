@@ -1,6 +1,8 @@
 # MQTT Mode
 
-MQTT mode allows **v2c-any** to publish power data directly to MQTT topics that V2C wallboxes subscribe to. This enables push-based, event-driven updates with lower latency compared to REST polling.
+MQTT mode allows **v2c-any** to publish power data directly to MQTT topics that
+V2C wallboxes subscribe to. This enables push-based, event-driven updates with
+lower latency compared to REST polling.
 
 ## When to Use MQTT Mode
 
@@ -14,19 +16,21 @@ Use MQTT mode when:
 - You want to bridge multiple MQTT sources
 
 ::: warning Don't use MQTT mode when
-- Your V2C wallbox is only configured for Shelly REST polling (use [REST mode](./rest-mode))
+
+- Your V2C wallbox is only configured for Shelly REST polling (use
+  [REST mode](./rest-mode))
 - You don't have an MQTT broker and don't want to set one up
 - Your data sources don't update frequently enough to benefit from push updates
-:::
+  :::
 
 ## MQTT Topics
 
 v2c-any publishes to the following topics that V2C wallboxes subscribe to:
 
-| Topic                      | Description  | Format                |
-| -------------------------- | ------------ | --------------------- |
-| `trydan_v2c_grid_power`    | Grid power   | Plain number (watts)  |
-| `trydan_v2c_sun_power`     | Solar power  | Plain number (watts)  |
+| Topic                   | Description | Format               |
+| ----------------------- | ----------- | -------------------- |
+| `trydan_v2c_grid_power` | Grid power  | Plain number (watts) |
+| `trydan_v2c_sun_power`  | Solar power | Plain number (watts) |
 
 **Example messages:**
 
@@ -78,16 +82,16 @@ grid:
       host: 192.168.1.100
 ```
 
-| Option     | Type                  | Required | Default  | Description                               |
-| ---------- | --------------------- | -------- | -------- | ----------------------------------------- |
-| `interval` | `number`              | Yes      | -        | Polling interval in milliseconds          |
-| `device`   | `string`              | Yes      | -        | Device type (currently: `shelly-pro-em`)  |
-| `host`     | `string`              | Yes      | -        | IP address or hostname of the device      |
-| `protocol` | `'http'` \| `'https'` | No       | `'http'` | Protocol to use                           |
-| `port`     | `number`              | No       | `80`     | Port number of the device                 |
-| `breaker`  | `BreakerOptions`      | No       | -        | Circuit breaker configuration             |
-| `retry`    | `RetryOptions`        | No       | -        | Retry strategy configuration              |
-| `ema`      | `EmaOptions`          | No       | -        | EMA smoothing configuration               |
+| Option     | Type                  | Required | Default  | Description                              |
+| ---------- | --------------------- | -------- | -------- | ---------------------------------------- |
+| `interval` | `number`              | Yes      | -        | Polling interval in milliseconds         |
+| `device`   | `string`              | Yes      | -        | Device type (currently: `shelly-pro-em`) |
+| `host`     | `string`              | Yes      | -        | IP address or hostname of the device     |
+| `protocol` | `'http'` \| `'https'` | No       | `'http'` | Protocol to use                          |
+| `port`     | `number`              | No       | `80`     | Port number of the device                |
+| `breaker`  | `BreakerOptions`      | No       | -        | Circuit breaker configuration            |
+| `retry`    | `RetryOptions`        | No       | -        | Retry strategy configuration             |
+| `ema`      | `EmaOptions`          | No       | -        | EMA smoothing configuration              |
 
 ### RPC MQTT Adapter Feed
 
@@ -106,15 +110,15 @@ grid:
       id: shellyproem-abc123
 ```
 
-| Option     | Type     | Required | Default | Description                               |
-| ---------- | -------- | -------- | ------- | ----------------------------------------- |
-| `interval` | `number` | Yes      | -       | Request interval in milliseconds          |
-| `device`   | `string` | Yes      | -       | Device type (currently: `shelly-pro-em`)  |
-| `url`      | `string` | Yes      | -       | MQTT broker URL for RPC communication     |
-| `username` | `string` | No       | -       | Username for MQTT broker authentication   |
-| `password` | `string` | No       | -       | Password for MQTT broker authentication   |
-| `topic`    | `string` | Yes      | -       | MQTT topic to publish RPC requests        |
-| `id`       | `string` | Yes      | -       | Device identifier used in RPC requests    |
+| Option     | Type     | Required | Default | Description                              |
+| ---------- | -------- | -------- | ------- | ---------------------------------------- |
+| `interval` | `number` | Yes      | -       | Request interval in milliseconds         |
+| `device`   | `string` | Yes      | -       | Device type (currently: `shelly-pro-em`) |
+| `url`      | `string` | Yes      | -       | MQTT broker URL for RPC communication    |
+| `username` | `string` | No       | -       | Username for MQTT broker authentication  |
+| `password` | `string` | No       | -       | Password for MQTT broker authentication  |
+| `topic`    | `string` | Yes      | -       | MQTT topic to publish RPC requests       |
+| `id`       | `string` | Yes      | -       | Device identifier used in RPC requests   |
 
 ### Mock Feed
 
@@ -166,20 +170,23 @@ grid:
         type: off
 ```
 
-| Option      | Type              | Required | Default | Description                                  |
-| ----------- | ----------------- | -------- | ------- | -------------------------------------------- |
-| `url`       | `string`          | Yes      | -       | Source MQTT broker URL                        |
-| `username`  | `string`          | No       | -       | Username for source broker authentication    |
-| `password`  | `string`          | No       | -       | Password for source broker authentication    |
-| `device`    | `string`          | Yes      | -       | Device type for parsing messages             |
-| `topic`     | `string`          | Yes      | -       | MQTT topic to subscribe to                   |
-| `keepAlive` | `KeepAliveConfig` | Yes      | -       | Keep-alive configuration                     |
+| Option      | Type              | Required | Default | Description                               |
+| ----------- | ----------------- | -------- | ------- | ----------------------------------------- |
+| `url`       | `string`          | Yes      | -       | Source MQTT broker URL                    |
+| `username`  | `string`          | No       | -       | Username for source broker authentication |
+| `password`  | `string`          | No       | -       | Password for source broker authentication |
+| `device`    | `string`          | Yes      | -       | Device type for parsing messages          |
+| `topic`     | `string`          | Yes      | -       | MQTT topic to subscribe to                |
+| `keepAlive` | `KeepAliveConfig` | Yes      | -       | Keep-alive configuration                  |
 
 #### Keep-Alive Configuration
 
-In push mode, v2c-any subscribes to MQTT topics and waits for messages. To ensure fresh data, you can configure a keep-alive mechanism that periodically requests data if no messages are received.
+In push mode, v2c-any subscribes to MQTT topics and waits for messages. To
+ensure fresh data, you can configure a keep-alive mechanism that periodically
+requests data if no messages are received.
 
-The keep-alive timer resets whenever a message is received on the subscribed topic. If no message arrives within the interval, a request is triggered.
+The keep-alive timer resets whenever a message is received on the subscribed
+topic. If no message arrives within the interval, a request is triggered.
 
 ::: code-group
 
@@ -453,7 +460,8 @@ properties:
 ### Optimization Tips
 
 1. **Use push mode when possible** for lower latency and better efficiency
-2. **Don't poll too aggressively** - most scenarios work fine with 2–5 second intervals
+2. **Don't poll too aggressively** - most scenarios work fine with 2–5 second
+   intervals
 3. **Enable EMA smoothing** to reduce fluctuations and publish frequency
 4. **Use circuit breaker** to prevent overwhelming slow devices
 5. **Monitor MQTT broker load** if handling many messages
@@ -480,15 +488,18 @@ properties:
 ### V2C wallbox not receiving updates
 
 **Possible causes:**
+
 1. V2C wallbox not subscribed to correct topics
 2. MQTT broker not running
 3. Network connectivity issues
 
 **Solutions:**
+
 - Verify broker is running: `mosquitto_sub -h localhost -t '#' -v`
 - Check v2c-any logs for connection errors
 - Ensure V2C wallbox is configured for MQTT mode
-- Test publishing manually: `mosquitto_pub -h localhost -t trydan_v2c_grid_power -m "1000"`
+- Test publishing manually:
+  `mosquitto_pub -h localhost -t trydan_v2c_grid_power -m "1000"`
 
 ### Connection refused to MQTT broker
 
