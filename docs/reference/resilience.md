@@ -121,7 +121,16 @@ failed requests with increasing delays between attempts.
 
 ### Retry Behavior
 
-![Retry Behavior](/images/diagrams/retry-behavior.svg)
+```mermaid
+flowchart TD
+    A([Request]) --> B[Attempt]
+    B --> C{Success?}
+    C -- Yes --> D([Return result])
+    C -- No --> E{Max attempts\nreached?}
+    E -- Yes --> F([Throw error])
+    E -- No --> G[Wait\nminTimeout × factor^n]
+    G --> B
+```
 
 ### Configuration
 
@@ -325,7 +334,32 @@ ema:
 
 The three features are applied in layers:
 
-![Request Flow](/images/diagrams/request-flow.svg)
+```mermaid
+flowchart TD
+    A([Incoming request]) --> CB
+
+    subgraph CB [Circuit Breaker]
+        CB1{Circuit open?}
+    end
+
+    CB1 -- Yes --> E([Fail fast])
+    CB1 -- No --> RT
+
+    subgraph RT [Retry]
+        RT1[Attempt] --> RT2{Success?}
+        RT2 -- No --> RT3{Retries\nleft?}
+        RT3 -- Yes --> RT1
+        RT3 -- No --> RT4([Throw error])
+    end
+
+    RT2 -- Yes --> EMA
+
+    subgraph EMA [EMA Smoothing]
+        EMA1[Apply smoothing\nto reading]
+    end
+
+    EMA1 --> R([Return smoothed value])
+```
 
 ### Full Resilience Stack
 
@@ -370,7 +404,16 @@ feed:
 
 ### Decision Tree
 
-![Decision Tree](/images/diagrams/decision-tree.svg)
+```mermaid
+flowchart TD
+    A{Is your data\nsource reliable?}
+    A -- Yes --> B([No resilience needed])
+    A -- No --> C{What type\nof failures?}
+    C -- Brief network glitches --> D([Use Retry])
+    C -- Long or frequent outages --> E([Use Circuit Breaker])
+    C -- Noisy readings --> F([Use EMA])
+    C -- All of the above --> G([Use all three])
+```
 
 ### Common Scenarios
 
