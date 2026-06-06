@@ -43,7 +43,7 @@ breaker:
 | Option                     | Type      | Default | Description                                                         |
 | -------------------------- | --------- | ------- | ------------------------------------------------------------------- |
 | `timeout`                  | `number`  | `10000` | Maximum time to wait for a response (ms). Exceeding this = failure. |
-| `errorThresholdPercentage` | `number`  | `50`    | Error percentage (0–100) required to open the circuit.              |
+| `errorThresholdPercentage` | `number`  | `50`    | Error percentage (0-100) required to open the circuit.              |
 | `resetTimeout`             | `number`  | `30000` | Time (ms) the circuit stays open before entering half-open state.   |
 | `rollingCountTimeout`      | `number`  | `10000` | Time window (ms) for tracking errors.                               |
 | `rollingCountBuckets`      | `number`  | `10`    | Number of buckets in the rolling count window.                      |
@@ -234,9 +234,9 @@ ema:
 
 | Option               | Type           | Required | Description                                                 |
 | -------------------- | -------------- | -------- | ----------------------------------------------------------- |
-| `alphaRise`          | `number` (0–1) | Yes      | Smoothing factor when values are increasing.                |
-| `alphaFall`          | `number` (0–1) | Yes      | Smoothing factor when values are decreasing.                |
-| `alphaMissing`       | `number` (0–1) | Yes      | Smoothing factor when data fetch fails (decay toward zero). |
+| `alphaRise`          | `number` (0-1) | Yes      | Smoothing factor when values are increasing.                |
+| `alphaFall`          | `number` (0-1) | Yes      | Smoothing factor when values are decreasing.                |
+| `alphaMissing`       | `number` (0-1) | Yes      | Smoothing factor when data fetch fails (decay toward zero). |
 | `freshnessThreshold` | `number`       | No       | Time (ms) before data is considered stale.                  |
 
 ### When to Use

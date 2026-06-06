@@ -61,13 +61,13 @@ Or in practical terms:
 
 ## Key features
 
-- 🔌 **Universal adapter** – works with _any_ power data source
-- 📡 **MQTT support** – publish once, charge dynamically
-- ⚡ **Dynamic Power Control** – grid, solar, or hybrid scenarios
-- 🧪 **Simulation mode** – emulate supported meters for testing
-- 🔁 **Proxy mode** – forward and transform existing devices
-- 🧩 **Extensible architecture** – add new adapters easily
-- 🟦 **TypeScript-first** – predictable, typed, maintainable
+- 🔌 **Universal adapter** - works with _any_ power data source
+- 📡 **MQTT support** - publish once, charge dynamically
+- ⚡ **Dynamic Power Control** - grid, solar, or hybrid scenarios
+- 🧪 **Simulation mode** - emulate supported meters for testing
+- 🔁 **Proxy mode** - forward and transform existing devices
+- 🧩 **Extensible architecture** - add new adapters easily
+- 🟦 **TypeScript-first** - predictable, typed, maintainable
 
 ## Quick Start
 

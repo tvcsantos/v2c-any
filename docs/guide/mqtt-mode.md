@@ -15,13 +15,15 @@ Use MQTT mode when:
 - You're integrating with other MQTT-based home automation systems
 - You want to bridge multiple MQTT sources
 
-::: warning Don't use MQTT mode when
-
-- Your V2C wallbox is only configured for Shelly REST polling (use
-  [REST mode](./rest-mode))
-- You don't have an MQTT broker and don't want to set one up
-- Your data sources don't update frequently enough to benefit from push updates
-  :::
+> [!WARNING]
+>
+> Don't use MQTT mode when:
+>
+> - Your V2C wallbox is only configured for Shelly REST polling (use
+>   [REST mode](./rest-mode))
+> - You don't have an MQTT broker and don't want to set one up
+> - Your data sources don't update frequently enough to benefit from push
+>   updates
 
 ## MQTT Topics
 
@@ -34,7 +36,7 @@ v2c-any publishes to the following topics that V2C wallboxes subscribe to:
 
 **Example messages:**
 
-```
+```text
 trydan_v2c_grid_power: 3450
 trydan_v2c_sun_power: 2100
 ```
@@ -47,13 +49,43 @@ Each meter (grid/solar) supports two modes:
 
 v2c-any actively polls a device at regular intervals and publishes to MQTT.
 
-![MQTT Pull Mode Flow](/images/diagrams/mqtt-pull-flow.svg)
+```mermaid
+sequenceDiagram
+    participant S as Data Source
+    participant A as v2c-any
+    participant B as MQTT Broker
+    participant W as V2C Wallbox
+
+    W->>B: SUBSCRIBE trydan_v2c_grid_power
+
+    loop Every interval
+        A->>S: Fetch power data
+        S-->>A: Power reading (W)
+        A->>B: PUBLISH trydan_v2c_grid_power 3450
+        B-->>W: 3450
+    end
+```
 
 ### Push Mode
 
 v2c-any subscribes to MQTT topics and republishes to V2C topics.
 
-![MQTT Push Mode Flow](/images/diagrams/mqtt-push-flow.svg)
+```mermaid
+sequenceDiagram
+    participant S as Source System
+    participant SB as Source MQTT Broker
+    participant A as v2c-any
+    participant B as V2C MQTT Broker
+    participant W as V2C Wallbox
+
+    A->>SB: SUBSCRIBE home/energy/grid
+    W->>B: SUBSCRIBE trydan_v2c_grid_power
+
+    S->>SB: PUBLISH home/energy/grid 3450
+    SB-->>A: 3450
+    A->>B: PUBLISH trydan_v2c_grid_power 3450
+    B-->>W: 3450
+```
 
 ## Configuration
 
@@ -446,21 +478,21 @@ properties:
 ### Pull Mode
 
 - **Update frequency** - Controlled by `interval` setting
-- **Recommended intervals** - 1000–5000ms for most scenarios
+- **Recommended intervals** - 1000-5000ms for most scenarios
 - **Network overhead** - Each poll = 1 HTTP request + 1 MQTT publish
-- **Resource usage** - ~40–60 MB RAM
+- **Resource usage** - ~40-60 MB RAM
 
 ### Push Mode
 
 - **Update frequency** - Depends on source MQTT publishing rate
-- **Latency** - Very low (~10–50ms from source publish to V2C publish)
+- **Latency** - Very low (~10-50ms from source publish to V2C publish)
 - **Network overhead** - 1 MQTT subscription + 1 MQTT publish per update
-- **Resource usage** - ~30–50 MB RAM
+- **Resource usage** - ~30-50 MB RAM
 
 ### Optimization Tips
 
 1. **Use push mode when possible** for lower latency and better efficiency
-2. **Don't poll too aggressively** - most scenarios work fine with 2–5 second
+2. **Don't poll too aggressively** - most scenarios work fine with 2-5 second
    intervals
 3. **Enable EMA smoothing** to reduce fluctuations and publish frequency
 4. **Use circuit breaker** to prevent overwhelming slow devices
