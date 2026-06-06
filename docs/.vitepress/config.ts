@@ -4,11 +4,15 @@ import llmstxt, {
   copyOrDownloadAsMarkdownButtons,
 } from 'vitepress-plugin-llms';
 
+const rawBase = process.env.BASE_URL || '/'
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`
+
 export default withMermaid(
   defineConfig({
+    base,
     title: 'v2c-any',
     description: 'Turn any device into V2C Dynamic Power Control',
-    head: [['link', { rel: 'icon', href: 'favicon.ico' }]],
+    head: [['link', { rel: 'icon', href: `${base}favicon.ico` }]],
 
     vite: {
       plugins: [llmstxt()],
