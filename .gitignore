@@ -4,3 +4,6 @@ dist
 build
 .DS_Store
 .env*
+docs/node_modules
+docs/.vitepress/cache
+docs/.vitepress/dist
