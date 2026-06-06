@@ -169,7 +169,7 @@ solar:
 | `interval` | `number`            | Yes      | -       | Publishing interval in milliseconds |
 | `value`    | `{ power: number }` | No       | -       | Fixed power value in watts          |
 
-### Off Feed
+### Off Feed (Pull)
 
 Disables the meter.
 
@@ -246,7 +246,7 @@ keepAlive:
 
 :::
 
-### Off Feed
+### Off Feed (Push)
 
 Disables the meter.
 
@@ -472,14 +472,14 @@ properties:
 
 ## Performance
 
-### Pull Mode
+### Pull Mode Performance
 
 - **Update frequency** - Controlled by `interval` setting
 - **Recommended intervals** - 1000-5000ms for most scenarios
 - **Network overhead** - Each poll = 1 HTTP request + 1 MQTT publish
 - **Resource usage** - ~40-60 MB RAM
 
-### Push Mode
+### Push Mode Performance
 
 - **Update frequency** - Depends on source MQTT publishing rate
 - **Latency** - Very low (~10-50ms from source publish to V2C publish)

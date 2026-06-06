@@ -37,7 +37,7 @@ stateDiagram-v2
     note right of HALF_OPEN: Testing recovery
 ```
 
-### Configuration
+### Breaker Configuration
 
 ```yaml
 breaker:
@@ -50,7 +50,7 @@ breaker:
   allowWarmUp: true
 ```
 
-### Options
+### Breaker Options
 
 | Option                     | Type      | Default | Description                                                         |
 | -------------------------- | --------- | ------- | ------------------------------------------------------------------- |
@@ -62,7 +62,7 @@ breaker:
 | `volumeThreshold`          | `number`  | `10`    | Minimum requests before the circuit can open.                       |
 | `allowWarmUp`              | `boolean` | `true`  | Allow warm-up period before enforcing thresholds.                   |
 
-### When to Use
+### When to Use Breaker
 
 **Use circuit breaker when:**
 
@@ -78,7 +78,7 @@ breaker:
 - Temporary failures are unacceptable (prefer retries instead)
 - You need every request to be attempted
 
-### Examples
+### Breaker Examples
 
 ::: code-group
 
@@ -130,7 +130,7 @@ flowchart TD
     G --> B
 ```
 
-### Configuration
+### Retry Configuration
 
 ```yaml
 retry:
@@ -142,7 +142,7 @@ retry:
   maxRetryTime: 300000
 ```
 
-### Options
+### Retry Options
 
 | Option         | Type      | Default  | Description                              |
 | -------------- | --------- | -------- | ---------------------------------------- |
@@ -160,7 +160,7 @@ retry:
 > When used with a circuit breaker, retries automatically stop if the circuit
 > opens, preventing wasted retry attempts.
 
-### When to Use
+### When to Use Retry
 
 **Use retry strategy when:**
 
@@ -175,7 +175,7 @@ retry:
 - You need immediate failure feedback
 - Retry delays would cause unacceptable latency
 
-### Examples
+### Retry Examples
 
 ::: code-group
 
@@ -249,7 +249,7 @@ falling values:
 > approaches). You might want `alphaRise: 0.6` (responsive to increases) and
 > `alphaFall: 0.3` (smooth decreases).
 
-### Configuration
+### EMA Configuration
 
 ```yaml
 ema:
@@ -259,7 +259,7 @@ ema:
   freshnessThreshold: 10000
 ```
 
-### Options
+### EMA Options
 
 | Option               | Type           | Required | Description                                                 |
 | -------------------- | -------------- | -------- | ----------------------------------------------------------- |
@@ -268,7 +268,7 @@ ema:
 | `alphaMissing`       | `number` (0-1) | Yes      | Smoothing factor when data fetch fails (decay toward zero). |
 | `freshnessThreshold` | `number`       | No       | Time (ms) before data is considered stale.                  |
 
-### When to Use
+### When to Use EMA
 
 **Use EMA when:**
 
@@ -283,7 +283,7 @@ ema:
 - Power changes need immediate reflection
 - Your data source already provides smoothed values
 
-### Examples
+### EMA Examples
 
 ::: code-group
 
