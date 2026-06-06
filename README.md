@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD041 -->
 
-![v2a - V2C any](docs/assets/images/v2ca.png)
+![v2a - V2C any](docs/public/images/v2ca.png)
 
 <!-- markdownlint-enable MD041 -->
 
@@ -177,7 +177,7 @@ properties:
 3. V2C wallbox polls the endpoint at configured intervals
 4. Returns real-time power data from your configured sources
 
-📖 **[See full REST Mode documentation](docs/REST_MODE.md)** for detailed
+📖 **[See full REST Mode documentation](docs/guide/rest-mode.md)** for detailed
 configuration options, schemas, and examples.
 
 ### MQTT Mode (Direct Publisher)
@@ -222,7 +222,7 @@ properties:
 3. Supports both **pull** (polling devices) and **push** (subscribing to topics)
 4. V2C wallbox subscribes and receives real-time updates
 
-📖 **[See full MQTT Mode documentation](docs/MQTT_MODE.md)** for detailed
+📖 **[See full MQTT Mode documentation](docs/guide/mqtt-mode.md)** for detailed
 configuration options, schemas, and examples.
 
 ### Mode Comparison
