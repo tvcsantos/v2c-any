@@ -34,15 +34,6 @@ export default withMermaid(
       nav: [
         { text: 'Guide', link: '/guide/getting-started' },
         { text: 'Reference', link: '/reference/resilience' },
-        {
-          text: 'Links',
-          items: [
-            {
-              text: 'Changelog',
-              link: 'https://github.com/tvcsantos/v2c-any/releases',
-            },
-          ],
-        },
       ],
 
       sidebar: {
@@ -78,8 +69,8 @@ export default withMermaid(
       },
 
       socialLinks: [
-        { icon: 'npm', link: 'https://www.npmjs.com/package/v2c-any' },
         { icon: 'github', link: 'https://github.com/tvcsantos/v2c-any' },
+        { icon: 'npm', link: 'https://www.npmjs.com/package/v2c-any' },
       ],
 
       footer: {
