@@ -1,6 +1,6 @@
 {
   "name": "v2c-any",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "type": "module",
   "description": "Turn any device into V2C Dynamic Power Control",
   "main": "dist/index.js",

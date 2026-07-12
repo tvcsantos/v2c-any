@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [0.8.2](https://github.com/tvcsantos/v2c-any/compare/v0.8.1...v0.8.2) - 2026-07-12
+
+### 🎨 Styling
+
+- Format code ([adaf1bb](https://github.com/tvcsantos/v2c-any/commit/adaf1bb8d57504c45a2c97b3bf69bc7d7d7eb32c))
+
 ## [0.8.1](https://github.com/tvcsantos/v2c-any/compare/v0.8.0...v0.8.1) - 2026-07-12
 
 ### 📝 Documentation
