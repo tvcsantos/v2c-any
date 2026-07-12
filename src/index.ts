@@ -16,10 +16,10 @@ import { MqttPushExecutableServiceFactory } from './factory/mqtt-push-executable
 import { RestServiceFactory } from './factory/rest-service-factory.js';
 import { MqttServiceFactory } from './factory/mqtt-service-factory.js';
 import { ExecutableServiceFactory } from './factory/executable-service-factory.js';
-import { PROJECT_VERSION } from './version.js';
+import { VERSION } from './version.js';
 
 async function main() {
-  logger.info({ version: PROJECT_VERSION }, 'Starting application');
+  logger.info({ version: VERSION }, 'Starting application');
 
   await loadDeviceModules();
 
