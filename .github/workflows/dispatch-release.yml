@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       dry-run:
-        description: "Preview the release without writing or pushing"
+        description: 'Preview the release without writing or pushing'
         type: boolean
         default: false
 

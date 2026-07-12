@@ -4,8 +4,8 @@ import llmstxt, {
   copyOrDownloadAsMarkdownButtons,
 } from 'vitepress-plugin-llms';
 
-const rawBase = process.env.BASE_URL || '/'
-const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`
+const rawBase = process.env.BASE_URL || '/';
+const base = rawBase.endsWith('/') ? rawBase : `${rawBase}/`;
 
 export default withMermaid(
   defineConfig({

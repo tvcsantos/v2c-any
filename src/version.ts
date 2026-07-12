@@ -1,6 +1,6 @@
-import { readFileSync } from "fs";
-import { dirname, join } from "path";
-import { fileURLToPath } from "url";
+import { readFileSync } from 'fs';
+import { dirname, join } from 'path';
+import { fileURLToPath } from 'url';
 
 type PackageManifest = {
   name: string;
@@ -14,9 +14,9 @@ type PackageManifest = {
 // reported version from drifting from the released one.
 const manifest = JSON.parse(
   readFileSync(
-    join(dirname(fileURLToPath(import.meta.url)), "../package.json"),
-    "utf-8",
-  ),
+    join(dirname(fileURLToPath(import.meta.url)), '../package.json'),
+    'utf-8'
+  )
 ) as PackageManifest;
 
 function resolveAuthors(): string[] {
@@ -29,7 +29,7 @@ function resolveAuthors(): string[] {
   if (manifest.author) {
     return [manifest.author];
   }
-  return ["Unknown Author"];
+  return ['Unknown Author'];
 }
 
 export const VERSION = manifest.version;
