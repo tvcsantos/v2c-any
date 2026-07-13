@@ -50,7 +50,9 @@ export class ConfigurationLoader {
     } catch (error) {
       // Wrap any errors with context for better debugging
       // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      throw new Error(`Failed to load configuration: ${error}`);
+      throw new Error(`Failed to load configuration: ${error}`, {
+        cause: error,
+      });
     }
   }
 }
