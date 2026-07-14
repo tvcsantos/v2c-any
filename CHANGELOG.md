@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [0.9.3](https://github.com/tvcsantos/v2c-any/compare/v0.9.2...v0.9.3) - 2026-07-14
+
+### 🤖 Build
+
+- Aprove scripts ([89d4af9](https://github.com/tvcsantos/v2c-any/commit/89d4af95b02b71690ed1050de703e30075b8a890))
+
 ## [0.9.2](https://github.com/tvcsantos/v2c-any/compare/v0.9.1...v0.9.2) - 2026-07-14
 
 ### 🔁 CI
