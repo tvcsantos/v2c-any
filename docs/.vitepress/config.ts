@@ -29,7 +29,7 @@ export default withMermaid(
     },
 
     themeConfig: {
-      logo: '/images/v2ca-logo-200.png',
+      logo: '/images/icon.svg',
 
       nav: [
         { text: 'Guide', link: '/guide/getting-started' },
