@@ -8,7 +8,8 @@ hero:
     A universal adapter that bridges any power data source to V2C wallboxes for
     dynamic EV charging.
   image:
-    src: /images/v2ca-logo-800.png
+    light: /images/logo-hero-light.svg
+    dark: /images/logo-hero.svg
     alt: v2c-any
   actions:
     - theme: brand

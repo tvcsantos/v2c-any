@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="640" viewBox="0 0 640 640">
+  <defs>
+    <linearGradient id="bolt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="16" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="softglow" x="-80%" y="-80%" width="260%" height="260%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- orbit ring -->
+  <circle cx="320" cy="320" r="252" fill="none" stroke="url(#ring)"
+          stroke-width="5" stroke-dasharray="4 22" stroke-linecap="round" opacity="0.55"/>
+
+  <!-- spokes from satellite nodes toward the core -->
+  <g stroke="#5b7a9d" stroke-width="4" opacity="0.5">
+    <line x1="498" y1="142" x2="416" y2="224"/>
+    <line x1="142" y1="142" x2="224" y2="224"/>
+    <line x1="142" y1="498" x2="224" y2="416"/>
+    <line x1="498" y1="498" x2="416" y2="416"/>
+  </g>
+
+  <!-- satellite device nodes -->
+  <g filter="url(#softglow)">
+    <circle cx="498" cy="142" r="20" fill="#22d3ee"/>
+    <circle cx="142" cy="142" r="20" fill="#5b7a9d"/>
+    <circle cx="142" cy="498" r="20" fill="#34d399"/>
+    <circle cx="498" cy="498" r="20" fill="#5b7a9d"/>
+  </g>
+
+  <!-- braces -->
+  <path d="M 218 218
+           C 188 218 190 233 190 261
+           L 190 293
+           C 190 312 181 321 166 321
+           C 181 321 190 330 190 349
+           L 190 381
+           C 190 409 188 424 218 424"
+        fill="none" stroke="#5b7a9d" stroke-width="22" stroke-linecap="round"/>
+  <path d="M 422 218
+           C 452 218 450 233 450 261
+           L 450 293
+           C 450 312 459 321 474 321
+           C 459 321 450 330 450 349
+           L 450 381
+           C 450 409 452 424 422 424"
+        fill="none" stroke="#5b7a9d" stroke-width="22" stroke-linecap="round"/>
+
+  <!-- lightning bolt -->
+  <path d="M 360 178 L 246 348 L 310 348 L 288 458 L 400 282 L 334 282 Z"
+        fill="url(#bolt)" filter="url(#glow)"/>
+</svg>

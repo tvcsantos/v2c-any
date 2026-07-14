@@ -1,6 +1,6 @@
 <!-- markdownlint-disable MD041 -->
 
-![v2a - V2C any](docs/public/images/v2ca.png)
+![v2a - V2C any](docs/public/images/hero-banner.png)
 
 <!-- markdownlint-enable MD041 -->
 

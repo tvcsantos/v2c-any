@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="640" viewBox="0 0 1280 640">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1624"/>
+      <stop offset="1" stop-color="#122a42"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="1" stop-color="#34d399"/>
+    </linearGradient>
+    <linearGradient id="wire" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2b4a66"/>
+      <stop offset="1" stop-color="#22d3ee"/>
+    </linearGradient>
+    <radialGradient id="halo" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge>
+        <feMergeNode in="b"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1280" height="640" fill="url(#bg)"/>
+
+  <!-- subtle dot grid -->
+  <g fill="#3e5a78" opacity="0.25">
+    <g id="dots">
+      <circle cx="60" cy="60" r="2"/><circle cx="140" cy="60" r="2"/><circle cx="220" cy="60" r="2"/>
+      <circle cx="300" cy="60" r="2"/><circle cx="380" cy="60" r="2"/><circle cx="460" cy="60" r="2"/>
+      <circle cx="540" cy="60" r="2"/><circle cx="620" cy="60" r="2"/><circle cx="700" cy="60" r="2"/>
+      <circle cx="780" cy="60" r="2"/><circle cx="860" cy="60" r="2"/><circle cx="940" cy="60" r="2"/>
+      <circle cx="1020" cy="60" r="2"/><circle cx="1100" cy="60" r="2"/><circle cx="1180" cy="60" r="2"/>
+    </g>
+    <use href="#dots" y="520"/>
+  </g>
+
+  <circle cx="950" cy="320" r="300" fill="url(#halo)"/>
+
+  <!-- ============ left: text block ============ -->
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+    <text x="90" y="268" font-size="92" font-weight="700" letter-spacing="-2">
+      <tspan fill="#ffffff">v2c-</tspan><tspan fill="#22d3ee">any</tspan>
+    </text>
+    <text x="92" y="322" font-size="27" fill="#9fb3c8">Turn any device into V2C Dynamic Power Control</text>
+  </g>
+
+  <!-- code chip -->
+  <g>
+    <rect x="90" y="366" width="452" height="64" rx="14" fill="#0a141f" stroke="#2b4a66" stroke-width="2"/>
+    <text x="116" y="407" font-family="Menlo, SF Mono, Consolas, monospace" font-size="24" xml:space="preserve"><tspan fill="#7f95ab">{&#160;</tspan><tspan fill="#22d3ee">device</tspan><tspan fill="#7f95ab">:&#160;</tspan><tspan fill="#c792ea">any</tspan><tspan fill="#7f95ab">&#160;}&#160;</tspan><tspan fill="#34d399">&#8594;&#160;V2C</tspan></text>
+  </g>
+
+  <g font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+    <text x="92" y="486" font-size="20" fill="#5c768e">If it can expose power data, it can speak V2C.</text>
+  </g>
+
+  <!-- ============ right: diagram ============ -->
+  <!-- source nodes -->
+  <g font-family="Menlo, SF Mono, Consolas, monospace" font-size="19" text-anchor="middle">
+    <g>
+      <rect x="660" y="128" width="160" height="46" rx="23" fill="#0a141f" stroke="#2b4a66" stroke-width="2"/>
+      <text x="740" y="158" fill="#9fb3c8">meter</text>
+    </g>
+    <g>
+      <rect x="640" y="228" width="160" height="46" rx="23" fill="#0a141f" stroke="#2b4a66" stroke-width="2"/>
+      <text x="720" y="258" fill="#9fb3c8">mqtt</text>
+    </g>
+    <g>
+      <rect x="614" y="366" width="186" height="46" rx="23" fill="#0a141f" stroke="#2b4a66" stroke-width="2"/>
+      <text x="707" y="396" fill="#9fb3c8">home-assistant</text>
+    </g>
+    <g>
+      <rect x="660" y="466" width="160" height="46" rx="23" fill="#0a141f" stroke="#2b4a66" stroke-width="2"/>
+      <text x="740" y="496" fill="#9fb3c8">any</text>
+    </g>
+  </g>
+
+  <!-- wires from sources to hub -->
+  <g fill="none" stroke="url(#wire)" stroke-width="3" opacity="0.9">
+    <path d="M 820 151 C 880 151 890 260 928 285"/>
+    <path d="M 800 251 C 850 251 870 290 922 302"/>
+    <path d="M 800 389 C 850 389 870 350 922 338"/>
+    <path d="M 820 489 C 880 489 890 380 928 355"/>
+  </g>
+  <g fill="#22d3ee">
+    <circle cx="820" cy="151" r="4"/>
+    <circle cx="800" cy="251" r="4"/>
+    <circle cx="800" cy="389" r="4"/>
+    <circle cx="820" cy="489" r="4"/>
+  </g>
+
+  <!-- hub: mini icon -->
+  <g>
+    <rect x="920" y="250" width="140" height="140" rx="32" fill="#0d1b2a" stroke="#2b4a66" stroke-width="2"/>
+    <path d="M 1002 272 L 966 326 L 986 326 L 979 368 L 1015 312 L 994 312 Z"
+          fill="url(#bolt)" filter="url(#glow)"/>
+  </g>
+
+  <!-- wire from hub to wallbox -->
+  <g fill="none" stroke="url(#wire)" stroke-width="3">
+    <path d="M 1060 320 L 1116 320"/>
+  </g>
+  <path d="M 1110 312 L 1124 320 L 1110 328 Z" fill="#22d3ee"/>
+
+  <!-- wallbox -->
+  <g>
+    <rect x="1130" y="248" width="96" height="144" rx="18" fill="#0a141f" stroke="#34d399" stroke-width="2.5"/>
+    <rect x="1148" y="268" width="60" height="34" rx="7" fill="#123322"/>
+    <circle cx="1178" cy="340" r="17" fill="none" stroke="#34d399" stroke-width="3"/>
+    <circle cx="1178" cy="340" r="6" fill="#34d399"/>
+    <text x="1178" y="292" font-family="Menlo, SF Mono, Consolas, monospace" font-size="17" fill="#34d399" text-anchor="middle">V2C</text>
+  </g>
+</svg>
