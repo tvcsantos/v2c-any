@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import type { Theme } from 'vitepress';
 import DefaultTheme from 'vitepress/theme';
 import { onMounted, watch, nextTick } from 'vue';
@@ -7,6 +6,7 @@ import { useRoute, inBrowser } from 'vitepress';
 import 'lightbox3/style.css';
 import { Lightbox } from 'lightbox3';
 import CopyOrDownloadAsMarkdownButtons from 'vitepress-plugin-llms/vitepress-components/CopyOrDownloadAsMarkdownButtons.vue';
+// @ts-expect-error -- CSS side-effect import handled by Vite
 import './style.css';
 
 export default {
