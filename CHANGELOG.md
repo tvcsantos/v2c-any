@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [0.9.4](https://github.com/tvcsantos/v2c-any/compare/v0.9.3...v0.9.4) - 2026-07-16
+
+### 📝 Documentation
+
+- Add ts ignore ([c0bcae5](https://github.com/tvcsantos/v2c-any/commit/c0bcae5a82716946423bc47aacd647b4cef48e8d))
+- Update icons and banner ([e6004b9](https://github.com/tvcsantos/v2c-any/commit/e6004b98bd7fe310f517d43897c7f963792b3798))
+- Update theme logo ([d0ab1be](https://github.com/tvcsantos/v2c-any/commit/d0ab1be8abf4511a7b3b35ef35257d2d8327b99f))
+
 ## [0.9.3](https://github.com/tvcsantos/v2c-any/compare/v0.9.2...v0.9.3) - 2026-07-14
 
 ### 🤖 Build
