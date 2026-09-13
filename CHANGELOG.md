@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Next Version Placeholder -->
 
+## [0.10.1](https://github.com/tvcsantos/v2c-any/compare/v0.10.0...v0.10.1) - 2026-09-13
+
+### 🔁 CI
+
+- Update node version and use OIDC ([6141fe1](https://github.com/tvcsantos/v2c-any/commit/6141fe1d1c98f4da7c2f80abc3a6bdf8db7c353a))
+
 ## [0.10.0](https://github.com/tvcsantos/v2c-any/compare/v0.9.4...v0.10.0) - 2026-09-13
 
 ### ✨ Features
