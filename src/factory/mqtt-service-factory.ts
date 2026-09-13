@@ -13,7 +13,8 @@ import type { MqttFeedExecutableServiceFactory } from './mqtt-feed-executable-se
 export class MqttServiceFactory implements ExecutableServiceFactory<MqttProvider> {
   /**
    * Creates a new MQTT service factory.
-   * @param mqttFeedExecutableServiceFactory - Factory to build feed publishers (pull/push) for energy data
+   * @param mqttFeedExecutableServiceFactory - Factory to build feed publishers
+   * (pull/push) for energy data
    */
   constructor(
     private readonly mqttFeedExecutableServiceFactory: MqttFeedExecutableServiceFactory
@@ -21,10 +22,13 @@ export class MqttServiceFactory implements ExecutableServiceFactory<MqttProvider
 
   /**
    * Creates an executable MQTT service wired to publish grid and solar power.
-   * Initializes the MQTT client and constructs feed publishers based on configuration.
+   * Initializes the MQTT client and constructs feed publishers based on
+   * configuration.
    *
-   * @param configuration - MQTT provider configuration including broker URL, device, and meter feeds
-   * @returns An ExecutableService with coordinated start/stop for MQTT client and feed publishers
+   * @param configuration - MQTT provider configuration including broker URL,
+   * device, and meter feeds
+   * @returns An ExecutableService with coordinated start/stop for MQTT client
+   * and feed publishers
    */
   create(configuration: MqttProvider): ExecutableService {
     const mqttService = new MqttService({

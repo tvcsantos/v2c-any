@@ -9,6 +9,7 @@ import { ExecutableService } from './executable-service.js';
 
 /**
  * Properties for configuring an MQTT bridge service.
+ *
  * Includes broker URL and topic to subscribe to.
  */
 export type MqttBridgeServiceProperties = {
@@ -20,6 +21,7 @@ export type MqttBridgeServiceProperties = {
 
 /**
  * Service that bridges MQTT messages to a typed callback via an adapter.
+ *
  * Subscribes to a topic, parses incoming messages, adapts them, and forwards
  * the adapted payload to the provided callback.
  *
@@ -34,10 +36,14 @@ export class MqttBridgeService<
 
   /**
    * Creates a new MQTT bridge service.
+   *
    * @param properties - MQTT connection and subscription details
-   * @param callbackProperties - Callback container invoked with adapted payload
-   * @param adapter - Adapter that transforms raw MQTT messages to the payload type
-   * @param keepAliveService - Notifyable service that is notified on each message and maintains keep-alive requests
+   * @param callbackProperties - Callback container invoked with adapted
+   * payload
+   * @param adapter - Adapter that transforms raw MQTT messages to the payload
+   * type
+   * @param keepAliveService - Notifyable service that is notified on each
+   * message and maintains keep-alive requests
    */
   constructor(
     private readonly properties: MqttBridgeServiceProperties,
@@ -49,9 +55,13 @@ export class MqttBridgeService<
   }
 
   /**
-   * Starts the bridge: connects to the broker, subscribes, wires message handling, and starts keep-alive service.
+   * Starts the bridge: connects to the broker, subscribes, wires message
+   * handling, and starts keep-alive service.
+   *
    * Each received message triggers the keep-alive service notification.
-   * @returns A promise that resolves when the subscription is active and keep-alive service is started
+   *
+   * @returns A promise that resolves when the subscription is active and
+   * keep-alive service is started
    */
   async doStart() {
     logger.info('Starting MQTT bridge service');
@@ -84,8 +94,11 @@ export class MqttBridgeService<
   }
 
   /**
-   * Stops the bridge: disconnects the MQTT client, clears resources, and stops keep-alive service.
-   * @returns A promise that resolves when the client has disconnected and keep-alive service is stopped
+   * Stops the bridge: disconnects the MQTT client, clears resources, and stops
+   * keep-alive service.
+   *
+   * @returns A promise that resolves when the client has disconnected and
+   * keep-alive service is stopped
    */
   async doStop() {
     logger.info('Stopping MQTT bridge service');

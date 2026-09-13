@@ -21,17 +21,25 @@ import { AbstractExecutableService } from './abstract-executable-service.js';
  * Configuration properties for `RestService`.
  */
 export type RestServiceProperties = {
-  /** The port number on which the HTTP server will listen */
+  /**
+   * The port number on which the HTTP server will listen
+   */
   port: number;
 };
 
 /**
  * REST service that exposes Shelly EM1-like endpoints for energy status.
- * Provides health checks, mock expectation updates, and status queries for grid and solar.
- * Implements the executable service lifecycle to start and stop the HTTP server.
+ *
+ * Provides health checks, mock expectation updates, and status queries for
+ * grid and solar.
+ *
+ * Implements the executable service lifecycle to start and stop the HTTP
+ * server.
  */
 export class RestService extends AbstractExecutableService {
-  /** The Fastify application instance, or null when the service is not running */
+  /**
+   * The Fastify application instance, or null when the service is not running
+   */
   private app: FastifyInstance<
     RawServerDefault,
     IncomingMessage,
@@ -42,8 +50,11 @@ export class RestService extends AbstractExecutableService {
 
   /**
    * Creates a new REST service with configured energy providers.
-   * @param gridEnergyProvider - Provider for grid energy status data (EM1 channel 0)
-   * @param solarEnergyProvider - Provider for solar energy status data (EM1 channel 1)
+   *
+   * @param gridEnergyProvider - Provider for grid energy status data
+   * (EM1 channel 0)
+   * @param solarEnergyProvider - Provider for solar energy status data
+   * (EM1 channel 1)
    * @param properties - Configuration properties including the server port
    */
   constructor(
@@ -56,7 +67,10 @@ export class RestService extends AbstractExecutableService {
 
   /**
    * Resolves the energy provider by numeric identifier.
-   * 0 → grid, 1 → solar.
+   *
+   * - 0: grid
+   * - 1: solar
+   *
    * @param id - Provider identifier (0 for grid, 1 for solar)
    * @returns The matching provider or null if unknown
    */
@@ -77,9 +91,11 @@ export class RestService extends AbstractExecutableService {
 
   /**
    * Starts the REST server and registers endpoints.
+   *
    * - `GET /health` simple OK
    * - `POST /expectaction` set mocked status (mock mode only)
    * - `GET /rpc/EM1.GetStatus` fetch status for a given id
+   *
    * @returns A promise that resolves when the server is listening
    */
   async doStart(): Promise<void> {
@@ -151,6 +167,7 @@ export class RestService extends AbstractExecutableService {
 
   /**
    * Stops the REST server if running.
+   *
    * @returns A promise that resolves when the server has closed
    */
   async doStop(): Promise<void> {

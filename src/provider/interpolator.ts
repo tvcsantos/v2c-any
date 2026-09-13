@@ -1,5 +1,6 @@
 /**
  * Generic interpolator interface for blending values.
+ *
  * Provides a contract for implementing various interpolation strategies
  * between two values of the same type.
  *
@@ -8,6 +9,7 @@
 export interface Interpolator<T> {
   /**
    * Interpolates between two values using the given weight.
+   *
    * @param newValue - The new value
    * @param previousValue - The previous value
    * @param alpha - The weight/smoothing factor (0 to 1)
@@ -18,13 +20,16 @@ export interface Interpolator<T> {
 
 /**
  * Collection of built-in interpolators for common data types.
- * Provides factory methods for creating interpolators for numbers, objects, arrays,
- * and identity transformations.
+ *
+ * Provides factory methods for creating interpolators for numbers, objects,
+ * arrays, and identity transformations.
  */
 export const Interpolators = {
   /**
    * Creates a linear interpolator for numbers.
+   *
    * Uses the formula: alpha * newValue + (1 - alpha) * previousValue
+   *
    * @returns An interpolator for numeric values
    */
   number: (): Interpolator<number> => ({
@@ -34,10 +39,14 @@ export const Interpolators = {
 
   /**
    * Creates a composite interpolator for objects.
+   *
    * Applies property-specific interpolators to each field of the object.
+   *
    * @template T - The object type with string keys
-   * @param interpolators - A record mapping property names to their interpolators
-   * @returns An interpolator that applies the appropriate interpolator to each property
+   * @param interpolators - A record mapping property names to their
+   * interpolators
+   * @returns An interpolator that applies the appropriate interpolator to each
+   * property
    */
   object: <T extends Record<string, unknown>>(interpolators: {
     [K in keyof T]: Interpolator<T[K]>;
@@ -60,7 +69,10 @@ export const Interpolators = {
 
   /**
    * Creates an interpolator for arrays.
-   * Applies element-wise interpolation using the provided element interpolator.
+   *
+   * Applies element-wise interpolation using the provided element
+   * interpolator.
+   *
    * Assumes arrays have matching lengths.
    * @template T - The type of array elements
    * @param elementInterpolator - The interpolator to apply to each array element
@@ -75,7 +87,9 @@ export const Interpolators = {
 
   /**
    * Creates an identity interpolator that always returns the new value.
+   *
    * Useful when no interpolation is desired.
+   *
    * @template T - The type of values
    * @returns An interpolator that ignores the previous value and alpha
    */

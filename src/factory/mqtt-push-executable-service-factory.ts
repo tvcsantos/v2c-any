@@ -30,17 +30,25 @@ import { RpcRequestFrame } from '../utils/rpc.js';
  * Configuration properties for creating an MQTT push-mode executable service.
  */
 export type MqttPushExecutableServiceFactoryProperties = {
-  /** The type of energy data (solar or grid) */
+  /**
+   * The type of energy data (solar or grid)
+   */
   energyType: string;
-  /** MQTT push feed configuration specifying the push strategy */
+  /**
+   * MQTT push feed configuration specifying the push strategy
+   */
   configuration: MqttPushFeed;
-  /** Callback invoked with energy information updates */
+  /**
+   * Callback invoked with energy information updates
+   */
   callbackProperties: CallbackProperties<EnergyInformation | undefined>;
 };
 
 /**
  * Factory for creating MQTT push-mode (event-driven) executable services.
+ *
  * Supports MQTT bridge (subscribing to device topics) or disabled sources.
+ *
  * Returns a ready-to-run `ExecutableService` instance.
  */
 export class MqttPushExecutableServiceFactory implements Factory<
@@ -49,9 +57,13 @@ export class MqttPushExecutableServiceFactory implements Factory<
 > {
   /**
    * Creates a new MQTT push executable service factory.
-   * @param providerFactoryRegistry - Registry of device providers for keep-alive HTTP sources
-   * @param adapterFactoryRegistry - Registry of device adapters to transform incoming messages
-   * @param rpcMqttRequestProviderFactoryRegistry - Registry of RPC MQTT request providers for keep-alive RPC sources
+   *
+   * @param providerFactoryRegistry - Registry of device providers for
+   * keep-alive HTTP sources
+   * @param adapterFactoryRegistry - Registry of device adapters to transform
+   * incoming messages
+   * @param rpcMqttRequestProviderFactoryRegistry - Registry of RPC MQTT
+   * request providers for keep-alive RPC sources
    */
   constructor(
     private readonly providerFactoryRegistry: Registry<
@@ -67,12 +79,17 @@ export class MqttPushExecutableServiceFactory implements Factory<
 
   /**
    * Creates a triggerable service using an HTTP adapter to fetch device data.
+   *
    * Used for keep-alive functionality in MQTT push mode.
+   *
    * @param energyType - The type of energy data to monitor
    * @param callbackProperties - Callback to invoke with energy information
-   * @param properties - HTTP adapter feed configuration including device, host, and interval
-   * @returns A configured PullPushTriggerableService for HTTP-based data fetching
-   * @throws {Error} If no provider or adapter is registered for the specified device
+   * @param properties - HTTP adapter feed configuration including device,
+   * host, and interval
+   * @returns A configured PullPushTriggerableService for HTTP-based data
+   * fetching
+   * @throws {Error} If no provider or adapter is registered for the specified
+   * device
    */
   private createHttpAdapterPullPushService(
     energyType: string,
@@ -111,12 +128,17 @@ export class MqttPushExecutableServiceFactory implements Factory<
 
   /**
    * Creates a triggerable service using RPC over MQTT to fetch device data.
+   *
    * Used for keep-alive functionality in MQTT push mode.
+   *
    * @param energyType - The type of energy data to monitor
    * @param callbackProperties - Callback to invoke with energy information
-   * @param properties - RPC MQTT adapter feed configuration including device and MQTT connection details
-   * @returns A configured RpcMqttPushTriggerableService for RPC MQTT-based data fetching
-   * @throws {Error} If no RPC MQTT request provider or adapter is registered for the specified device
+   * @param properties - RPC MQTT adapter feed configuration including device
+   * and MQTT connection details
+   * @returns A configured RpcMqttPushTriggerableService for RPC MQTT-based
+   * data fetching
+   * @throws {Error} If no RPC MQTT request provider or adapter is registered
+   * for the specified device
    */
   private createRpcMqttAdapterPullPushService(
     energyType: string,
@@ -156,10 +178,16 @@ export class MqttPushExecutableServiceFactory implements Factory<
 
   /**
    * Creates an executable service using the appropriate push strategy.
-   * Returns a bridge service when configured (with optional keep-alive), or a no-op service if disabled.
-   * @param options - Configuration including device, energy type, push config, callback, and keep-alive settings
-   * @returns An `ExecutableService` configured for the specified MQTT push mode
-   * @throws {Error} If `bridge` is selected but no adapter is registered for the device
+   *
+   * Returns a bridge service when configured (with optional keep-alive), or a
+   * no-op service if disabled.
+   *
+   * @param options - Configuration including device, energy type, push config,
+   * callback, and keep-alive settings
+   * @returns An `ExecutableService` configured for the specified MQTT push
+   * mode
+   * @throws {Error} If `bridge` is selected but no adapter is registered for
+   * the device
    */
   create(
     options: MqttPushExecutableServiceFactoryProperties

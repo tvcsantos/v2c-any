@@ -1,6 +1,9 @@
 /**
- * Generic provider interface for asynchronously supplying data of a specific type.
- * Establishes a contract for any component that needs to fetch or retrieve data.
+ * Generic provider interface for asynchronously supplying data of a specific
+ * type.
+ *
+ * Establishes a contract for any component that needs to fetch or retrieve
+ * data.
  *
  * @template Response - The type of data this provider supplies
  */

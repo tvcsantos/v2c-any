@@ -3,8 +3,11 @@ import { ExecutableService } from './executable-service.js';
 
 /**
  * Abstract base class for executable services.
+ *
  * Provides idempotent start/stop lifecycle management with state tracking.
- * Subclasses implement the actual service logic via doStart() and doStop() hooks.
+ *
+ * Subclasses implement the actual service logic via doStart() and doStop()
+ * hooks.
  */
 export abstract class AbstractExecutableService implements ExecutableService {
   /**
@@ -15,6 +18,7 @@ export abstract class AbstractExecutableService implements ExecutableService {
 
   /**
    * Returns whether the service is currently started.
+   *
    * @returns true if the service has been started and not yet stopped
    */
   get started(): boolean {
@@ -23,7 +27,9 @@ export abstract class AbstractExecutableService implements ExecutableService {
 
   /**
    * Hook for subclasses to implement service startup logic.
+   *
    * Called by start() only when the service is not already started.
+   *
    * @returns A promise that resolves when the service has successfully started
    * @protected
    */
@@ -31,7 +37,9 @@ export abstract class AbstractExecutableService implements ExecutableService {
 
   /**
    * Hook for subclasses to implement service shutdown logic.
+   *
    * Called by stop() only when the service is currently started.
+   *
    * @returns A promise that resolves when the service has successfully stopped
    * @protected
    */
@@ -39,7 +47,10 @@ export abstract class AbstractExecutableService implements ExecutableService {
 
   /**
    * Starts the service.
-   * Idempotent: calling start() on an already-started service is a no-op with a warning.
+   *
+   * Idempotent: calling start() on an already-started service is a no-op with
+   * a warning.
+   *
    * @returns A promise that resolves when the service has successfully started
    */
   async start(): Promise<void> {
@@ -53,7 +64,10 @@ export abstract class AbstractExecutableService implements ExecutableService {
 
   /**
    * Stops the service.
-   * Idempotent: calling stop() on an already-stopped service is a no-op with a warning.
+   *
+   * Idempotent: calling stop() on an already-stopped service is a no-op with a
+   * warning.
+   *
    * @returns A promise that resolves when the service has successfully stopped
    */
   async stop(): Promise<void> {

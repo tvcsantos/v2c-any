@@ -5,8 +5,11 @@ import { EM1Status } from '../../schema/rest-configuration.js';
 import { RpcResponseFrame } from '../../utils/rpc.js';
 
 /**
- * Adapter for transforming EM1.GetStatus RPC responses into energy information.
- * Extracts active power from the RPC response and converts it to the standardized format.
+ * Adapter for transforming EM1.GetStatus RPC responses into energy
+ * information.
+ *
+ * Extracts active power from the RPC response and converts it to the
+ * standardized format.
  */
 class EM1GetStatusRpcResponseAdapter implements Adapter<
   RpcResponseFrame<EM1Status>,
@@ -14,8 +17,10 @@ class EM1GetStatusRpcResponseAdapter implements Adapter<
 > {
   /**
    * Transforms an EM1.GetStatus RPC response into energy information.
+   *
    * @param input - The RPC response frame containing EM1 status data
-   * @returns A promise resolving to energy information with power data, or undefined if no active power is available
+   * @returns A promise resolving to energy information with power data, or
+   * undefined if no active power is available
    */
   adapt(
     input: RpcResponseFrame<EM1Status>
@@ -51,7 +56,9 @@ class EM1GetStatusRpcResponseAdapterFactory implements AdapterFactory<
 
 /**
  * Singleton instance of EM1GetStatusRpcResponseAdapterFactory.
- * Used throughout the application for creating EM1 GetStatus RPC response adapters.
+ *
+ * Used throughout the application for creating EM1 GetStatus RPC response
+ * adapters.
  */
 export const em1GetStatusRpcResponseAdapterFactory =
   new EM1GetStatusRpcResponseAdapterFactory();

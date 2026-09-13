@@ -1,15 +1,16 @@
 /**
  * Generic adapter interface for transforming data from one format to another.
- * Provides type-safe conversion between different data structures or representations.
+ * Provides type-safe conversion between different data structures or
+ * representations.
  *
- * @template T - The input type to be adapted
- * @template K - The output type after adaptation
+ * @template Input - The input type to be adapted
+ * @template Output - The output type after adaptation
  */
-export interface Adapter<T, K> {
+export interface Adapter<Input, Output> {
   /**
-   * Adapts the input data from type T to type K.
+   * Adapts the input data from Input type to Output type.
    * @param input - The input data to be transformed
-   * @returns A promise that resolves to the adapted data of type K
+   * @returns A promise that resolves to the adapted data of Output type
    */
-  adapt(input: T): Promise<K>;
+  adapt(input: Input): Promise<Output>;
 }

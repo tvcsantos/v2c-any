@@ -12,32 +12,58 @@ import { logger } from './logger.js';
 
 /**
  * Configuration options for creating a resilient provider.
+ *
  * Groups all parameters needed to compose a provider with resilience features.
  *
  * @template T - The type of value the provider supplies
  */
 export type ResiliantProviderOptions<T> = {
-  /** The base provider to wrap with resilience features */
+  /**
+   * The base provider to wrap with resilience features
+   */
   provider: Provider<T>;
-  /** The interpolator for blending values in EMA calculations */
+  /**
+   * The interpolator for blending values in EMA calculations
+   */
   interpolator: Interpolator<T>;
-  /** The baseline value to decay toward when values are missing (used by EMA) */
+  /**
+   * The baseline value to decay toward when values are missing (used by EMA)
+   */
   zeroValue: T;
-  /** Function to compare values for rise/fall detection. Returns negative if a < b, 0 if equal, positive if a > b */
+  /**
+   * Function to compare values for rise/fall detection.
+   *
+   * Returns negative if a < b, 0 if equal, positive if a > b
+   */
   comparator: (a: T, b: T) => number;
-  /** Optional circuit breaker configuration (timeout, error thresholds, etc.) */
+  /**
+   * Optional circuit breaker configuration (timeout, error thresholds, etc.)
+   */
   breakerOptions?: BreakerOptions;
-  /** Optional retry configuration (attempts, backoff strategy, etc.) */
+  /**
+   * Optional retry configuration (attempts, backoff strategy, etc.)
+   */
   retryOptions?: RetryOptions;
-  /** Optional EMA configuration (smoothing factors for rising, falling, and missing values) */
+  /**
+   * Optional EMA configuration (smoothing factors for rising, falling, and
+   * missing values)
+   */
   emaOptions?: EmaOptions;
 };
 
 /**
- * Creates a resilient provider by wrapping a base provider with optional circuit breaker,
- * retry, and exponential moving average (EMA) capabilities. The providers are composed
- * in layers: circuit breaker (outermost) → retry → EMA → base provider (innermost).
- * This composition provides comprehensive resilience against transient failures.
+ * Creates a resilient provider by wrapping a base provider with optional
+ * circuit breaker, retry, and exponential moving average (EMA) capabilities.
+ *
+ * The providers are composed in layers:
+ *
+ * 1. circuit breaker (outermost)
+ * 2. retry
+ * 3. EMA
+ * 4. base provider (innermost).
+ *
+ * This composition provides comprehensive resilience against transient
+ * failures.
  *
  * @template T - The type of value the provider supplies
  * @param options - Configuration options for creating the resilient provider

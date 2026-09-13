@@ -14,6 +14,7 @@ import { RpcRequestFrame } from './utils/rpc.js';
 
 /**
  * Registry of device provider factories keyed by device identifier.
+ *
  * Each factory produces an `EM1Status` provider for a specific device.
  */
 export const em1StatusProviderFactoryRegistry = new Registry<
@@ -26,6 +27,7 @@ export const rpcMqttRequestProviderFactoryRegistry = new Registry<
 
 /**
  * Registry of device adapters keyed by device identifier.
+ *
  * Each adapter transforms raw device messages into `EnergyInformation`.
  */
 export const energyInformationAdapterFactoryRegistry = new Registry<
@@ -34,6 +36,7 @@ export const energyInformationAdapterFactoryRegistry = new Registry<
 
 /**
  * Dynamically loads all device modules discovered under devices.
+ *
  * Imports each module to allow self-registration into application registries.
  *
  * @returns A promise that resolves when all device modules are loaded

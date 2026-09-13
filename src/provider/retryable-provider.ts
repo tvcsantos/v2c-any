@@ -3,16 +3,19 @@ import { Provider } from './provider.js';
 
 /**
  * Provider that wraps another provider with automatic retry logic.
- * Uses exponential backoff strategy to retry failed operations,
- * making the provider more resilient to transient failures.
+ *
+ * Uses exponential backoff strategy to retry failed operations, making the
+ * provider more resilient to transient failures.
  *
  * @template T - The type of value this provider supplies
  */
 export class RetryableProvider<T> implements Provider<T> {
   /**
    * Creates a new RetryableProvider.
+   *
    * @param provider - The underlying provider to wrap with retry logic
-   * @param options - Configuration options for retry behavior (retries, minTimeout, maxTimeout, factor, etc.)
+   * @param options - Configuration options for retry behavior (retries,
+   * minTimeout, maxTimeout, factor, etc.)
    */
   constructor(
     private readonly provider: Provider<T>,
@@ -21,7 +24,10 @@ export class RetryableProvider<T> implements Provider<T> {
 
   /**
    * Fetches a value from the wrapped provider with automatic retry on failure.
-   * Retries are performed according to the configured retry options with exponential backoff.
+   *
+   * Retries are performed according to the configured retry options with
+   * exponential backoff.
+   *
    * @returns A promise that resolves to the provided value
    * @throws {Error} If all retry attempts are exhausted
    */

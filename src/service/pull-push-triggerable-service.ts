@@ -4,8 +4,12 @@ import { logger } from '../utils/logger.js';
 import { Triggerable } from './triggerable.js';
 
 /**
- * Triggerable service that fetches data from a provider and pushes it to a callback.
- * Implements the Triggerable interface to allow external control of when data is fetched.
+ * Triggerable service that fetches data from a provider and pushes it to a
+ * callback.
+ *
+ * Implements the Triggerable interface to allow external control of when data
+ * is fetched.
+ *
  * This service is stateless and performs no background operations on its own.
  *
  * @template Payload - The type of data provided and pushed to the callback
@@ -13,6 +17,7 @@ import { Triggerable } from './triggerable.js';
 export class PullPushTriggerableService<Payload> implements Triggerable {
   /**
    * Creates a new pull-push triggerable service.
+   *
    * @param provider - Source provider that supplies data when triggered
    * @param callbackProperties - Callback container invoked with fetched data
    */
@@ -23,7 +28,10 @@ export class PullPushTriggerableService<Payload> implements Triggerable {
 
   /**
    * Triggers a data fetch and push cycle.
-   * Retrieves data from the provider and forwards it to the callback if data is present.
+   *
+   * Retrieves data from the provider and forwards it to the callback if data
+   * is present.
+   *
    * @returns A promise that resolves when the data has been fetched and pushed
    */
   async trigger(): Promise<void> {

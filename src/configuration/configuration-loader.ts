@@ -4,24 +4,36 @@ import { logger } from '../utils/logger.js';
 import type { Configuration } from '../schema/configuration.js';
 
 /**
- * Loads and merges v2ca configuration from various sources (.v2carc, v2ca.config.js, package.json).
- * Uses cosmiconfig for auto-discovery and merges user config with defaults.
+ * Loads v2ca configuration from JSON or YAML files.
+ * Uses cosmiconfig for auto-discovery.
  */
 export class ConfigurationLoader {
   private readonly explorer: PublicExplorer;
 
   /**
    * Creates a new configuration loader.
-   * @param configurationValidator - Validator to ensure configuration integrity
+   * @param configurationValidator - Validator to ensure configuration
+   * integrity
    */
   constructor(private readonly configurationValidator: ConfigurationValidator) {
     // Initialize cosmiconfig explorer once for reuse across multiple loads
-    this.explorer = cosmiconfig('v2ca');
+    this.explorer = cosmiconfig('v2ca', {
+      searchStrategy: 'none',
+      searchPlaces: [
+        '.v2carc.json',
+        '.v2carc.yaml',
+        '.v2carc.yml',
+        '.config/v2carc.json',
+        '.config/v2carc.yaml',
+        '.config/v2carc.yml',
+      ],
+    });
   }
 
   /**
    * Loads and validates the v2ca configuration.
-   * @returns A promise that resolves to the fully merged and validated configuration
+   * @returns A promise that resolves to the fully merged and validated
+   * configuration
    * @throws {Error} If configuration loading or validation fails
    */
   async load(): Promise<Configuration> {
@@ -35,8 +47,7 @@ export class ConfigurationLoader {
 
       if (result?.config) {
         // Configuration found - merge, validate, and use it
-        const configSource = result.filepath ? result.filepath : 'package.json';
-        logger.info({ source: configSource }, 'Configuration loaded');
+        logger.info({ source: result.filepath }, 'Configuration loaded');
         config = this.configurationValidator.validate(result.config);
       } else {
         // No configuration found - use defaults

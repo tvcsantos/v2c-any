@@ -29,7 +29,9 @@ type EM1StatusHttpProviderProperties = {
 
 /**
  * Provider that fetches EM1 status data from a Shelly Pro EM device via HTTP.
- * Retrieves real-time energy monitoring data by querying the device's RPC API endpoint.
+ *
+ * Retrieves real-time energy monitoring data by querying the device's RPC
+ * API endpoint.
  */
 class EM1StatusHttpProvider implements Provider<EM1Status> {
   private readonly id: number;
@@ -38,7 +40,9 @@ class EM1StatusHttpProvider implements Provider<EM1Status> {
 
   /**
    * Creates a new EM1 status HTTP provider.
-   * @param properties - Configuration properties including protocol, host, port, and energy type
+   *
+   * @param properties - Configuration properties including protocol, host,
+   * port, and energy type
    */
   constructor(private readonly properties: EM1StatusHttpProviderProperties) {
     this.url = `${properties.protocol}://${properties.host}:${properties.port}`;
@@ -49,7 +53,9 @@ class EM1StatusHttpProvider implements Provider<EM1Status> {
 
   /**
    * Fetches the current EM1 status from the device.
-   * @returns A promise that resolves to the EM1 status object containing energy metrics
+   *
+   * @returns A promise that resolves to the EM1 status object containing
+   * energy metrics
    * @throws {Error} If the HTTP request fails or returns invalid data
    */
   async get(): Promise<EM1Status> {
@@ -82,17 +88,25 @@ type EM1StatusHttpProviderFactoryOptions = {
 
 /**
  * Factory for creating EM1StatusHttpProvider instances.
- * Implements the factory pattern to instantiate providers with the appropriate configuration.
+ *
+ * Implements the factory pattern to instantiate providers with the
+ * appropriate configuration.
  */
 class EM1StatusHttpProviderFactory implements ProviderFactory<
   EM1StatusHttpProviderFactoryOptions,
   EM1Status
 > {
   /**
-   * Creates a new EM1StatusHttpProvider instance with the specified configuration.
-   * Wraps the provider with resilience features (circuit breaker, retry, EMA) if configured.
-   * @param options - Configuration options including protocol, host, port, energy type, and resilience settings
-   * @returns A configured EM1StatusHttpProvider instance, optionally wrapped with resilience providers
+   * Creates a new EM1StatusHttpProvider instance with the specified
+   * configuration.
+   *
+   * Wraps the provider with resilience features (circuit breaker, retry, EMA)
+   * if configured.
+   *
+   * @param options - Configuration options including protocol, host, port,
+   * energy type, and resilience settings
+   * @returns A configured EM1StatusHttpProvider instance, optionally wrapped
+   * with resilience providers
    */
   create(options: EM1StatusHttpProviderFactoryOptions): Provider<EM1Status> {
     logger.debug(
@@ -121,6 +135,7 @@ class EM1StatusHttpProviderFactory implements ProviderFactory<
 
 /**
  * Singleton factory instance for creating `EM1StatusHttpProvider` objects.
+ *
  * Provides a ready-to-use factory to build providers with supplied options.
  */
 export const em1StatusHttpProviderFactory = new EM1StatusHttpProviderFactory();

@@ -7,13 +7,16 @@ import { ExecutableServiceFactory } from './executable-service-factory.js';
 
 /**
  * Factory for creating REST services that expose energy data.
- * Composes grid and solar energy providers based on configuration and
- * returns an executable REST service instance.
+ *
+ * Composes grid and solar energy providers based on configuration and returns
+ * an executable REST service instance.
  */
 export class RestServiceFactory implements ExecutableServiceFactory<RestProvider> {
   /**
    * Creates a new REST service factory.
-   * @param em1StatusProviderFactory - Factory used to build device-specific energy providers
+   *
+   * @param em1StatusProviderFactory - Factory used to build device-specific
+   * energy providers
    */
   constructor(
     private readonly em1StatusProviderFactory: ProviderFactory<
@@ -23,8 +26,11 @@ export class RestServiceFactory implements ExecutableServiceFactory<RestProvider
   ) {}
 
   /**
-   * Creates an executable REST service using configured grid and solar providers.
-   * @param configuration - REST provider configuration including device and meter setups
+   * Creates an executable REST service using configured grid and solar
+   * providers.
+   *
+   * @param configuration - REST provider configuration including device and
+   * meter setups
    * @returns An ExecutableService that serves energy data over HTTP
    */
   create(configuration: RestProvider): ExecutableService {

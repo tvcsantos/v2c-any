@@ -9,15 +9,22 @@ import type { Provider } from '../provider/provider.js';
  * Configuration properties for creating an EM1Status provider.
  */
 export type EM1StatusProviderFactoryProperties = {
-  /** The type of energy data to retrieve */
+  /**
+   * The type of energy data to retrieve
+   */
   energyType: EnergyType;
-  /** REST feed configuration specifying the data source strategy */
+  /**
+   * REST feed configuration specifying the data source strategy
+   */
   configuration: RestFeed;
 };
 
 /**
- * Factory for creating EM1Status providers with flexible data source strategies.
- * Supports multiple feed types: adapter-based providers, mock values, or disabled providers.
+ * Factory for creating EM1Status providers with flexible data source
+ * strategies.
+ *
+ * Supports multiple feed types: adapter-based providers, mock values, or
+ * disabled providers.
  */
 export class EM1StatusProviderFactory implements ProviderFactory<
   EM1StatusProviderFactoryProperties,
@@ -25,7 +32,9 @@ export class EM1StatusProviderFactory implements ProviderFactory<
 > {
   /**
    * Creates a new EM1Status provider factory.
-   * @param providerFactoryRegistry - Registry containing provider factories for different devices
+   *
+   * @param providerFactoryRegistry - Registry containing provider factories
+   * for different devices
    */
   constructor(
     private readonly providerFactoryRegistry: Registry<
@@ -34,10 +43,14 @@ export class EM1StatusProviderFactory implements ProviderFactory<
   ) {}
 
   /**
-   * Creates the appropriate provider factory based on the feed configuration type.
-   * @param options - Configuration options specifying the feed type and properties
+   * Creates the appropriate provider factory based on the feed configuration
+   * type.
+   *
+   * @param options - Configuration options specifying the feed type and
+   * properties
    * @returns A provider factory matching the requested feed type
-   * @throws {Error} If an adapter feed is requested but the device is not registered
+   * @throws {Error} If an adapter feed is requested but the device is not
+   * registered
    */
   private createProviderFactory(
     options: EM1StatusProviderFactoryProperties
@@ -62,7 +75,9 @@ export class EM1StatusProviderFactory implements ProviderFactory<
 
   /**
    * Creates an EM1Status provider with the specified configuration.
-   * @param options - Configuration options including energy type, device, and feed type
+   *
+   * @param options - Configuration options including energy type, device, and
+   * feed type
    * @returns A provider that supplies EM1Status or undefined
    */
   create(

@@ -1,24 +1,28 @@
 # Configuration
 
-`v2ca` uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to load
-configuration, which means it automatically searches for configuration in
-several standard locations and formats.
+`v2ca` uses [cosmiconfig](https://github.com/cosmiconfig/cosmiconfig) to find
+and load JSON or YAML configuration files.
 
 ## Configuration Files
 
 Create a configuration file in one of these formats:
 
-| File             | Format       |
-| ---------------- | ------------ |
-| `.v2carc`        | JSON or YAML |
-| `.v2carc.json`   | JSON         |
-| `.v2carc.yaml`   | YAML         |
-| `.v2carc.yml`    | YAML         |
-| `v2ca.config.js` | CommonJS/ESM |
-| `package.json`   | `"v2ca"` key |
+| File           | Format |
+| -------------- | ------ |
+| `.v2carc.json` | JSON   |
+| `.v2carc.yaml` | YAML   |
+| `.v2carc.yml`  | YAML   |
 
-cosmiconfig searches from the current working directory upward, using the first
-configuration file it finds.
+These files can also be placed in a `.config` directory:
+
+```text
+.config/v2carc.json
+.config/v2carc.yaml
+.config/v2carc.yml
+```
+
+`v2ca` searches only the current working directory. It checks the files listed
+above in order and uses the first configuration found.
 
 ## Top-Level Schema
 

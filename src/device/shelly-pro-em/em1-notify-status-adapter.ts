@@ -10,47 +10,74 @@ import { RpcNotificationFrame } from '../../utils/rpc.js';
  * Contains real-time electrical measurements from the Shelly Pro EM device.
  */
 type EM1StatusParam = {
-  /** Active power in watts (W) */
+  /**
+   * Active power in watts (W)
+   */
   act_power: number;
-  /** Apparent power in volt-amperes (VA) */
+  /**
+   * Apparent power in volt-amperes (VA)
+   */
   aprt_power: number;
-  /** Current in amperes (A) */
+  /**
+   * Current in amperes (A)
+   */
   current: number;
-  /** Frequency in hertz (Hz) */
+  /**
+   * Frequency in hertz (Hz)
+   */
   freq: number;
-  /** Power factor (dimensionless, typically -1 to 1) */
+  /**
+   * Power factor (dimensionless, typically -1 to 1)
+   */
   pf: number;
-  /** Voltage in volts (V) */
+  /**
+   * Voltage in volts (V)
+   */
   voltage: number;
 };
 
 /**
  * Notification status payload for Shelly Pro EM1 device.
- * Contains timestamp and optional status data for up to two energy meter channels.
+ *
+ * Contains timestamp and optional status data for up to two energy meter
+ * channels.
  */
 type EM1NotifyStatus = {
-  /** Unix timestamp in seconds when the status was captured */
+  /**
+   * Unix timestamp in seconds when the status was captured
+   */
   ts: number;
-  /** Status parameters for energy meter channel 0 (grid) */
+  /**
+   * Status parameters for energy meter channel 0 (grid)
+   */
   'em1:0'?: EM1StatusParam;
-  /** Status parameters for energy meter channel 1 (solar) */
+  /**
+   * Status parameters for energy meter channel 1 (solar)
+   */
   'em1:1'?: EM1StatusParam;
 };
 
 /**
- * Adapter for transforming Shelly Pro EM1 NotifyStatus notifications into energy information.
- * Extracts active power data from the appropriate EM1 channel based on the configured energy type.
+ * Adapter for transforming Shelly Pro EM1 NotifyStatus notifications into
+ * energy information.
+ *
+ * Extracts active power data from the appropriate EM1 channel based on the
+ * configured energy type.
  */
 class EnergyInformationEM1NotifyStatusAdapter implements Adapter<
   RpcNotificationFrame<EM1NotifyStatus>,
   EnergyInformation | undefined
 > {
-  /** The EM1 channel ID (0 or 1) corresponding to the energy type */
+  /**
+   * The EM1 channel ID (0 or 1) corresponding to the energy type
+   */
   private id: number;
 
   /**
    * Creates a new EM1 NotifyStatus adapter for a specific energy type.
-   * @param energyType - The type of energy (grid or solar) to extract from notifications
+   *
+   * @param energyType - The type of energy (grid or solar) to extract from
+   * notifications
    */
   constructor(energyType: EnergyType) {
     this.id = energyTypeToId(energyType);
@@ -61,7 +88,8 @@ class EnergyInformationEM1NotifyStatusAdapter implements Adapter<
    * Extracts the active power from the configured EM1 channel.
    *
    * @param input - The notification frame containing EM1 status data
-   * @returns A promise resolving to energy information with power value, or undefined if the channel data is not present
+   * @returns A promise resolving to energy information with power value, or
+   * undefined if the channel data is not present
    */
   adapt(
     input: RpcNotificationFrame<EM1NotifyStatus>
@@ -82,13 +110,17 @@ class EnergyInformationEM1NotifyStatusAdapter implements Adapter<
  * Configuration options for creating an EM1NotifyStatusAdapter instance.
  */
 type EM1NotifyStatusAdapterOptions = {
-  /** The type of energy (grid or solar) to configure the adapter for */
+  /**
+   * The type of energy (grid or solar) to configure the adapter for
+   */
   energyType: EnergyType;
 };
 
 /**
  * Factory for creating EnergyInformationEM1NotifyStatusAdapter instances.
- * Implements the AdapterFactory pattern to produce adapters configured for specific energy types.
+ *
+ * Implements the AdapterFactory pattern to produce adapters configured for
+ * specific energy types.
  */
 class EnergyInformationEM1NotifyStatusAdapterFactory implements AdapterFactory<
   EM1NotifyStatusAdapterOptions,
@@ -96,10 +128,12 @@ class EnergyInformationEM1NotifyStatusAdapterFactory implements AdapterFactory<
   EnergyInformation | undefined
 > {
   /**
-   * Creates a new EM1 NotifyStatus adapter configured for the specified energy type.
+   * Creates a new EM1 NotifyStatus adapter configured for the specified energy
+   * type.
    *
    * @param options - Configuration options specifying the energy type
-   * @returns An adapter that transforms EM1 NotifyStatus notifications into energy information
+   * @returns An adapter that transforms EM1 NotifyStatus notifications into
+   * energy information
    */
   create(
     options: EM1NotifyStatusAdapterOptions
@@ -113,7 +147,9 @@ class EnergyInformationEM1NotifyStatusAdapterFactory implements AdapterFactory<
 
 /**
  * Singleton instance of the EM1 NotifyStatus adapter factory.
- * Used to create adapters for transforming Shelly Pro EM NotifyStatus notifications into energy information.
+ *
+ * Used to create adapters for transforming Shelly Pro EM NotifyStatus
+ * notifications into energy information.
  */
 export const energyInformationEM1NotifyStatusAdapterFactory =
   new EnergyInformationEM1NotifyStatusAdapterFactory();

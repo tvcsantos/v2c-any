@@ -5,7 +5,9 @@ import { Triggerable } from './triggerable.js';
 
 /**
  * Periodic pull-then-push service.
+ *
  * Invokes a `Triggerable` service at a fixed interval.
+ *
  * Implements start/stop lifecycle control.
  */
 export class PullPushService extends AbstractExecutableService {
@@ -13,6 +15,7 @@ export class PullPushService extends AbstractExecutableService {
 
   /**
    * Creates a new pull/push service.
+   *
    * @param interval - Polling interval in milliseconds
    * @param triggerable - Triggerable service that is invoked at each interval
    */
@@ -25,6 +28,7 @@ export class PullPushService extends AbstractExecutableService {
 
   /**
    * Starts periodic polling and an immediate initial cycle.
+   *
    * @returns A promise that resolves once the service starts
    * @throws {Error} If the service is already started
    */
@@ -44,6 +48,7 @@ export class PullPushService extends AbstractExecutableService {
 
   /**
    * Stops periodic polling if running.
+   *
    * @returns A promise that resolves once the service stops
    */
   async doStop() {
@@ -57,6 +62,7 @@ export class PullPushService extends AbstractExecutableService {
 
   /**
    * Main async loop that runs cycles until aborted.
+   * 
    * @param signal - AbortSignal to control loop cancellation
    */
   private async run(signal: AbortSignal) {

@@ -2,11 +2,14 @@ import { AbstractExecutableService } from './abstract-executable-service.js';
 
 /**
  * A no-operation implementation of ExecutableService.
- * Used as a null-object pattern implementation when no actual service execution is needed.
+ *
+ * Used as a null-object pattern implementation when no actual service
+ * execution is needed.
  */
 export class NoOpExecutableService extends AbstractExecutableService {
   /**
    * Starts the service (no-op implementation).
+   *
    * @returns An immediately resolved promise
    */
   async doStart() {
@@ -15,6 +18,7 @@ export class NoOpExecutableService extends AbstractExecutableService {
 
   /**
    * Stops the service (no-op implementation).
+   *
    * @returns An immediately resolved promise
    */
   async doStop() {
@@ -23,14 +27,20 @@ export class NoOpExecutableService extends AbstractExecutableService {
 }
 
 /**
- * Wraps an object to make it an ExecutableService with no-op start/stop methods.
- * Uses a Proxy to combine the target object's methods with ExecutableService lifecycle methods.
- * The resulting object can be used anywhere an ExecutableService is expected while retaining
- * all original object functionality.
+ * Wraps an object to make it an ExecutableService with no-op start/stop
+ * methods.
+ *
+ * Uses a Proxy to combine the target object's methods with ExecutableService
+ * lifecycle methods.
+ *
+ * The resulting object can be used anywhere an ExecutableService is expected
+ * while retaining all original object functionality.
  *
  * @template T - The type of the target object to wrap
- * @param target - The object instance to wrap with ExecutableService functionality
- * @returns A proxy that implements both the target's interface and ExecutableService
+ * @param target - The object instance to wrap with ExecutableService
+ * functionality
+ * @returns A proxy that implements both the target's interface and
+ * ExecutableService
  *
  * @example
  * ```typescript

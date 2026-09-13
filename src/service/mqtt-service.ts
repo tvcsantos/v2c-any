@@ -23,13 +23,16 @@ export type MqttServiceProperties = {
 
 /**
  * Service that publishes energy readings to an MQTT broker.
- * Manages MQTT client lifecycle and exposes methods to push grid and solar power values.
+ *
+ * Manages MQTT client lifecycle and exposes methods to push grid and solar
+ * power values.
  */
 export class MqttService extends AbstractExecutableService {
   private client: MqttClient | null = null;
 
   /**
    * Creates a new MQTT service.
+   *
    * @param properties - MQTT connection properties including broker URL
    */
   constructor(private readonly properties: MqttServiceProperties) {
@@ -38,6 +41,7 @@ export class MqttService extends AbstractExecutableService {
 
   /**
    * Publishes a grid power reading to the MQTT broker.
+   *
    * @param power - Power value in Watts
    */
   async pushGridPower(power: number) {
@@ -46,6 +50,7 @@ export class MqttService extends AbstractExecutableService {
 
   /**
    * Publishes a solar power reading to the MQTT broker.
+   *
    * @param power - Power value in Watts
    */
   async pushSunPower(power: number) {
@@ -54,6 +59,7 @@ export class MqttService extends AbstractExecutableService {
 
   /**
    * Publishes a numeric reading to a specific MQTT topic.
+   *
    * @param value - Numeric value to publish
    * @param topic - MQTT topic to publish to
    */
@@ -70,6 +76,7 @@ export class MqttService extends AbstractExecutableService {
   }
   /**
    * Starts the MQTT client connection.
+   *
    * @returns A promise that resolves when the client is connected
    * @throws {Error} If the client is already started
    */
@@ -84,6 +91,7 @@ export class MqttService extends AbstractExecutableService {
 
   /**
    * Stops the MQTT client connection.
+   *
    * @returns A promise that resolves when the client is disconnected
    * @throws {Error} If the client is not started
    */

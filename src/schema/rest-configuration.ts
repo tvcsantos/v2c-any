@@ -5,7 +5,9 @@ import {
   retrySchema,
 } from './common-configuration.js';
 
-// EM1 status (used by mock emulator response)
+/**
+ * EM1 status (used by mock emulator response)
+ */
 export const em1StatusSchema = z.object({
   /**
    * Id of the EM1 component instance
@@ -36,15 +38,21 @@ export const em1StatusSchema = z.object({
    */
   freq: z.number().optional(),
   /**
-   * Indicates factory calibration or which EM1:id is the source for calibration
+   * Indicates factory calibration or which
+   * EM1:id is the source for calibration
    */
   calibration: z.string(),
   /**
-   * EM1 component error conditions. May contain power_meter_failure, out_of_range:act_power, out_of_range:aprt_power, out_of_range:voltage, out_of_range:current or ct_type_not_set. Present in status only if not empty.
+   * EM1 component error conditions. May contain power_meter_failure,
+   * out_of_range:act_power, out_of_range:aprt_power, out_of_range:voltage,
+   * out_of_range:current or ct_type_not_set.
+   *
+   * Present in status only if not empty.
    */
   errors: z.array(z.string()).optional(),
   /**
-   * Communicates present conditions, shown if at least one flag is set. Depending on component capabilites may contain: count_disabled
+   * Communicates present conditions, shown if at least one flag is set.
+   * Depending on component capabilites may contain: count_disabled
    */
   flags: z.array(z.string()).optional(),
 });

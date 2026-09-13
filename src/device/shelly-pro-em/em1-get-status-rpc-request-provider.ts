@@ -6,22 +6,32 @@ import { RpcRequestFrame } from '../../utils/rpc.js';
 
 /**
  * RPC request structure for EM1.GetStatus method.
- * Represents a request to retrieve the status of a specific EM1 energy monitor.
+ *
+ * Represents a request to retrieve the status of a specific EM1 energy
+ * monitor.
  */
 type EM1GetStatusRpcRequest = { src: string } & RpcRequestFrame<{ id: number }>;
 
 /**
  * Provider for generating EM1.GetStatus RPC requests.
- * Manages request generation with auto-incrementing IDs for a specific EM1 energy monitor.
+ *
+ * Manages request generation with auto-incrementing IDs for a specific EM1
+ * energy monitor.
  */
 class EM1GetStatusRpcRequestProvider implements RpcMqttRequestProvider<EM1GetStatusRpcRequest> {
-  /** EM1 device ID derived from energy type */
+  /**
+   * EM1 device ID derived from energy type
+   */
   private id: number;
 
-  /** Source path for the device messages */
+  /**
+   * Source path for the device messages
+   */
   readonly src: string;
 
-  /** Counter for generating unique request IDs */
+  /**
+   * Counter for generating unique request IDs
+   */
   private requestCount = 0;
 
   /**
@@ -78,7 +88,9 @@ export class EM1GetStatusRpcRequestProviderFactory implements RpcMqttRequestProv
   EM1GetStatusRpcRequest
 > {
   /**
-   * Creates a new EM1GetStatusRpcRequestProvider with the specified configuration.
+   * Creates a new EM1GetStatusRpcRequestProvider with the specified
+   * configuration.
+   *
    * @param options - Configuration containing energy type and device properties
    * @returns A configured RPC MQTT request provider for EM1.GetStatus requests
    */
@@ -94,7 +106,9 @@ export class EM1GetStatusRpcRequestProviderFactory implements RpcMqttRequestProv
 
 /**
  * Singleton instance of EM1GetStatusRpcRequestProviderFactory.
- * Used throughout the application for creating EM1 GetStatus RPC request providers.
+ *
+ * Used throughout the application for creating EM1 GetStatus RPC request
+ * providers.
  */
 export const em1GetStatusRpcRequestProviderFactory =
   new EM1GetStatusRpcRequestProviderFactory();

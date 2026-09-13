@@ -1,5 +1,6 @@
 /**
  * Generic registry for storing and retrieving key-value pairs.
+ *
  * Provides a centralized store for managing instances of a specific type.
  *
  * @template T - The type of values stored in this registry
@@ -9,6 +10,7 @@ export class Registry<T> {
 
   /**
    * Registers a value with the given key in the registry.
+   *
    * @param key - The unique identifier for the value
    * @param value - The value to store
    */
@@ -18,6 +20,7 @@ export class Registry<T> {
 
   /**
    * Retrieves a value from the registry by its key.
+   *
    * @param key - The unique identifier of the value to retrieve
    * @returns The stored value, or undefined if the key is not found
    */
