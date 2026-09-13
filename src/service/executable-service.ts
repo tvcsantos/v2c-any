@@ -1,9 +1,5 @@
 export type ServiceState =
-  | 'stopped'
-  | 'starting'
-  | 'started'
-  | 'stopping'
-  | 'failed';
+  'stopped' | 'starting' | 'started' | 'stopping' | 'failed';
 
 /**
  * Interface for services that have executable lifecycle methods.

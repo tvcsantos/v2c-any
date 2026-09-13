@@ -87,10 +87,14 @@ export class RpcMqttPushTriggerableService<
    */
   async doStart(signal: AbortSignal) {
     logger.info('Starting MQTT bridge service');
-    const { client, connected } = createMqttClient(this.properties.url, {
-      username: this.properties.username,
-      password: this.properties.password,
-    }, signal);
+    const { client, connected } = createMqttClient(
+      this.properties.url,
+      {
+        username: this.properties.username,
+        password: this.properties.password,
+      },
+      signal
+    );
     this.client = client;
     await connected;
     this.client.on('message', (topic: string, message: Buffer) => {
