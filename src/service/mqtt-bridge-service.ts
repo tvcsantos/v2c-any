@@ -63,12 +63,14 @@ export class MqttBridgeService<
    * @returns A promise that resolves when the subscription is active and
    * keep-alive service is started
    */
-  async doStart() {
+  async doStart(signal: AbortSignal) {
     logger.info('Starting MQTT bridge service');
-    this.client = await createMqttClient(this.properties.url, {
+    const { client, connected } = createMqttClient(this.properties.url, {
       username: this.properties.username,
       password: this.properties.password,
-    });
+    }, signal);
+    this.client = client;
+    await connected;
     this.client.on('message', (topic: string, message: Buffer) => {
       if (topic === this.properties.topic) {
         this.keepAliveService.notify().catch((error) => {
@@ -90,7 +92,7 @@ export class MqttBridgeService<
     logger.info({ topic: this.properties.topic }, 'Subscribing to MQTT topic');
     await this.client.subscribeAsync(this.properties.topic, { qos: 1 });
     logger.info('MQTT bridge service started');
-    await this.keepAliveService.start();
+    await this.keepAliveService.start(signal);
   }
 
   /**

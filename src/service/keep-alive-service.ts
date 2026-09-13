@@ -39,8 +39,8 @@ export class KeepAliveService
    *
    * @returns A promise that resolves when the service has started
    */
-  async doStart(): Promise<void> {
-    await this.triggerable.start();
+  async doStart(signal: AbortSignal): Promise<void> {
+    await this.triggerable.start(signal);
     this.abortController = new AbortController();
     this.scheduleNextTrigger(this.abortController.signal);
     return Promise.resolve();

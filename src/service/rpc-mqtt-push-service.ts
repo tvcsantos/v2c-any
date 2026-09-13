@@ -85,12 +85,14 @@ export class RpcMqttPushTriggerableService<
    * @returns A promise that resolves when the connection and subscription are
    * established
    */
-  async doStart() {
+  async doStart(signal: AbortSignal) {
     logger.info('Starting MQTT bridge service');
-    this.client = await createMqttClient(this.properties.url, {
+    const { client, connected } = createMqttClient(this.properties.url, {
       username: this.properties.username,
       password: this.properties.password,
-    });
+    }, signal);
+    this.client = client;
+    await connected;
     this.client.on('message', (topic: string, message: Buffer) => {
       if (topic === this.provider.topic) {
         const data: InputMessage = JSON.parse(

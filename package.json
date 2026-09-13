@@ -50,6 +50,7 @@
     "docs:preview": "npm --prefix docs run preview"
   },
   "dependencies": {
+    "@fastify/basic-auth": "^6.3.0",
     "cosmiconfig": "^9.0.2",
     "fastify": "^5.10.0",
     "glob": "^13.0.6",

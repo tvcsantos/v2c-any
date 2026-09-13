@@ -92,7 +92,6 @@ export class RestService extends AbstractExecutableService {
   /**
    * Starts the REST server and registers endpoints.
    *
-   * - `GET /health` simple OK
    * - `POST /expectaction` set mocked status (mock mode only)
    * - `GET /rpc/EM1.GetStatus` fetch status for a given id
    *
@@ -106,9 +105,6 @@ export class RestService extends AbstractExecutableService {
     });
 
     this.app = app;
-
-    // Simple health
-    app.get('/health', () => ({ ok: true }));
 
     app.post<{ Body: EM1Status }>(
       '/expectaction',

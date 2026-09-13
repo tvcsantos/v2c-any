@@ -1,3 +1,10 @@
+export type ServiceState =
+  | 'stopped'
+  | 'starting'
+  | 'started'
+  | 'stopping'
+  | 'failed';
+
 /**
  * Interface for services that have executable lifecycle methods.
  *
@@ -5,16 +12,16 @@
  */
 export interface ExecutableService {
   /**
-   * Indicates whether the service has been started
+   * Indicates the current state of the service.
    */
-  readonly started: boolean;
+  readonly state: ServiceState;
 
   /**
    * Starts the service.
    *
    * @returns A promise that resolves when the service has successfully started
    */
-  start(): Promise<void>;
+  start(signal?: AbortSignal): Promise<void>;
 
   /**
    * Stops the service.

@@ -63,10 +63,10 @@ export class MqttServiceFactory implements ExecutableServiceFactory<MqttProvider
     });
 
     const mqttExecutableService = class extends AbstractExecutableService {
-      async doStart(): Promise<void> {
-        await mqttService.start();
-        await gridEnergyPublisher.start();
-        await sunEnergyPublisher.start();
+      async doStart(signal: AbortSignal): Promise<void> {
+        await mqttService.start(signal);
+        await gridEnergyPublisher.start(signal);
+        await sunEnergyPublisher.start(signal);
       }
       async doStop(): Promise<void> {
         await sunEnergyPublisher.stop();

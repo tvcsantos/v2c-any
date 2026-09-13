@@ -17,6 +17,7 @@ import { RestServiceFactory } from './factory/rest-service-factory.js';
 import { MqttServiceFactory } from './factory/mqtt-service-factory.js';
 import { ExecutableServiceFactory } from './factory/executable-service-factory.js';
 import { VERSION } from './utils/version.js';
+import { AdminRestService } from './service/admin-rest-service.js';
 
 async function main() {
   logger.info({ version: VERSION }, 'Starting application');
@@ -59,16 +60,42 @@ async function main() {
 
   const service = executableServiceFactory.create(configuration);
 
+  const adminRestService = new AdminRestService({ port: 8090 }, () =>
+    Promise.resolve(service.state)
+  );
+
+  let shuttingDown = false;
+
   const shutdown = async () => {
-    try {
-      logger.info('Shutting down...');
-      await service?.stop();
-      logger.info('Shutdown complete');
-    } catch (err) {
-      logger.error(err, 'Error during shutdown');
-    } finally {
-      process.exit(0);
+    if (shuttingDown) {
+      return;
     }
+    shuttingDown = true;
+
+    logger.info('Shutting down...');
+
+    let failed = false;
+
+    try {
+      await service.stop();
+    } catch (error) {
+      failed = true;
+      logger.error(error, 'Failed to stop main service');
+    }
+
+    try {
+      await adminRestService.stop();
+    } catch (error) {
+      failed = true;
+      logger.error(error, 'Failed to stop admin service');
+    }
+
+    if (failed) {
+      process.exitCode = 1;
+      return;
+    }
+
+    logger.info('Shutdown complete');
   };
 
   process.once('SIGINT', () => {
@@ -78,7 +105,17 @@ async function main() {
     shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
   });
 
-  await service.start();
+  await adminRestService.start();
+
+  try {
+    await service.start();
+  } catch (error) {
+    if (shuttingDown) {
+      return;
+    }
+    await adminRestService.stop();
+    throw error;
+  }
 
   logger.info('Application started successfully');
 }

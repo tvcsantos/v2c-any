@@ -29,17 +29,17 @@ export class PullPushService extends AbstractExecutableService {
   /**
    * Starts periodic polling and an immediate initial cycle.
    *
+   * @param signal - Signal that cancels nested service startup
    * @returns A promise that resolves once the service starts
-   * @throws {Error} If the service is already started
    */
-  async doStart() {
+  async doStart(signal: AbortSignal) {
     if (this.abortController) {
       logger.error('Attempted to start adapter that is already running');
       throw new Error('Adapter already started');
     }
     this.abortController = new AbortController();
 
-    await this.triggerable.start();
+    await this.triggerable.start(signal);
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     this.run(this.abortController.signal);

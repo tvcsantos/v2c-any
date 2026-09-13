@@ -77,15 +77,22 @@ export class MqttService extends AbstractExecutableService {
   /**
    * Starts the MQTT client connection.
    *
+   * @param signal - Signal that cancels the connection attempt
    * @returns A promise that resolves when the client is connected
-   * @throws {Error} If the client is already started
+   * @throws {Error} If the connection fails or is aborted
    */
-  async doStart() {
+  async doStart(signal: AbortSignal) {
     logger.info('Starting MQTT mode');
-    this.client = await createMqttClient(this.properties.url, {
-      username: this.properties.username,
-      password: this.properties.password,
-    });
+    const { client, connected } = createMqttClient(
+      this.properties.url,
+      {
+        username: this.properties.username,
+        password: this.properties.password,
+      },
+      signal
+    );
+    this.client = client;
+    await connected;
     logger.info('MQTT client started');
   }
 
@@ -93,7 +100,6 @@ export class MqttService extends AbstractExecutableService {
    * Stops the MQTT client connection.
    *
    * @returns A promise that resolves when the client is disconnected
-   * @throws {Error} If the client is not started
    */
   async doStop() {
     logger.info('Stopping MQTT mode');
