@@ -17,7 +17,7 @@ import { RestServiceFactory } from './factory/rest-service-factory.js';
 import { MqttServiceFactory } from './factory/mqtt-service-factory.js';
 import { ExecutableServiceFactory } from './factory/executable-service-factory.js';
 import { VERSION } from './utils/version.js';
-import { AdminRestService } from './service/admin-rest-service.js';
+import { ActuatorRestService } from './service/actuator-rest-service.js';
 
 async function main() {
   logger.info({ version: VERSION }, 'Starting application');
@@ -60,8 +60,9 @@ async function main() {
 
   const service = executableServiceFactory.create(configuration);
 
-  const adminRestService = new AdminRestService({ port: 8090 }, () =>
-    Promise.resolve(service.state)
+  const actuatorRestService = new ActuatorRestService(
+    { port: 8090 },
+    () => service.state
   );
 
   let shuttingDown = false;
@@ -84,7 +85,7 @@ async function main() {
     }
 
     try {
-      await adminRestService.stop();
+      await actuatorRestService.stop();
     } catch (error) {
       failed = true;
       logger.error(error, 'Failed to stop admin service');
@@ -105,7 +106,7 @@ async function main() {
     shutdown().catch((err) => logger.error(err, 'Error during shutdown'));
   });
 
-  await adminRestService.start();
+  await actuatorRestService.start();
 
   try {
     await service.start();
@@ -113,7 +114,7 @@ async function main() {
     if (shuttingDown) {
       return;
     }
-    await adminRestService.stop();
+    await actuatorRestService.stop();
     throw error;
   }
 

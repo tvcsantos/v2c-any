@@ -1,5 +1,6 @@
 import Fastify, {
   type FastifyInstance,
+  type FastifyReply,
   type FastifyTypeProviderDefault,
   type RawServerDefault,
 } from 'fastify';
@@ -9,7 +10,7 @@ import type { IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from 'pino';
 import { AbstractExecutableService } from './abstract-executable-service.js';
 import { RestServiceProperties } from './rest-service.js';
-import { ServiceState } from './executable-service.js';
+import type { ServiceState } from './executable-service.js';
 
 const logLevels = [
   'trace',
@@ -21,13 +22,21 @@ const logLevels = [
   'silent',
 ] as const;
 
+const serviceStateHealth = {
+  stopped: 'DOWN',
+  starting: 'OUT_OF_SERVICE',
+  started: 'UP',
+  stopping: 'OUT_OF_SERVICE',
+  failed: 'DOWN',
+} as const satisfies Record<ServiceState, string>;
+
 /**
- * Administrative REST service for health checks and runtime controls.
+ * Actuator REST service for health checks and runtime controls.
  *
  * Implements the executable service lifecycle to start and stop the HTTP
  * server.
  */
-export class AdminRestService extends AbstractExecutableService {
+export class ActuatorRestService extends AbstractExecutableService {
   /**
    * The Fastify application instance, or null when the service is not running
    */
@@ -41,7 +50,7 @@ export class AdminRestService extends AbstractExecutableService {
 
   constructor(
     private readonly properties: RestServiceProperties,
-    private readonly hasMainServiceStarted: () => Promise<ServiceState>
+    private readonly getServiceState: () => ServiceState
   ) {
     super();
   }
@@ -49,13 +58,15 @@ export class AdminRestService extends AbstractExecutableService {
   /**
    * Starts the REST server and registers endpoints.
    *
-   * - `GET /actuator/health` reports main service availability
+   * - `GET /actuator/health` reports application readiness
+   * - `GET /actuator/health/liveness` reports process liveness
+   * - `GET /actuator/health/readiness` reports application readiness
    * - `PUT /actuator/log-level` updates the runtime log level
    *
    * @returns A promise that resolves when the server is listening
    */
   protected async doStart(): Promise<void> {
-    logger.info('Starting Admin REST service...');
+    logger.info('Starting Actuator REST service...');
     const username = process.env.V2CA_ADMIN_USERNAME;
     const password = process.env.V2CA_ADMIN_PASSWORD;
     if (!username || !password) {
@@ -93,14 +104,15 @@ export class AdminRestService extends AbstractExecutableService {
           },
         });
 
+        const sendReadiness = (_request: unknown, reply: FastifyReply) => {
+          const status = serviceStateHealth[this.getServiceState()];
+          return reply.status(status === 'UP' ? 200 : 503).send({ status });
+        };
+
         // Health remains public so external monitors can probe it.
-        api.get('/health', async (request, reply) => {
-          const status = await this.hasMainServiceStarted();
-          if (status !== 'started') {
-            return reply.status(503).send({ status: 'DOWN' });
-          }
-          return reply.send({ status: 'UP' });
-        });
+        api.get('/health', sendReadiness);
+        api.get('/health/liveness', () => ({ status: 'UP' as const }));
+        api.get('/health/readiness', sendReadiness);
 
         api.put<{ Body: { level: (typeof logLevels)[number] } }>(
           '/log-level',
@@ -131,7 +143,7 @@ export class AdminRestService extends AbstractExecutableService {
 
     await app.listen({ port: this.properties.port, host: '0.0.0.0' });
     logger.info({ port: this.properties.port }, 'Listening');
-    logger.info('Admin REST service started');
+    logger.info('Actuator REST service started');
   }
 
   /**
@@ -140,10 +152,10 @@ export class AdminRestService extends AbstractExecutableService {
    * @returns A promise that resolves when the server has closed
    */
   protected async doStop(): Promise<void> {
-    logger.info('Stopping Admin REST service...');
+    logger.info('Stopping Actuator REST service...');
     if (this.app) {
       await this.app.close();
     }
-    logger.info('Admin REST service stopped');
+    logger.info('Actuator REST service stopped');
   }
 }
