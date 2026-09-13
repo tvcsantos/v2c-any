@@ -25,6 +25,7 @@ import {
 } from '../provider/provider-factory.js';
 import { RpcMqttPushTriggerableService } from '../service/rpc-mqtt-push-service.js';
 import { RpcRequestFrame } from '../utils/rpc.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Configuration properties for creating an MQTT push-mode executable service.
@@ -100,11 +101,13 @@ export class MqttPushExecutableServiceFactory implements Factory<
 
     const providerFactory = this.providerFactoryRegistry.get(device);
     if (!providerFactory) {
+      logger.error({ device }, `No provider registered for device: ${device}`);
       throw new Error(`No provider registered for device: ${device}`);
     }
 
     const adapterFactory = this.adapterFactoryRegistry.get(device);
     if (!adapterFactory) {
+      logger.error({ device }, `No adapter registered for device: ${device}`);
       throw new Error(`No adapter registered for device: ${device}`);
     }
     const adapter = adapterFactory.create({
@@ -150,6 +153,10 @@ export class MqttPushExecutableServiceFactory implements Factory<
     const requestProviderFactory =
       this.rpcMqttRequestProviderFactoryRegistry.get(device);
     if (!requestProviderFactory) {
+      logger.error(
+        { device },
+        `No RPC MQTT request provider registered for device: ${device}`
+      );
       throw new Error(
         `No RPC MQTT request provider registered for device: ${device}`
       );
@@ -157,6 +164,7 @@ export class MqttPushExecutableServiceFactory implements Factory<
 
     const adapterFactory = this.adapterFactoryRegistry.get(device);
     if (!adapterFactory) {
+      logger.error({ device }, `No adapter registered for device: ${device}`);
       throw new Error(`No adapter registered for device: ${device}`);
     }
     const adapter = adapterFactory.create({
@@ -197,6 +205,10 @@ export class MqttPushExecutableServiceFactory implements Factory<
         const device = options.configuration.properties.device;
         const adapterFactory = this.adapterFactoryRegistry.get(device);
         if (!adapterFactory) {
+          logger.error(
+            { device },
+            `No adapter registered for device: ${device}`
+          );
           throw new Error(`No adapter registered for device: ${device}`);
         }
 

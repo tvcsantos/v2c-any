@@ -46,12 +46,12 @@ export class ConfigurationLoader {
       let config: Configuration;
 
       if (result?.config) {
-        // Configuration found - merge, validate, and use it
+        // Configuration found - validate, and use it
         logger.info({ source: result.filepath }, 'Configuration loaded');
         config = this.configurationValidator.validate(result.config);
       } else {
-        // No configuration found - use defaults
-        logger.info('No configuration found');
+        // No configuration found - throw an error
+        logger.error('No configuration found');
         throw new Error('No configuration found');
       }
 

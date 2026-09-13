@@ -68,9 +68,17 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
     private readonly options: AsymmetricEMAOptions<T>
   ) {
     if (options.alphaRise < 0 || options.alphaRise > 1) {
+      logger.error(
+        { alphaRise: options.alphaRise },
+        `Invalid alphaRise value: ${options.alphaRise}`
+      );
       throw new Error('alphaRise must be between 0 and 1');
     }
     if (options.alphaFall < 0 || options.alphaFall > 1) {
+      logger.error(
+        { alphaFall: options.alphaFall },
+        `Invalid alphaFall value: ${options.alphaFall}`
+      );
       throw new Error('alphaFall must be between 0 and 1');
     }
   }
@@ -86,15 +94,25 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
    * @param newValue - The new value to incorporate into the EMA
    */
   private onNewValue(newValue: T) {
+    logger.debug({ newValue }, 'Received new value for EMA update');
+    logger.debug({ ema: this.ema }, 'Current EMA before update');
     if (this.ema === null) {
+      logger.debug({ newValue }, 'Initializing EMA with first value');
       this.ema = newValue;
     }
     // Determine if value is rising or falling
     const comparison = this.options.comparator(newValue, this.ema);
+
+    logger.debug({ comparison }, 'Comparison result for EMA update');
+
     const alpha =
       comparison >= 0 ? this.options.alphaRise : this.options.alphaFall;
 
+    logger.debug({ alpha }, 'Selected alpha for EMA update');
+
     this.ema = this.interpolator.interpolate(newValue, this.ema, alpha);
+
+    logger.debug({ ema: this.ema }, 'Updated EMA after interpolation');
   }
 
   /**
@@ -106,12 +124,19 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
    * Only applies if the EMA has been previously initialized.
    */
   private onMissingValue() {
+    logger.debug('Handling missing value');
     if (this.ema !== null) {
+      logger.debug({ ema: this.ema }, 'Decaying EMA toward zero value');
+
       this.ema = this.interpolator.interpolate(
         this.options.zeroValue,
         this.ema,
         this.options.alphaMissing
       );
+
+      logger.debug({ ema: this.ema }, 'EMA after handling missing value');
+    } else {
+      logger.debug('EMA is not initialized, skipping decay for missing value');
     }
   }
 
@@ -132,7 +157,9 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
    */
   async get(): Promise<T> {
     try {
+      logger.debug('Fetching new value from provider');
       const newValue = await this.provider.get();
+      logger.debug({ newValue }, 'Fetched new value from provider');
       this.lastUpdateTime = Date.now();
       this.onNewValue(newValue);
       return newValue;
@@ -142,13 +169,17 @@ export class AsymmetricEMAProvider<T> implements Provider<T> {
         this.lastUpdateTime === null ||
         Date.now() - this.lastUpdateTime >= this.options.freshnessThreshold
       ) {
-        logger.info('Handling missing value');
+        logger.debug(
+          'Freshness threshold exceeded or no previous update, considering stale value'
+        );
         this.onMissingValue();
       }
       if (this.ema !== null) {
-        logger.warn({ ema: this.ema }, 'Returning last EMA value');
+        logger.warn({ ema: this.ema }, 'Returning interpolated EMA value');
         return this.ema;
       }
+
+      logger.error('No EMA available and fetch failed');
       throw error;
     }
   }

@@ -34,6 +34,7 @@ export class PullPushService extends AbstractExecutableService {
    */
   async doStart() {
     if (this.abortController) {
+      logger.error('Attempted to start adapter that is already running');
       throw new Error('Adapter already started');
     }
     this.abortController = new AbortController();

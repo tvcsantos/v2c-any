@@ -2,6 +2,7 @@ import {
   type Configuration,
   configurationSchema,
 } from '../schema/configuration.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Validates v2ca configuration against Zod schema for type safety and
@@ -20,13 +21,21 @@ export class ConfigurationValidator {
    * @throws {Error} If validation fails, with detailed error information
    */
   validate(config: unknown): Configuration {
+    logger.info('Validating configuration...');
+
     const result = configurationSchema.safeParse(config);
     if (!result.success) {
       const errors = result.error.issues
         .map((e) => `${e.path.join('.')}:${e.message}`)
         .join(', ');
+
+      logger.error(`Configuration validation failed: ${errors}`);
+
       throw new Error(`Configuration validation failed: ${errors}`);
     }
+
+    logger.info('Configuration validated successfully');
+
     return result.data;
   }
 }

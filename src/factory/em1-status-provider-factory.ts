@@ -1,5 +1,6 @@
 import type { Registry } from '../registry/registry.js';
 import type { ProviderFactory } from '../provider/provider-factory.js';
+import { logger } from '../utils/logger.js';
 import { FixedValueProviderFactory } from '../provider/fixed-value-provider.js';
 import type { EM1Status, RestFeed } from '../schema/rest-configuration.js';
 import type { EnergyType } from '../schema/configuration.js';
@@ -60,6 +61,11 @@ export class EM1StatusProviderFactory implements ProviderFactory<
         const device = options.configuration.feed.properties.device;
         const providerFactory = this.providerFactoryRegistry.get(device);
         if (!providerFactory) {
+          logger.error(
+            { device },
+            `No provider registered for device: ${device}`
+          );
+
           throw new Error(`No provider registered for device: ${device}`);
         }
         return providerFactory;
