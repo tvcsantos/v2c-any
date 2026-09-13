@@ -62,7 +62,7 @@ export class PullPushService extends AbstractExecutableService {
 
   /**
    * Main async loop that runs cycles until aborted.
-   * 
+   *
    * @param signal - AbortSignal to control loop cancellation
    */
   private async run(signal: AbortSignal) {
